@@ -14,6 +14,7 @@ import { coloredToast } from '@/utils/sweetAlerts';
 import { formatDate } from '@/utils/helperFunctions';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
+import Search from './Search';
 
 
 const InvoiceTable = ({ IMG_URL }: { IMG_URL: string }) => {
@@ -54,7 +55,6 @@ const InvoiceTable = ({ IMG_URL }: { IMG_URL: string }) => {
         columnAccessor: 'id',
         direction: 'asc',
     });
-
 
 
     useEffect(() => {
@@ -261,21 +261,6 @@ const InvoiceTable = ({ IMG_URL }: { IMG_URL: string }) => {
         }
     }; */
 
-    // if (status === 'loading') return <TableSkeleton />
-
-
-    // const handleParams = () => {
-    //     const params = new URLSearchParams();
-    //     params.append("page", page);
-    //     params.append("pageSize", "20");
-    //     params.append("sortStatus", sortStatus.columnAccessor);
-    //     params.append("sortStatus", sortStatus.direction);
-    //     params.append("search", search);
-
-    //     console.log('params', params.toString());
-    //     router.push(`?${params.toString()}`, { scroll: false });
-    // }
-
     const handleSearchQuery = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -309,16 +294,7 @@ const InvoiceTable = ({ IMG_URL }: { IMG_URL: string }) => {
                         </button>
                     </div>
 
-                    <form onSubmit={handleSearchQuery}>
-                        <input
-                            type="text"
-                            className="form-input w-auto"
-                            placeholder="Search..."
-                            value={search}
-                            ref={searchInputRef}
-                            onChange={(e) => router.push(`?${new URLSearchParams({ page: page.toString(), pageSize: pageSize.toString(), search: e.target.value })}`, { scroll: false })}
-                        />
-                    </form>
+                    <Search search={search} />
 
                 </div>
 

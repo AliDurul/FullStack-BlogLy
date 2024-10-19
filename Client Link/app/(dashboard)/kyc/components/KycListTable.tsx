@@ -16,11 +16,11 @@ import { Kyc } from '@/types/types';
 import sortBy from 'lodash/sortBy';
 import Image from 'next/image';
 import Link from 'next/link';
+import KycSearchInput from './KycSearchInput';
 
 
 const KycListTable = ({ IMG_URL }: { IMG_URL: string }) => {
     const { deleteToast, multiDeleteToast } = useDeleteToasts();
-    const searchInputRef = useRef<HTMLInputElement>(null);
     const searchParams = useSearchParams();
     const dispatch = useAppDispatch();
     const router = useRouter()
@@ -96,7 +96,7 @@ const KycListTable = ({ IMG_URL }: { IMG_URL: string }) => {
         const data2 = sortBy(initialRecords, sortStatus.columnAccessor);
         setRecords(sortStatus.direction === 'desc' ? data2.reverse() : data2);
         // setPage(1);
-        // router.push(`?${new URLSearchParams({ page: '1', pageSize: pageSize.toString() })}`, { scroll: false });
+        // router.push(`?${new URLSearchParams({ page, limit })}`, { scroll: false });
 
     }, [sortStatus]);
 
@@ -181,16 +181,7 @@ const KycListTable = ({ IMG_URL }: { IMG_URL: string }) => {
                                     onChange={(date3: any) => setDate3(date3)}
                                 />
 
-                                {/* <form onSubmit={handleSearchQuery}>
-                                </form> */}
-                                    <input
-                                        type="text"
-                                        className="form-input w-auto"
-                                        placeholder="Search..."
-                                        value={search}
-                                        ref={searchInputRef}
-                                        onChange={(e) => router.push(`?${new URLSearchParams({ page: page.toString(), pageSize: pageSize.toString(), search: e.target.value })}`, { scroll: false })}
-                                    />
+                                <KycSearchInput search={search} />
 
                             </div>
 
