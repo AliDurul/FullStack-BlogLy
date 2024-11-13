@@ -4,7 +4,7 @@ import LoginForm from "./comonents/LoginForm";
 const Login = () => {
   return (
     <div className="flex min-h-screen">
-      <div className="hidden lg:flex bg-[#f2831cc9]  min-h-screen w-1/2 flex-col  items-center justify-center  text-white dark:text-black ">
+      <div className="hidden lg:flex bg-primary  min-h-screen w-1/2 flex-col  items-center justify-center  text-white dark:text-black ">
         {/* <div className="mx-auto mb-5 w-full flex justify-center">
           ---
         </div> */}
@@ -29,7 +29,7 @@ const Login = () => {
 
           </div>
           <p className="mt-8 text-xs leading-5 text-gray-400 md:order-1 md:mt-0">
-            &copy; 2020 UBA, Inc. All rights reserved.
+            &copy; {new Date().getFullYear()} Paylink, Inc. All rights reserved.
           </p>
         </div>
       </div>

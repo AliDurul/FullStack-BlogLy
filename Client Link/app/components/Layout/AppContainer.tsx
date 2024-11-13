@@ -11,9 +11,9 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 
 function AppContainer({ children }: PropsWithChildren) {
 
-  const themeConfig = useAppSelector(selectThemeConfig)
+    const themeConfig = useAppSelector(selectThemeConfig)
     // const themeConfig = useAppSelector((state: IRootState) => state.themeConfig);
-     const dispatch = useAppDispatch();
+    const dispatch = useAppDispatch();
     // const { i18n } = useTranslation();
 
     useEffect(() => {
@@ -25,17 +25,14 @@ function AppContainer({ children }: PropsWithChildren) {
         dispatch(toggleNavbar(localStorage.getItem('navbar') || themeConfig.navbar));
         dispatch(toggleSemidark(localStorage.getItem('semidark') || themeConfig.semidark));
         // locale
-   
-     
-      
-    }, [dispatch, themeConfig.theme, themeConfig.menu, themeConfig.layout, themeConfig.rtlClass, themeConfig.animation, themeConfig.navbar,  themeConfig.semidark]);
+
+
+
+    }, [dispatch, themeConfig.theme, themeConfig.menu, themeConfig.layout, themeConfig.rtlClass, themeConfig.animation, themeConfig.navbar, themeConfig.semidark]);
 
     return (
         <div
-            className={`${(themeConfig.sidebar && 'toggle-sidebar') || ''} ${themeConfig.menu} ${themeConfig.layout} ${
-                themeConfig.rtlClass
-            } main-section relative font-nunito text-sm font-normal antialiased`}
-        >
+            className={`${(themeConfig.sidebar && 'toggle-sidebar') || ''} ${themeConfig.menu} ${themeConfig.layout} ${themeConfig.rtlClass} main-section relative font-nunito text-sm font-normal antialiased`}>
             {children}
         </div>
     );
