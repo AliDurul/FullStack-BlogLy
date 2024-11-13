@@ -44,7 +44,6 @@ const MailMain = ({ children }: PropsWithChildren) => {
         if (selectedTab === 'normal' || selectedTab === 'low' || selectedTab === 'high') {
 
             res = mailList?.filter((d) => d.importance === selectedTab);
-            console.log(res);
 
         } else {
             res = mailList

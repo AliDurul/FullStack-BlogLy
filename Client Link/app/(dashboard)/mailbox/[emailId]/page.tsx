@@ -23,7 +23,6 @@ const MailDetailPage = ({ params }: { params: { emailId: string } }) => {
     // const isEdit = useAppSelector(selectIsEdit);
     const emailStatus = useAppSelector(selectEmailStatus)
 
-    // console.log(emailStatus);
     useEffect(() => {
 
         dispatch(fetchEmailByIdAsync(emailId))

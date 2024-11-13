@@ -112,7 +112,6 @@ const KycActionPage = () => {
         user_type: 'Customer',
     };
 
-    // console.log(kyc);
 
     return (
         <div>

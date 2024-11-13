@@ -71,7 +71,6 @@ export default function TicketReview() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // console.log(ticket);
         try {
             const res = await createTicketComment({ body: comment, ticket_id: ticket?.ticket_id })
             if (res.error) throw new Error(res.error)

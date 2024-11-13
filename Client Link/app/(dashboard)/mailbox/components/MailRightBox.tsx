@@ -58,7 +58,6 @@ const MailRightBox = ({ pager, setMailList, searchText, filteredMailList, search
                     dispatch(fetchAllEmailsFolderAsync({}))
 
                 } else if (type === 'read') {
-                    // console.log(ids);
                     ids.map(async (id: any) => {
                         const res = await updateEmailProperties({ emailId: id, isRead: true, flagStatus, importance })
                         if (res?.error) {
@@ -69,7 +68,6 @@ const MailRightBox = ({ pager, setMailList, searchText, filteredMailList, search
                     dispatch(fetchAllEmailsFolderAsync({}))
                     showMessage(totalSelected + ' Mail has been marked as Read.');
                 } else if (type === 'unread') {
-                    // console.log(ids);
                     ids.map(async (id: any) => {
                         const res = await updateEmailProperties({ emailId: id, isRead: false, flagStatus, importance })
                         if (res?.error) {
@@ -588,7 +586,6 @@ const MailRightBox = ({ pager, setMailList, searchText, filteredMailList, search
                                                     if (res.error) {
                                                         showMessage(res.error, 'error')
                                                     } else {
-                                                        // console.log(res);
                                                         setMailList(res)
                                                     }
 
@@ -609,7 +606,6 @@ const MailRightBox = ({ pager, setMailList, searchText, filteredMailList, search
                                                     if (res.error) {
                                                         showMessage(res.error, 'error')
                                                     } else {
-                                                        // console.log(res);
                                                         setMailList(res)
                                                     }
                                                 }}>
@@ -651,7 +647,6 @@ const MailRightBox = ({ pager, setMailList, searchText, filteredMailList, search
                                             // dispatch(fetchAllEmailsAsync(folderId));
 
                                             pager.currentPage++;
-                                            // console.log('pageer', pager);
                                             searchMails(false);
                                         }}
                                     >

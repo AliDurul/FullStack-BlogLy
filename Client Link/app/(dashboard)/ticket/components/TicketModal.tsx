@@ -120,7 +120,6 @@ export default function TicketModal() {
                                                 if ((params as Ticket).ticket_id) {
                                                     //@ts-ignore
                                                     const { assigned_agent, ...newValue } = values;
-                                                    console.log(newValue);
                                                     const res = await updateTicket(newValue);
                                                     if (res.message) {
                                                         coloredToast("success", res.message, "bottom-start");
@@ -228,7 +227,7 @@ export default function TicketModal() {
                                                             <label htmlFor="cat">Category</label>
                                                             <div className="flex justify-center items-center gap-2">
                                                                 <Select placeholder="Select The Category" options={categoryOp}
-                                                                    value={categoryOp?.find(option => option.value === values.cat)}
+                                                                    value={categoryOp?.find((option: any) => option.value === values.cat)}
                                                                     onChange={option => { setFieldValue('cat', option ? option.value : ''); }}
                                                                     className='flex-1'
                                                                 />

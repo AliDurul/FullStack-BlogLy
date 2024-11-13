@@ -79,7 +79,6 @@ const TaskAddEditModal = ({ addTaskModal, setAddTaskModal, setParams, params }: 
             }
 
         } else {
-            console.log(params);
             const res = await createTask(params)
             if (res.message) {
                 dispatch(fetchAllTasksAsync({}))

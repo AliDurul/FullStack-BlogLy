@@ -108,7 +108,6 @@ export const createTask = async (taskData: any) => {
     });
 
     const data = await response.json();
-    console.log(data);
     if (response.ok) {
       return { message: data.message };
     } else {

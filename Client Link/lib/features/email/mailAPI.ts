@@ -34,7 +34,6 @@ export const refreshAccessToken = async (): Promise<string | object> => {
             accessToken = data.access_token;
             const expiresIn = data.expires_in || 3600;
             tokenExpiryTime = Date.now() + expiresIn * 1000
-            console.log('new access token taken..');
             return data.access_token
         } else {
             throw new Error(data.error || "Something went wrong, Please try again!");
@@ -144,7 +143,6 @@ export const replyMessage = async (emailId: string, dataSend: any) => {
         }
 
     } catch (error: any) {
-        // console.log(error);
         return { error: error.message };
     }
 
@@ -164,7 +162,6 @@ export const getAllEmailFolders = async () => {
         });
 
         const data = await response.json();
-        console.log(data);
 
         if (response.ok) {
             return data.value;
@@ -192,7 +189,6 @@ export const getEmailById = async (EMAIL_ID: string | null) => {
 
         const data = await response.json();
         if (response.ok) {
-            // console.log('gettin email by id success');
             return data
         } else {
             throw new Error(data.error.message || "Something went wrong, Please try again!");
@@ -241,7 +237,6 @@ export const getAllEmailsForFolder = async (folderId: string, filterUnread: bool
         ;
 
         if (response.ok) {
-            // console.log('gettin all messages is success..');
             return data.value;
         } else {
             throw new Error(data.error.message || "Something went wrong, Please try again!");
@@ -265,7 +260,6 @@ export const deleteEmail = async (emailId: string,) => {
 
 
         if (response.ok) {
-            // console.log('msg delete success');
             return { isDeleted: true };
         } else {
             const data = await response.json();

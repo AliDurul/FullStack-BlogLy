@@ -15,7 +15,6 @@ export default async function TicketListPage() {
 
   // const session = await auth();
   // const accessToken = session?.accessToken;
-  // console.log(accessToken);
 
   return (
     <>

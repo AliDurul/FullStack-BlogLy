@@ -23,7 +23,6 @@ const InvoiceAction = () => {
         dispatch(fetchAllProductAsync({}))
     }, [])
 
-    // console.log('customers', customers);
 
     const customerOP = customers.results?.map((customer) => ({
         label: `${customer.first_name} ${customer.last_name}`,

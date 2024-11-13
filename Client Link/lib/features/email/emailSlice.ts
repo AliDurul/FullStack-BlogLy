@@ -194,7 +194,6 @@ export const emailSlice = createAppSlice({
                             updateEmailProperties({ emailId, isRead, flagStatus, importance }),
                             getAllEmailsForFolder(folderId)
                         ])
-                        console.log('redux calisti');
                         if (fetchedEmails.error) {
                             throw new Error(fetchedEmails.error);
                         }
