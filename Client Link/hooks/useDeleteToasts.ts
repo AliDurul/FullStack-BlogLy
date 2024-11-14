@@ -24,6 +24,7 @@ const useDeleteToasts = () => {
 
       if (result.isConfirmed) {
         const res = await deletionFunction(id);
+        console.log('27 -', res);
 
         if (res?.message) {
           dispatch(updateAction(res.remainingData ?? []));

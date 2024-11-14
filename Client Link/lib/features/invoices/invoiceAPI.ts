@@ -13,7 +13,7 @@ const authConfig = async () => {
   };
 };
 
-export const getAllInvoices = async (page?: string, pageSize?: string) => {
+export const getAllInvoices = async (page?: string, pageSize?: string, search?: string) => {
   const headers = await authConfig();
 
   let url = `${BASE_URL}invoices/`;
@@ -21,6 +21,7 @@ export const getAllInvoices = async (page?: string, pageSize?: string) => {
   const params = new URLSearchParams();
   if (page) params.append("page", page);
   if (pageSize) params.append("page_size", pageSize);
+  if (search) params.append("search", search)
 
   if (params.toString()) url += `?${params.toString()}`;
 
@@ -52,7 +53,6 @@ export const updateInvoice = async (saleData: any) => {
     });
 
     const data = await response.json();
-    // console.log(data);
 
     if (response.ok) {
       return { message: "Successfully Updated!" };
@@ -71,7 +71,6 @@ export const deleteInvoice = async (id: any) => {
       method: "DELETE",
       headers,
     });
-
     const data = await response.json();
 
     if (response.status === 200) {
@@ -162,7 +161,6 @@ export const createInvoice = async (saleData: any) => {
       body: JSON.stringify(saleData),
     });
 
-    console.log(response)
     const data = await response.json();
 
     if (response.ok) {

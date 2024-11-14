@@ -19,7 +19,6 @@ const WpChatBox = ({ setIsShowChatMenu, isShowChatMenu, selectedUser, scrollToBo
     const [textMessage, setTextMessage] = useState('');
 
     const sendMessage = () => {
-        console.log(textMessage);
         if (textMessage.trim()) {
             let list = chatRooms;
             let user: any = list.find((d: any) => d.userId === selectedUser.userId);
@@ -29,7 +28,6 @@ const WpChatBox = ({ setIsShowChatMenu, isShowChatMenu, selectedUser, scrollToBo
                 text: textMessage,
                 time: 'Just now',
             });
-            console.log(user);
             setFilteredItems(list);
             setTextMessage('');
             scrollToBottom();

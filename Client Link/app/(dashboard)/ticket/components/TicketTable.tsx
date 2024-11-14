@@ -90,7 +90,7 @@ const TicketTable = ({ IMG_URL }: { IMG_URL: string }) => {
         router.push(`?${new URLSearchParams({ page: page.toString(), pageSize: pageSize.toString() })}`, { scroll: false });
         dispatch(fetchAllTicketAsync({ page, pageSize }));
 
-    }, [page, pageSize,]);
+    }, [page, pageSize]);
 
 
     useEffect(() => {

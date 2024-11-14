@@ -24,7 +24,7 @@ const authConfigFormData = async () => {
   };
 }
 
-export const getAllKycs = async (type?: string, page?: string, pageSize?: string) => {
+export const getAllKycs = async (type?: string, page?: string, pageSize?: string, search?: string) => {
   const headers = await authConfig();
 
   let url = `${BASE_URL}users/`;
@@ -33,10 +33,10 @@ export const getAllKycs = async (type?: string, page?: string, pageSize?: string
   if (type) params.append("user_type", type);
   if (page) params.append("page", page);
   if (pageSize) params.append("page_size", pageSize);
+  if (search) params.append("search", search)
 
   if (params.toString()) url += `?${params.toString()}`;
 
-  // console.log('this is url--', url);
 
   try {
     const response = await fetch(url, {
@@ -44,6 +44,8 @@ export const getAllKycs = async (type?: string, page?: string, pageSize?: string
     });
 
     const data = await response.json();
+
+    console.log('--calisti');
 
     if (response.ok) {
       return data;
@@ -128,9 +130,8 @@ export const updateKyc = async (kycData: any) => {
       headers,
       body: kycData,
     });
-    
+
     const data = await response.json();
-    // console.log('this is data--', data);
 
     if (response.ok) {
       return { message: "Successfully Updated!" };

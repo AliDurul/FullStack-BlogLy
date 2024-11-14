@@ -121,7 +121,6 @@ export const updateTicket = async (ticketData: any) => {
         });
 
         const data = await response.json();
-        // console.log(data);
         if (response.ok) {
             return { message: "Successfully Updated!", data: data.data };
         } else {
@@ -181,7 +180,6 @@ export const createTicketComment = async (commentData: any) => {
         });
 
         const data = await response.json();
-        console.log(commentData);
         if (response.ok) {
             return { message: "Successfully Created!" };
         } else {
@@ -218,7 +216,6 @@ export const getTicketStatus = async () => {
 
 export const escalateTicket = async (ticketData: any) => {
     const headers = await authConfig();
-    console.log('ticketData => ', ticketData);
     try {
         const response = await fetch(`${BASE_URL}escalated_tickets/`, {
             method: "POST",

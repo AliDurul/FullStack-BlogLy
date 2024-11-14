@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import sortBy from 'lodash/sortBy';
 import { selectIsDarkMode } from '@/lib/features/themeConfig/themeConfigSlice';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
@@ -19,19 +19,21 @@ import Image from 'next/image';
 const InvoiceTable = ({ IMG_URL }: { IMG_URL: string }) => {
     const { error, status, invoices } = useAppSelector(selectInvoiceStates);
     const { deleteToast, multiDeleteToast } = useDeleteToasts();
+    const searchInputRef = useRef<HTMLInputElement>(null);
     const isDark = useAppSelector(selectIsDarkMode)
     const searchParams = useSearchParams();
     const dispatch = useAppDispatch();
     const router = useRouter();
 
 
-    // search params for pagination
+    // queru params for pagination & search
     const page = (searchParams.get('page') || 1) as string;
     const pageSize = (searchParams.get('pageSize') || 10) as string;
+    const search = (searchParams.get('search') || '') as string;
 
 
     useEffect(() => {
-        dispatch(fetchAllInvoicesAsync({ page, pageSize }));
+        dispatch(fetchAllInvoicesAsync({ page, pageSize, search }));
     }, []);
 
     useEffect(() => {
@@ -43,11 +45,11 @@ const InvoiceTable = ({ IMG_URL }: { IMG_URL: string }) => {
 
     // const [page, setPage] = useState(1);
     // const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
+    // const [search, setSearch] = useState('');
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [initialRecords, setInitialRecords] = useState(sortBy(invoices?.results, 'id'));
     const [records, setRecords] = useState(initialRecords);
     const [selectedRecords, setSelectedRecords] = useState<any>([]);
-    const [search, setSearch] = useState('');
     const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
         columnAccessor: 'id',
         direction: 'asc',
@@ -69,9 +71,9 @@ const InvoiceTable = ({ IMG_URL }: { IMG_URL: string }) => {
         // const to = from + pageSize;
         // setRecords([...(Array.isArray(initialRecords) ? initialRecords.slice(from, to) : [])]);
 
-        router.push(`?${new URLSearchParams({ page: page.toString(), pageSize: pageSize.toString() })}`, { scroll: false });
-        dispatch(fetchAllInvoicesAsync({ page, pageSize }));
-    }, [page, pageSize]);
+        router.push(`?${new URLSearchParams({ page: page.toString(), pageSize: pageSize.toString(), search: search.toString() })}`, { scroll: false });
+        dispatch(fetchAllInvoicesAsync({ page, pageSize, search }));
+    }, [page, pageSize, search]);
 
     useEffect(() => {
         setInitialRecords(() => {
@@ -88,6 +90,7 @@ const InvoiceTable = ({ IMG_URL }: { IMG_URL: string }) => {
         });
     }, [search]);
 
+
     useEffect(() => {
         const data2 = sortBy(initialRecords, sortStatus.columnAccessor);
         setRecords(sortStatus.direction === 'desc' ? data2.reverse() : data2);
@@ -95,11 +98,21 @@ const InvoiceTable = ({ IMG_URL }: { IMG_URL: string }) => {
     }, [sortStatus]);
 
     const deleteRow = async (id: any = null) => {
+
+        const params = new URLSearchParams();
+
         if (id) {
             const deletionSuccess = await deleteToast(id, deleteInvoice, updateInvoices);
+
             if (deletionSuccess) {
                 setSelectedRecords([]);
-                setSearch("");
+                // setSearch("");
+                // setPage(1);
+
+                params.append("page", "1");
+                params.append("pageSize", "10");
+                params.append("search", "");
+                router.push(`?${params.toString()}`, { scroll: false });
             }
         } else {
             let selectedRows = selectedRecords || [];
@@ -109,142 +122,172 @@ const InvoiceTable = ({ IMG_URL }: { IMG_URL: string }) => {
             }
             const ids = selectedRows?.map((d: any) => { return d.id; });
             const deletionSuccess = await multiDeleteToast(ids, deleteMultiInvoice, updateInvoices);
+
             if (deletionSuccess) {
                 setSelectedRecords([]);
-                setSearch("");
+                // setSearch("");
                 // setPage(1);
-                router.push(`?${new URLSearchParams({ page: '1', pageSize: pageSize.toString() })}`, { scroll: false });
-
+                params.append("page", "1");
+                params.append("pageSize", "10");
+                params.append("search", "");
+                router.push(`?${params.toString()}`, { scroll: false });
             }
         }
 
     };
 
-    // function handleDownloadExcel() {
-    //     downloadExcel({
-    //         fileName: 'table',
-    //         sheet: 'react-export-table-to-excel',
-    //         tablePayload: {
-    //             header,
-    //             // @ts-ignore
-    //             body: items,
-    //         },
-    //     });
-    // }
+    // Print functions:
+    /* function handleDownloadExcel() {
+        downloadExcel({
+            fileName: 'table',
+            sheet: 'react-export-table-to-excel',
+            tablePayload: {
+                header,
+                // @ts-ignore
+                body: items,
+            },
+        });
+    }
 
-    // const capitalize = (text: any) => {
-    //     return text
-    //         .replace('_', ' ')
-    //         .replace('-', ' ')
-    //         .toLowerCase()
-    //         .split(' ')
-    //         .map((s: any) => s.charAt(0).toUpperCase() + s.substring(1))
-    //         .join(' ');
-    // };
+    const capitalize = (text: any) => {
+        return text
+            .replace('_', ' ')
+            .replace('-', ' ')
+            .toLowerCase()
+            .split(' ')
+            .map((s: any) => s.charAt(0).toUpperCase() + s.substring(1))
+            .join(' ');
+    };
 
-    // const exportTable = (type: any) => {
-    //     let columns: any = col;
-    //     let records = invoices;
-    //     let filename = 'table';
+    const exportTable = (type: any) => {
+        let columns: any = col;
+        let records = invoices;
+        let filename = 'table';
 
-    //     let newVariable: any;
-    //     newVariable = window.navigator;
+        let newVariable: any;
+        newVariable = window.navigator;
 
-    //     if (type === 'csv') {
-    //         let coldelimiter = ';';
-    //         let linedelimiter = '\n';
-    //         let result = columns
-    //             .map((d: any) => {
-    //                 return capitalize(d);
-    //             })
-    //             .join(coldelimiter);
-    //         result += linedelimiter;
-    //         records.map((item: any) => {
-    //             columns.map((d: any, index: any) => {
-    //                 if (index > 0) {
-    //                     result += coldelimiter;
-    //                 }
-    //                 let val = item[d] ? item[d] : '';
-    //                 result += val;
-    //             });
-    //             result += linedelimiter;
-    //         });
+        if (type === 'csv') {
+            let coldelimiter = ';';
+            let linedelimiter = '\n';
+            let result = columns
+                .map((d: any) => {
+                    return capitalize(d);
+                })
+                .join(coldelimiter);
+            result += linedelimiter;
+            records.map((item: any) => {
+                columns.map((d: any, index: any) => {
+                    if (index > 0) {
+                        result += coldelimiter;
+                    }
+                    let val = item[d] ? item[d] : '';
+                    result += val;
+                });
+                result += linedelimiter;
+            });
 
-    //         if (result == null) return;
-    //         if (!result.match(/^data:text\/csv/i) && !newVariable.msSaveOrOpenBlob) {
-    //             var data = 'data:application/csv;charset=utf-8,' + encodeURIComponent(result);
-    //             var link = document.createElement('a');
-    //             link.setAttribute('href', data);
-    //             link.setAttribute('download', filename + '.csv');
-    //             link.click();
-    //         } else {
-    //             var blob = new Blob([result]);
-    //             if (newVariable.msSaveOrOpenBlob) {
-    //                 newVariable.msSaveBlob(blob, filename + '.csv');
-    //             }
-    //         }
-    //     } else if (type === 'print') {
-    //         var rowhtml = '<p>' + filename + '</p>';
-    //         rowhtml +=
-    //             '<table style="width: 100%; " cellpadding="0" cellcpacing="0"><thead><tr style="color: #515365; background: #eff5ff; -webkit-print-color-adjust: exact; print-color-adjust: exact; "> ';
-    //         columns.map((d: any) => {
-    //             rowhtml += '<th>' + capitalize(d) + '</th>';
-    //         });
-    //         rowhtml += '</tr></thead>';
-    //         rowhtml += '<tbody>';
-    //         records.map((item: any) => {
-    //             rowhtml += '<tr>';
-    //             columns.map((d: any) => {
-    //                 let val = item[d] ? item[d] : '';
-    //                 rowhtml += '<td>' + val + '</td>';
-    //             });
-    //             rowhtml += '</tr>';
-    //         });
-    //         rowhtml +=
-    //             '<style>body {font-family:Arial; color:#495057;}p{text-align:center;font-size:18px;font-weight:bold;margin:15px;}table{ border-collapse: collapse; border-spacing: 0; }th,td{font-size:12px;text-align:left;padding: 4px;}th{padding:8px 4px;}tr:nth-child(2n-1){background:#f7f7f7; }</style>';
-    //         rowhtml += '</tbody></table>';
-    //         var winPrint: any = window.open('', '', 'left=0,top=0,width=1000,height=600,toolbar=0,scrollbars=0,status=0');
-    //         winPrint.document.write('<title>Print</title>' + rowhtml);
-    //         winPrint.document.close();
-    //         winPrint.focus();
-    //         winPrint.print();
-    //     } else if (type === 'txt') {
-    //         let coldelimiter = ',';
-    //         let linedelimiter = '\n';
-    //         let result = columns
-    //             .map((d: any) => {
-    //                 return capitalize(d);
-    //             })
-    //             .join(coldelimiter);
-    //         result += linedelimiter;
-    //         records.map((item: any) => {
-    //             columns.map((d: any, index: any) => {
-    //                 if (index > 0) {
-    //                     result += coldelimiter;
-    //                 }
-    //                 let val = item[d] ? item[d] : '';
-    //                 result += val;
-    //             });
-    //             result += linedelimiter;
-    //         });
+            if (result == null) return;
+            if (!result.match(/^data:text\/csv/i) && !newVariable.msSaveOrOpenBlob) {
+                var data = 'data:application/csv;charset=utf-8,' + encodeURIComponent(result);
+                var link = document.createElement('a');
+                link.setAttribute('href', data);
+                link.setAttribute('download', filename + '.csv');
+                link.click();
+            } else {
+                var blob = new Blob([result]);
+                if (newVariable.msSaveOrOpenBlob) {
+                    newVariable.msSaveBlob(blob, filename + '.csv');
+                }
+            }
+        } else if (type === 'print') {
+            var rowhtml = '<p>' + filename + '</p>';
+            rowhtml +=
+                '<table style="width: 100%; " cellpadding="0" cellcpacing="0"><thead><tr style="color: #515365; background: #eff5ff; -webkit-print-color-adjust: exact; print-color-adjust: exact; "> ';
+            columns.map((d: any) => {
+                rowhtml += '<th>' + capitalize(d) + '</th>';
+            });
+            rowhtml += '</tr></thead>';
+            rowhtml += '<tbody>';
+            records.map((item: any) => {
+                rowhtml += '<tr>';
+                columns.map((d: any) => {
+                    let val = item[d] ? item[d] : '';
+                    rowhtml += '<td>' + val + '</td>';
+                });
+                rowhtml += '</tr>';
+            });
+            rowhtml +=
+                '<style>body {font-family:Arial; color:#495057;}p{text-align:center;font-size:18px;font-weight:bold;margin:15px;}table{ border-collapse: collapse; border-spacing: 0; }th,td{font-size:12px;text-align:left;padding: 4px;}th{padding:8px 4px;}tr:nth-child(2n-1){background:#f7f7f7; }</style>';
+            rowhtml += '</tbody></table>';
+            var winPrint: any = window.open('', '', 'left=0,top=0,width=1000,height=600,toolbar=0,scrollbars=0,status=0');
+            winPrint.document.write('<title>Print</title>' + rowhtml);
+            winPrint.document.close();
+            winPrint.focus();
+            winPrint.print();
+        } else if (type === 'txt') {
+            let coldelimiter = ',';
+            let linedelimiter = '\n';
+            let result = columns
+                .map((d: any) => {
+                    return capitalize(d);
+                })
+                .join(coldelimiter);
+            result += linedelimiter;
+            records.map((item: any) => {
+                columns.map((d: any, index: any) => {
+                    if (index > 0) {
+                        result += coldelimiter;
+                    }
+                    let val = item[d] ? item[d] : '';
+                    result += val;
+                });
+                result += linedelimiter;
+            });
 
-    //         if (result == null) return;
-    //         if (!result.match(/^data:text\/txt/i) && !newVariable.msSaveOrOpenBlob) {
-    //             var data1 = 'data:application/txt;charset=utf-8,' + encodeURIComponent(result);
-    //             var link1 = document.createElement('a');
-    //             link1.setAttribute('href', data1);
-    //             link1.setAttribute('download', filename + '.txt');
-    //             link1.click();
-    //         } else {
-    //             var blob1 = new Blob([result]);
-    //             if (newVariable.msSaveOrOpenBlob) {
-    //                 newVariable.msSaveBlob(blob1, filename + '.txt');
-    //             }
-    //         }
-    //     }
-    // };
+            if (result == null) return;
+            if (!result.match(/^data:text\/txt/i) && !newVariable.msSaveOrOpenBlob) {
+                var data1 = 'data:application/txt;charset=utf-8,' + encodeURIComponent(result);
+                var link1 = document.createElement('a');
+                link1.setAttribute('href', data1);
+                link1.setAttribute('download', filename + '.txt');
+                link1.click();
+            } else {
+                var blob1 = new Blob([result]);
+                if (newVariable.msSaveOrOpenBlob) {
+                    newVariable.msSaveBlob(blob1, filename + '.txt');
+                }
+            }
+        }
+    }; */
 
     // if (status === 'loading') return <TableSkeleton />
+
+
+    // const handleParams = () => {
+    //     const params = new URLSearchParams();
+    //     params.append("page", page);
+    //     params.append("pageSize", "20");
+    //     params.append("sortStatus", sortStatus.columnAccessor);
+    //     params.append("sortStatus", sortStatus.direction);
+    //     params.append("search", search);
+
+    //     console.log('params', params.toString());
+    //     router.push(`?${params.toString()}`, { scroll: false });
+    // }
+
+    const handleSearchQuery = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const searchValue = searchInputRef.current?.value || '';
+
+        const params = new URLSearchParams();
+        params.append("page", page);
+        params.append("pageSize", pageSize);
+        params.append('search', searchValue);
+        dispatch(fetchAllInvoicesAsync({ page, pageSize, search }));
+
+    }
 
     return (
         <div className="panel border-white-light px-0 dark:border-[#1b2e4b] mt-7">
@@ -252,7 +295,7 @@ const InvoiceTable = ({ IMG_URL }: { IMG_URL: string }) => {
                 <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
                     <div className="flex flex-wrap items-center gap-2">
                         {
-                            selectedRecords.length === 1 && <button type="button" className="btn btn-danger  gap-2" onClick={() => deleteRow()}>
+                            selectedRecords.length >= 1 && <button type="button" className="btn btn-danger  gap-2" onClick={() => deleteRow()}>
                                 <DeleteIcon />
                                 Delete
                             </button>
@@ -266,7 +309,17 @@ const InvoiceTable = ({ IMG_URL }: { IMG_URL: string }) => {
                         </button>
                     </div>
 
-                    <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                    <form onSubmit={handleSearchQuery}>
+                        <input
+                            type="text"
+                            className="form-input w-auto"
+                            placeholder="Search..."
+                            value={search}
+                            ref={searchInputRef}
+                            onChange={(e) => router.push(`?${new URLSearchParams({ page: page.toString(), pageSize: pageSize.toString(), search: e.target.value })}`, { scroll: false })}
+                        />
+                    </form>
+
                 </div>
 
                 <div className="datatables pagination-padding">
@@ -330,7 +383,7 @@ const InvoiceTable = ({ IMG_URL }: { IMG_URL: string }) => {
                                 sortable: true
                             },
                             {
-                                accessor: 'date_joined',
+                                accessor: 'Create Date',
                                 // sortable: true,
                                 render: ({ timestamp }) => <span >{formatDate(timestamp)}</span>
                             },

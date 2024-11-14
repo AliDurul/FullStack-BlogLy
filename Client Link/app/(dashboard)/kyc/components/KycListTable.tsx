@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import useDeleteToasts from '@/hooks/useDeleteToasts';
 import { formatDate } from '@/utils/helperFunctions';
 import { coloredToast } from '@/utils/sweetAlerts';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import { Kyc } from '@/types/types';
@@ -20,31 +20,33 @@ import Link from 'next/link';
 
 const KycListTable = ({ IMG_URL }: { IMG_URL: string }) => {
     const { deleteToast, multiDeleteToast } = useDeleteToasts();
+    const searchInputRef = useRef<HTMLInputElement>(null);
     const searchParams = useSearchParams();
     const dispatch = useAppDispatch();
     const router = useRouter()
 
-    // search params for pagination
+    // queru params for pagination & search
     const page = (searchParams.get('page') || 1) as string;
     const pageSize = (searchParams.get('pageSize') || 10) as string;
+    const search = (searchParams.get('search') || '') as string;
 
     const kycs = useAppSelector(selectKycs);
     const isDark = useAppSelector(selectIsDarkMode);
     const value = useAppSelector(selectValue);
 
     useEffect(() => {
-        dispatch(fetchAllKycAsync({ type: 'Customer', page, pageSize }));
-    }, []);
+        dispatch(fetchAllKycAsync({ type: 'Customer', page, pageSize, search }));
+    }, [search, page, pageSize]);
 
     // const [page, setPage] = useState(1);
     // const [pageSize, ()=>] = useState(PAGE_SIZES[0]);
+    // const [search, setSearch] = useState('');
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [initialRecords, setInitialRecords] = useState(sortBy(kycs.results, 'first_name'));
     const [records, setRecords] = useState(initialRecords);
     const [selectedRecords, setSelectedRecords] = useState<any>([]);
     const [date3, setDate3] = useState<any>(null);
     const [activeFilter, setActiveFilter] = useState<any>(false);
-    const [search, setSearch] = useState('');
     const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
         columnAccessor: 'first_name',
         direction: 'asc',
@@ -61,14 +63,14 @@ const KycListTable = ({ IMG_URL }: { IMG_URL: string }) => {
     //     // router.push(`?${new URLSearchParams({ page: '1', pageSize: pageSize.toString() })}`, { scroll: false });
     // }, [pageSize]);
 
-    useEffect(() => {
-        // const from = (Number(page) - 1) * pageSize;
-        // const to = from + pageSize;
-        // setRecords([...(Array.isArray(initialRecords) ? initialRecords.slice(from, to) : [])]);
+    // useEffect(() => {
+    //     // const from = (Number(page) - 1) * pageSize;
+    //     // const to = from + pageSize;
+    //     // setRecords([...(Array.isArray(initialRecords) ? initialRecords.slice(from, to) : [])]);
 
-        router.push(`?${new URLSearchParams({ page: page.toString(), pageSize: pageSize.toString() })}`, { scroll: false });
-        dispatch(fetchAllKycAsync({ type: 'Customer', page, pageSize }));
-    }, [page, pageSize]);
+    //     router.push(`?${new URLSearchParams({ page: page.toString(), pageSize: pageSize.toString(), search: search.toString() })}`, { scroll: false });
+    //     dispatch(fetchAllKycAsync({ type: 'Customer', page, pageSize }));
+    // }, [page, pageSize]);
 
 
     useEffect(() => {
@@ -88,7 +90,7 @@ const KycListTable = ({ IMG_URL }: { IMG_URL: string }) => {
 
             });
         });
-    }, [search, activeFilter]);
+    }, [activeFilter]);
 
     useEffect(() => {
         const data2 = sortBy(initialRecords, sortStatus.columnAccessor);
@@ -99,11 +101,20 @@ const KycListTable = ({ IMG_URL }: { IMG_URL: string }) => {
     }, [sortStatus]);
 
     const deleteRow = async (id: any = null) => {
+
+        const params = new URLSearchParams();
+
         if (id) {
             const deletionSuccess = await deleteToast(id, deleteKyc, updateKycs);
             if (deletionSuccess) {
                 setSelectedRecords([]);
-                setSearch("");
+                // setSearch("");
+                // setPage(1);
+
+                params.append("page", "1");
+                params.append("pageSize", "10");
+                params.append("search", "");
+                router.push(`?${params.toString()}`, { scroll: false });
             }
         } else {
             let selectedRows = selectedRecords || [];
@@ -115,13 +126,29 @@ const KycListTable = ({ IMG_URL }: { IMG_URL: string }) => {
             const deletionSuccess = await multiDeleteToast(ids, deleteMultiKyc, updateKycs);
             if (deletionSuccess) {
                 setSelectedRecords([]);
-                setSearch("");
+                // setSearch("");
                 // setPage(1);
-                router.push(`?${new URLSearchParams({ page: '1', pageSize: pageSize.toString() })}`, { scroll: false });
 
+                params.append("page", "1");
+                params.append("pageSize", "10");
+                params.append("search", "");
+                router.push(`?${params.toString()}`, { scroll: false });
             }
         }
     };
+
+    // const handleSearchQuery = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+
+    //     const searchValue = searchInputRef.current?.value || '';
+
+    //     const params = new URLSearchParams();
+    //     params.append("page", page);
+    //     params.append("pageSize", pageSize);
+    //     params.append('search', searchValue);
+    //     dispatch(fetchAllKycAsync({ page, pageSize, search }));
+
+    // }
 
     return (
         <>
@@ -153,7 +180,17 @@ const KycListTable = ({ IMG_URL }: { IMG_URL: string }) => {
                                     className="form-input w-60"
                                     onChange={(date3: any) => setDate3(date3)}
                                 />
-                                <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+
+                                {/* <form onSubmit={handleSearchQuery}>
+                                </form> */}
+                                    <input
+                                        type="text"
+                                        className="form-input w-auto"
+                                        placeholder="Search..."
+                                        value={search}
+                                        ref={searchInputRef}
+                                        onChange={(e) => router.push(`?${new URLSearchParams({ page: page.toString(), pageSize: pageSize.toString(), search: e.target.value })}`, { scroll: false })}
+                                    />
 
                             </div>
 
@@ -235,8 +272,8 @@ const KycListTable = ({ IMG_URL }: { IMG_URL: string }) => {
                                 totalRecords={kycs.count}
                                 recordsPerPage={Number(pageSize)}
                                 page={Number(page)}
-                                onPageChange={(p) => router.push(`?${new URLSearchParams({ page: p.toString(), pageSize: pageSize.toString() })}`, { scroll: false })}
-                                onRecordsPerPageChange={(ps) => router.push(`?${new URLSearchParams({ page: page.toString(), pageSize: ps.toString() })}`, { scroll: false })}
+                                onPageChange={(p) => router.push(`?${new URLSearchParams({ page: p.toString(), pageSize: pageSize.toString(), search: search.toString() })}`, { scroll: false })}
+                                onRecordsPerPageChange={(ps) => router.push(`?${new URLSearchParams({ page: page.toString(), pageSize: ps.toString(), search: search.toString() })}`, { scroll: false })}
                                 recordsPerPageOptions={PAGE_SIZES}
                                 sortStatus={sortStatus}
                                 onSortStatusChange={setSortStatus}
