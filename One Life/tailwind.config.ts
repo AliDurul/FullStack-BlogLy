@@ -13,16 +13,16 @@ const config: Config = {
         },
         extend: {
             colors: {
-                // primary: { // one-life
-                //     DEFAULT: '#F3AB0D',
-                //     light: '#FFEBB3',
-                //     'dark-light': 'rgba(249, 185, 33, 0.15)',
-                // },
-                primary: {
-                    DEFAULT: '#4361ee',
-                    light: '#eaf1ff',
-                    'dark-light': 'rgba(67,97,238,.15)',
+                primary: { // one-life
+                    DEFAULT: '#F3AB0D',
+                    light: '#FFEBB3',
+                    'dark-light': 'rgba(249, 185, 33, 0.15)',
                 },
+                // primary: { // client link
+                //     DEFAULT: '#4361ee',
+                //     light: '#eaf1ff',
+                //     'dark-light': 'rgba(67,97,238,.15)',
+                // },
                 secondary: {
                     DEFAULT: '#805dca',
                     light: '#ebe4f7',

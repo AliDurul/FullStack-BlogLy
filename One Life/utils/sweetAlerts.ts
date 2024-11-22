@@ -15,7 +15,7 @@ export const successToast = (msg: string) => {
     icon: "success",
     title: msg,
     padding: "10px 20px",
-    // background: '#F3AB0D' // one-life
+    background: '#F3AB0D' // one-life
 
   });
 };

@@ -8,12 +8,12 @@ const Login = () => {
     <div className="flex min-h-screen">
 
       {/* One-life */}
-      {/* <div className="hidden lg:flex bg-primary  min-h-screen w-1/2 flex-col  items-center justify-center  text-white dark:text-black ">
+      <div className="hidden lg:flex bg-primary  min-h-screen w-1/2 flex-col  items-center justify-center  text-white dark:text-black ">
         <video autoPlay muted loop className="" src="/assets/records/onelife.mp4" />
-      </div> */}
+      </div>
 
       {/* Client-Link */}
-      <div className="hidden min-h-screen w-1/2 flex-col  items-center justify-center bg-gradient-to-t from-[#ff1361bf] to-[#44107A] p-4 text-white dark:text-black lg:flex">
+      {/* <div className="hidden min-h-screen w-1/2 flex-col  items-center justify-center bg-gradient-to-t from-[#ff1361bf] to-[#44107A] p-4 text-white dark:text-black lg:flex">
         <div className="mx-auto mb-5 w-full">
           <Image
             src={ClientLinkLogo}
@@ -27,15 +27,15 @@ const Login = () => {
         <p>
           ---------------------------------------------------
         </p>
-      </div>
+      </div> */}
       
       <div className="relative flex flex-col w-full items-center justify-between lg:w-1/2">
         <div className="max-w-[480px] my-auto p-5 md:p-10">
 
           {/* One-lıfe */}
-          {/* <div className="flex w-full justify-center mb-9">
+          <div className="flex w-full justify-center mb-9">
             <Image src="/assets/images/onelife-logo.png" alt="logo" width={300} height={25} />
-          </div> */}
+          </div>
 
           <h2 className="mb-3 text-3xl font-bold">Sign In</h2>
           <p className="mb-7">Enter your email and password to login</p>

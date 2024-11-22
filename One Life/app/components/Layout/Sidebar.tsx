@@ -64,7 +64,7 @@ const Sidebar = () => {
                 <div className="h-full bg-white dark:bg-black">
                     
                     {/* One-Life */}
-                    {/* <div className="flex items-center justify-between px-4 py-3 overflow-hidden">
+                    <div className="flex items-center justify-between px-4 py-3 overflow-hidden">
                         <Link href="/" className="flex shrink-0 items-center">
                             <Image className="flex-none" src="/assets/images/onelife-logo.png" alt="logo" width={80} height={80} />
                             <span className=" px-1 align-middle text-base font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline">Assurance</span>
@@ -76,10 +76,10 @@ const Sidebar = () => {
                         >
                             <DoubleArrowIcon />
                         </button>
-                    </div> */}
+                    </div>
 
                     {/* Client-Link */}
-                    <div className="flex items-center justify-between px-2 py-3 overflow-hidden">
+                   {/*  <div className="flex items-center justify-between px-2 py-3 overflow-hidden">
                         <Link href="/" className="flex shrink-0 items-center">
                             <Image className="flex-none" src="/assets/images/client-link.png" alt="logo" width={60} height={80} />
                             <span className=" px-1 align-middle text-base font-semibold ml-1  dark:text-white-light lg:inline">Software Company</span>
@@ -91,7 +91,7 @@ const Sidebar = () => {
                         >
                             <DoubleArrowIcon />
                         </button>
-                    </div>
+                    </div> */}
                     
                     <PerfectScrollbar className="relative h-[calc(100vh-80px)]">
                         <ul className="relative space-y-0.5 p-4 py-0 ">
@@ -156,7 +156,7 @@ const Sidebar = () => {
                                     </li>
 
                                     {/* Inbox */}
-                                    {/* <li className="menu nav-item" >
+                                    <li className="menu nav-item" >
                                         <button type="button" className={`${currentMenu === 'social-media' ? 'active' : ''} nav-link group w-full`} onClick={() => toggleMenu('social-media')}>
                                             <div className="flex items-center">
                                                 <MailBox />
@@ -187,7 +187,7 @@ const Sidebar = () => {
 
                                             </ul>
                                         </AnimateHeight>
-                                    </li> */}
+                                    </li>
 
                                     <li className="nav-item">
                                         <Link href="/ticket" className="group">
@@ -214,14 +214,14 @@ const Sidebar = () => {
                                         </Link>
                                     </li>
 
-                                    {/* <li className="nav-item">
+                                    <li className="nav-item">
                                         <Link href="/voice-records" className="group">
                                             <div className="flex items-center">
                                                 <ProductIcon />
                                                 <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-white dark:group-hover:text-primary-light">Voice Records</span>
                                             </div>
                                         </Link>
-                                    </li> */}
+                                    </li>
                                 </ul>
                             </li>
                             <h2 className="-mx-4 mb-1 flex items-center bg-white-light/30 py-3 px-7 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
