@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
 
-export default function NavbarSearchBox() {
+export default function NavbarActionBox() {
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false)
 
     return (
@@ -33,8 +33,8 @@ export default function NavbarSearchBox() {
                     <p>Write</p>
                 </Link>
 
-                <Link href={'sign-in'} className='btn-dark py-2'>Sign In</Link>
-                <Link href={'sign-up'} className='btn-light py-2  hidden md:block'>Sign Up</Link>
+                <Link href={'/auth/sign-in'} className='btn-dark py-2'>Sign In</Link>
+                <Link href={'/auth/sign-up'} className='btn-light py-2  hidden md:block'>Sign Up</Link>
             </div>
         </>
     )

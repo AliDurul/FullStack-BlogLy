@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-import NavbarSearchBox from './NavbarSearchBox'
+import NavbarActionBox from './NavbarActionBox'
 
 export default function Navbar() {
   return (
@@ -11,7 +11,7 @@ export default function Navbar() {
         <Image className='w-full' src='/assets/images/logo.png' width={40} height={44} alt='logo' />
       </Link>
 
-      <NavbarSearchBox />
+      <NavbarActionBox />
     </nav>
   )
 }
