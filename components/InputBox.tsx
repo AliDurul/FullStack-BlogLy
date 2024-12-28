@@ -1,9 +1,9 @@
 'use client'
 
-import { InputField } from '@/lib/types'
+import { TInputField } from '@/lib/types'
 import React, { useState } from 'react'
 
-export default function InputBox({ name, type, id, value, placeholder, icon }: InputField) {
+export default function InputBox({ name, type, id, value, placeholder, icon }: TInputField) {
   const [isPassVisible, setIsPassVisible] = useState(false)
   return (
     <div className='relative w-[100%] mb-4 '>

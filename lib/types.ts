@@ -1,4 +1,4 @@
-export type InputField = {
+export type TInputField = {
     name: string;
     type: 'text' | 'email' | 'password';
     placeholder: string;
@@ -6,3 +6,11 @@ export type InputField = {
     value?: string;
     icon: string;
 };
+
+export type TAnimationWrapper = {
+    children: React.ReactNode;
+    initial?: Record<string, any>;
+    animate?: Record<string, any>;
+    transition?: Record<string, any>;
+    className?: string;
+}
