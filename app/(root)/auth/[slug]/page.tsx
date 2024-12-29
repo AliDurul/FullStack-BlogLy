@@ -1,49 +1,22 @@
 import { signIn } from '@/auth';
-import InputBox from '@/components/InputBox';
 import AnimationWrapper from '@/components/shared/AnimationWrapper';
 import Link from 'next/link';
 import React from 'react'
+import Form from 'next/form'
+import { DEFAULT_LOGIN_REDIRECT } from '@/lib/routes';
+import AuthForm from '@/components/AuthForm';
 
 export default async function AuthSlugPage({ params, }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
+
     return (
         <AnimationWrapper>
             <section className='h-cover flex flex-col items-center justify-center'>
 
-                <form action="" className='w-[80%] max-w-[400px]'>
-                    <h1 className='text-4xl font-gelasio capitalize text-center mb-24'>
-                        {slug == 'sign-in' ? 'Welcome back' : 'Join us today'}
-                    </h1>
-
-                    {
-                        slug !== 'sign-in' &&
-                        <InputBox
-                            name="fullname"
-                            type="text"
-                            placeholder="full name"
-                            icon="fi-rr-user"
-                        />
-                    }
-                    <InputBox
-                        name="email"
-                        type="email"
-                        placeholder="Email"
-                        icon="fi-rr-envelope"
-                    />
-                    <InputBox
-                        name="password"
-                        type="password"
-                        placeholder="Password"
-                        icon="fi-rr-key"
-                    />
-
-
-                    <button type='submit' className='btn-dark center mt-14'>
-                        {slug == 'sign-in' ? 'Sign in' : 'Sign up'}
-                    </button>
-                </form>
-
                 <div className='w-[80%] max-w-[400px]'>
+
+                    <AuthForm slug={slug} />
+
                     <div className="relative mt-6 opacity-15">
                         <div aria-hidden="true" className="absolute inset-0 flex items-center">
                             <div className="w-full border-t border-black" />
@@ -54,11 +27,12 @@ export default async function AuthSlugPage({ params, }: { params: Promise<{ slug
                     </div>
 
                     <div className="mt-6 grid grid-cols-2 gap-4">
-                        <form action={async () => {
+                        <Form action={async () => {
                             "use server"
-                            console.log('this is google');
-                            await signIn("google")
-                        }}>
+                            await signIn("google", {
+                                callbackUrl: DEFAULT_LOGIN_REDIRECT
+                            })
+                        }} >
                             <button type='submit' className="flex w-full items-center justify-center gap-3 rounded-full bg-black text-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent hover:bg-opacity-80">
                                 <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
                                     <path
@@ -80,11 +54,13 @@ export default async function AuthSlugPage({ params, }: { params: Promise<{ slug
                                 </svg>
                                 <span className="text-sm/6 font-semibold">Google</span>
                             </button>
-                        </form>
+                        </Form>
 
-                        <form action={async () => {
+                        <Form action={async () => {
                             "use server"
-                            await signIn("github")
+                            await signIn("github", {
+                                callbackUrl: DEFAULT_LOGIN_REDIRECT,
+                            })
                         }}>
                             <button className="flex w-full items-center justify-center gap-3 rounded-full bg-black text-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent hover:bg-opacity-80">
                                 <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true" className="size-5 fill-[#ffffff]">
@@ -96,7 +72,7 @@ export default async function AuthSlugPage({ params, }: { params: Promise<{ slug
                                 </svg>
                                 <span className="text-sm/6 font-semibold">GitHub</span>
                             </button>
-                        </form>
+                        </Form>
                     </div>
 
                     {

@@ -3,23 +3,32 @@
 import { TInputField } from '@/lib/types'
 import React, { useState } from 'react'
 
-export default function InputBox({ name, type, id, value, placeholder, icon }: TInputField) {
+export default function InputBox({ name, type, id, value, placeholder, icon, errors }: TInputField) {
   const [isPassVisible, setIsPassVisible] = useState(false)
   return (
-    <div className='relative w-[100%] mb-4 '>
-      <input
-        name={name}
-        type={isPassVisible ? 'text' : type}
-        placeholder={placeholder}
-        defaultValue={value}
-        id={id}
-        className='input-box'
-      />
-      <i className={`fi input-icon ${icon}`} />
+    <div className='mb-4'>
+      <div className='relative w-[100%]'>
+        <input
+          name={name}
+          type={isPassVisible ? 'text' : type}
+          placeholder={placeholder}
+          defaultValue={value}
+          id={id}
+          className={`input-box ${errors ? 'border-red' : ''}`}
+        />
+        <i className={`fi input-icon ${icon}`} />
+        {
+          type === 'password' &&
+          <i className={`fi ${isPassVisible ? 'fi-rr-eye' : 'fi-rr-eye-crossed'} input-icon left-auto right-4 cursor-pointer`} onClick={() => setIsPassVisible(prev => !prev)} />
+        }
+      </div>
+
       {
-        type === 'password' &&
-        <i className={`fi ${isPassVisible ? 'fi-rr-eye' : 'fi-rr-eye-crossed'} input-icon left-auto right-4 cursor-pointer`} onClick={() => setIsPassVisible(prev => !prev)} />
+        errors && errors.map((error: string, index: number) => (
+          <p key={index} className='text-red  pt-1 text-sm '>- {error}</p>
+        ))
       }
     </div>
+
   )
 }

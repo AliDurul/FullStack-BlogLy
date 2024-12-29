@@ -2,8 +2,14 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
+import { useSession } from 'next-auth/react';
+import { signOut } from "next-auth/react"
+
+
 
 export default function NavbarActionBox() {
+    const { data: session } = useSession()
+
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false)
 
     return (
@@ -33,8 +39,17 @@ export default function NavbarActionBox() {
                     <p>Write</p>
                 </Link>
 
-                <Link href={'/auth/sign-in'} className='btn-dark py-2'>Sign In</Link>
-                <Link href={'/auth/sign-up'} className='btn-light py-2  hidden md:block'>Sign Up</Link>
+                {
+                    session ?
+                        <button onClick={() => signOut()} className='btn-dark py-2'>Sign Out</button>
+                        :
+                        <>
+                            <Link href={'/auth/sign-in'} className='btn-dark py-2'>Sign In</Link>
+                            <Link href={'/auth/sign-up'} className='btn-light py-2  hidden md:block'>Sign Up</Link>
+                        </>
+
+                }
+
             </div>
         </>
     )

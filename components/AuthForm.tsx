@@ -1,26 +1,69 @@
 'use client'
 
-
-import React from 'react'
+import React, { useActionState } from 'react'
 import InputBox from '@/components/InputBox';
+import Form from 'next/form';
+import { authCredential } from '@/lib/actions/authActions';
+import toast from 'react-hot-toast';
+import { TInitialAuthState } from '@/lib/types';
 
-export default function AuthForm() {
-  const type = 'sign-in' as 'sign-in' | 'sign-up'
+const initialState: TInitialAuthState = {
+  success: false,
+  message: '',
+}
+
+export default function AuthForm({ slug }: { slug: string }) {
+
+  const [state, action, isPending] = useActionState(authCredential, initialState)
+
+  if (state?.success) {
+    toast.success(state.message);
+  } else {
+    toast.error(state.message);
+  }
+
   return (
-    <form action="" className='w-[80%] max-w-[400px]'>
-      <h1 className='text-4xl font-gelasio capitalize text-center'>
-        {type == 'sign-in' ? 'Welcome back' : 'Join us today'}
+    <Form action={action}>
+      <h1 className='text-4xl font-gelasio capitalize text-center mb-24'>
+        {slug == 'sign-in' ? 'Welcome back' : 'Join us today'}
       </h1>
+
       {
-        type !== 'sign-in' ?
-          <InputBox
-            name="fullname"
-            type="text"
-            placeholder="full name"
-            
-          />
-      : ""
+        slug !== 'sign-in' &&
+        <InputBox
+          name="fullname"
+          type="text"
+          placeholder="full name"
+          icon="fi-rr-user"
+          errors={state?.errors?.fullname}
+          value={state?.inputs?.fullname as string}
+        />
       }
-    </form>
+
+
+      <InputBox
+        name="email"
+        type="email"
+        placeholder="Email"
+        icon="fi-rr-envelope"
+        value={state?.inputs?.email as string}
+        errors={state?.errors?.email}
+
+      />
+
+      <InputBox
+        name="password"
+        type="password"
+        placeholder="Password"
+        icon="fi-rr-key"
+        errors={state?.errors?.password}
+        value={state?.inputs?.password as string}
+      />
+
+   
+      <button type='submit' disabled={isPending} className='btn-dark center mt-14'>
+        {slug == 'sign-in' ? 'Sign in' : 'Sign up'}
+      </button>
+    </Form>
   )
 }

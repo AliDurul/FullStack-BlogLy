@@ -5,6 +5,7 @@ export type TInputField = {
     id?: string;
     value?: string;
     icon: string;
+    errors?: any;
 };
 
 export type TAnimationWrapper = {
@@ -14,3 +15,25 @@ export type TAnimationWrapper = {
     transition?: Record<string, any>;
     className?: string;
 }
+
+export type TRegisterRowData = {
+    fullname?: string;
+    email?: string;
+    password?: string;
+}
+
+export type TInitialAuthState = {
+    success: boolean,
+    message: string,
+    errors?: {
+        email?: string[];
+        fullname?: string[];
+        password?: string[];
+    };
+    inputs?: {
+        email: string;
+        password: string;
+        fullname?: string;
+    };
+}
+
