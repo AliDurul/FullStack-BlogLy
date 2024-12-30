@@ -2,10 +2,10 @@
 
 import React, { useActionState } from 'react'
 import InputBox from '@/components/InputBox';
-import Form from 'next/form';
 import { authCredential } from '@/lib/actions/authActions';
 import toast from 'react-hot-toast';
 import { TInitialAuthState } from '@/lib/types';
+import { useRouter } from 'next/navigation';
 
 const initialState: TInitialAuthState = {
   success: false,
@@ -14,16 +14,22 @@ const initialState: TInitialAuthState = {
 
 export default function AuthForm({ slug }: { slug: string }) {
 
+  const router = useRouter();
+
   const [state, action, isPending] = useActionState(authCredential, initialState)
 
-  if (state?.success) {
-    toast.success(state.message);
-  } else {
-    toast.error(state.message);
+  console.log('message', state.message);
+  console.log('success--', state.success);
+  console.log('ispending--', isPending);
+
+  if (state.message !== '') {
+    toast[state.success ? 'success' : 'error'](state.message);
   }
 
+
+
   return (
-    <Form action={action}>
+    <form action={action}>
       <h1 className='text-4xl font-gelasio capitalize text-center mb-24'>
         {slug == 'sign-in' ? 'Welcome back' : 'Join us today'}
       </h1>
@@ -60,10 +66,14 @@ export default function AuthForm({ slug }: { slug: string }) {
         value={state?.inputs?.password as string}
       />
 
-   
+
       <button type='submit' disabled={isPending} className='btn-dark center mt-14'>
-        {slug == 'sign-in' ? 'Sign in' : 'Sign up'}
+
+        {
+          isPending ? 'Please wait...' : slug == 'sign-in' ? 'Sign in' : 'Sign up'
+        }
+
       </button>
-    </Form>
+    </form>
   )
 }

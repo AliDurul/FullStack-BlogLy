@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
+import Providers from "@/components/shared/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,10 +28,11 @@ export default async function RootLayout({ children, }: Readonly<{ children: Rea
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <SessionProvider session={session} refetchInterval={60 * 60 * 24 * 1}>
-          {children}
+        <SessionProvider session={session} refetchInterval={60 * 30}>
+          <Providers>
+            {children}
+          </Providers>
         </SessionProvider>
-        <Toaster position='top-right' />
       </body>
     </html>
   );

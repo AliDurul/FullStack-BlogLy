@@ -25,11 +25,12 @@ export type TRegisterRowData = {
 export type TInitialAuthState = {
     success: boolean,
     message: string,
-    errors?: {
-        email?: string[];
-        fullname?: string[];
-        password?: string[];
-    };
+    // errors?: {
+    //     email?: string[];
+    //     fullname?: string[];
+    //     password?: string[];
+    // };
+    errors?:Record<string, string[] | undefined>;
     inputs?: {
         email: string;
         password: string;

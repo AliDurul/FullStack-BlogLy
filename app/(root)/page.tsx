@@ -6,7 +6,16 @@ export default async function Home() {
 
   const session = await auth()
 
+  const res = await fetch('http://localhost:8000/users', {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  const users = await res.json()
+  // console.log(users);
+
   return (
-    <h1> {session?.user.fullname}</h1>
+    <h1> {session ? 'logged in': 'not logged in'}</h1>
+
   );
 }
