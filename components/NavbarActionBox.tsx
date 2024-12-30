@@ -9,6 +9,7 @@ import { signOut } from "next-auth/react"
 
 export default function NavbarActionBox() {
     const { data: session } = useSession()
+    console.log(session);
 
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false)
 

@@ -14,13 +14,7 @@ const initialState: TInitialAuthState = {
 
 export default function AuthForm({ slug }: { slug: string }) {
 
-  const router = useRouter();
-
-  const [state, action, isPending] = useActionState(authCredential, initialState)
-
-  console.log('message', state.message);
-  console.log('success--', state.success);
-  console.log('ispending--', isPending);
+  const [state, action, isPending] = useActionState(authCredential, initialState);
 
   if (state.message !== '') {
     toast[state.success ? 'success' : 'error'](state.message);
