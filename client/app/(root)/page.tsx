@@ -7,7 +7,7 @@ export default async function Home() {
   const session = await getSession()
 
   return (
-    <h1> {session ? 'logged in' : 'not logged in'}</h1>
+    <h1> {session ? session.user.fullname : 'not logged in'}</h1>
 
   );
 }

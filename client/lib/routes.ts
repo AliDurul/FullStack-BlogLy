@@ -3,14 +3,14 @@
  * These routes do not require authentication
  * @type {string[]}
  */
-export const publicRoutes = ["/auth", "/",];
+export const publicRoutes = ["/", "/auth",];
 
 /**
  * An array of routes that are used for authentication
  * These routes will redirect logged in users to /dashboard
  * @type {string[]}
  */
-export const authRoutes = ["/auth"];
+export const authRoutes = ["/auth/sign-in", "/auth/sign-up"];
 
 /**
  * The prefix for API authentication routes

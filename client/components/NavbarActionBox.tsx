@@ -4,6 +4,7 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import { signOut } from "next-auth/react"
 import { TSession } from '@/types/index';
+import UserNavigationPanel from './UserNavigationPanel'
 
 
 
@@ -11,6 +12,7 @@ import { TSession } from '@/types/index';
 export default function NavbarActionBox({ session }: { session: TSession }) {
 
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false)
+    const [userNavPanel, setUserNavPanel] = useState(false)
 
     return (
         <>
@@ -41,7 +43,27 @@ export default function NavbarActionBox({ session }: { session: TSession }) {
 
                 {
                     session ?
-                        <button onClick={() => signOut()} className='btn-dark py-2'>Sign Out</button>
+                        <>
+                            <Link href={'dashboard/notification'}>
+                                <button className='size-12 rounded-full bg-grey relative hover:bg-black/10'>
+                                    <i className="fi fi-rr-bell text-2xl block mt-1" />
+                                </button>
+                            </Link>
+                            <div className='relative' onBlur={() => setTimeout(() => { setUserNavPanel(false) }, 200)} tabIndex={0}>
+                                <button className='size-11 mt-1' onClick={() => setUserNavPanel(prev => !prev)}>
+                                    <Image
+                                        src={session.user.profile_img}
+                                        alt="profile"
+                                        className='rounded-full w-full h-full object-cover'
+                                        width={40} height={40} />
+                                </button>
+
+                                {
+                                    userNavPanel && <UserNavigationPanel username={session.user.username} />
+                                }
+
+                            </div>
+                        </>
                         :
                         <>
                             <Link href={'/auth/sign-in'} className='btn-dark py-2'>Sign In</Link>
