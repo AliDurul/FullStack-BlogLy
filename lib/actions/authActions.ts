@@ -1,12 +1,12 @@
 'use server';
 
 import { signIn } from "@/auth";
-import { TInitialAuthState } from "../types";
 import { credentialsSchema } from "../zod";
 import { revalidatePath } from "next/cache";
 import { DEFAULT_LOGIN_REDIRECT } from "../routes";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
+import { TInitialAuthState } from "@/types/index";
 
 export const authCredential = async (initialState: TInitialAuthState, payload: FormData) => {
 
@@ -41,14 +41,14 @@ export const authCredential = async (initialState: TInitialAuthState, payload: F
 
 
     } catch (error) {
-        console.error('Error during sign-in:', error);
 
         let errorMsg = '';
+        let success = false;
 
         if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
             // user is already logged in and redirected
+            success = true;
             redirect(DEFAULT_LOGIN_REDIRECT);
-            revalidatePath('/');
         } else if (error instanceof AuthError) {
             errorMsg = error.message;
         } else {
@@ -56,7 +56,7 @@ export const authCredential = async (initialState: TInitialAuthState, payload: F
         }
 
         return {
-            success: false,
+            success,
             message: errorMsg || 'Something went wrong.',
             inputs: rowData
         } as TInitialAuthState;

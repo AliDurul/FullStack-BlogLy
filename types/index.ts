@@ -30,11 +30,24 @@ export type TInitialAuthState = {
     //     fullname?: string[];
     //     password?: string[];
     // };
-    errors?:Record<string, string[] | undefined>;
+    errors?: Record<string, string[] | undefined>;
     inputs?: {
         email: string;
         password: string;
         fullname?: string;
     };
 }
+
+export type TSession = {
+    user: {
+        profile_img: string;
+        username: string;
+        fullname: string;
+        iat: number;
+        exp: number
+    },
+    expires: string;
+    access: string;
+    refresh: string;
+} | null;
 

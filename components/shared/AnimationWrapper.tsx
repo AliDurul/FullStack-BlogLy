@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { TAnimationWrapper } from '@/lib/types'
+import { TAnimationWrapper } from '@/types/index'
 
 export default function AnimationWrapper({
   children,

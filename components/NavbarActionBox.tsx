@@ -2,14 +2,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
-import { useSession } from 'next-auth/react';
 import { signOut } from "next-auth/react"
+import { TSession } from '@/types/index';
 
 
 
-export default function NavbarActionBox() {
-    const { data: session } = useSession()
-    console.log(session);
+
+export default function NavbarActionBox({ session }: { session: TSession }) {
 
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false)
 

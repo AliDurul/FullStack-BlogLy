@@ -4,7 +4,7 @@ import React, { useActionState } from 'react'
 import InputBox from '@/components/InputBox';
 import { authCredential } from '@/lib/actions/authActions';
 import toast from 'react-hot-toast';
-import { TInitialAuthState } from '@/lib/types';
+import { TInitialAuthState } from '@/types/index';
 import { useRouter } from 'next/navigation';
 
 const initialState: TInitialAuthState = {

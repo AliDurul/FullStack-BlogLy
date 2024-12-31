@@ -1,10 +1,10 @@
 import { auth } from "@/auth";
-
+import getSession from "@/lib/utils";
 const API_BASE_URL = process.env.API_BASE_URL;
 
 export default async function Home() {
 
-  const session = await auth()
+  const session = await getSession()
 
   const res = await fetch('http://localhost:8000/users', {
     method: 'GET',
@@ -15,7 +15,7 @@ export default async function Home() {
   // console.log(users);
 
   return (
-    <h1> {session ? 'logged in': 'not logged in'}</h1>
+    <h1> {session ? 'logged in' : 'not logged in'}</h1>
 
   );
 }

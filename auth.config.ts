@@ -1,12 +1,11 @@
 import GitHub from 'next-auth/providers/github';
 import Google from 'next-auth/providers/google';
-import Credentials from "next-auth/providers/credentials"
-import NextAuth, { Account, CredentialsSignin, Profile, User } from "next-auth"
+import { CredentialsSignin, Profile, User } from "next-auth"
 import type { NextAuthConfig } from 'next-auth';
 import { JWT } from "next-auth/jwt"
-import { userInfo } from "./types/next-auth"
 import { jwtDecode } from "jwt-decode"
 import CredentialsProvider from "next-auth/providers/credentials";
+import { userInfo } from './types/next-auth';
 
 class CustomError extends CredentialsSignin {
     constructor(message: string) {
@@ -51,6 +50,7 @@ const authenticateUser = async (url: string, body: object) => {
 };
 
 export default {
+    trustHost: true,
     providers: [
         GitHub,
         Google,
@@ -83,26 +83,41 @@ export default {
 
             try {
                 if (account?.provider !== 'credentials') {
-                    const { sub, email, name, picture } = profile as Profile
+                    let res;
+                    let payload;
 
-                    const res = await fetch(`${API_BASE_URL}/auth/register`, {
+                    switch (account?.provider) {
+                        case 'google': {
+                            const { sub, email, name, picture } = profile as Profile;
+                            payload = { email, sub, fullname: name, picture };
+                            break;
+                        }
+                        case 'github': {
+                            const { node_id, email, name, avatar_url } = profile as Profile;
+                            payload = { email, sub: node_id, fullname: name, picture: avatar_url };
+                            break;
+                        }
+                        default:
+                            throw new Error('Unsupported provider');
+                    }
+                    // cheking if user exist dont create new user return user info
+                    res = await fetch(`${API_BASE_URL}/auth/register`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email, sub, fullname: name, picture }),
-                        cache: 'no-store'
+                        body: JSON.stringify(payload),
                     });
 
-                    // console.log('res==>', res);
                     if (!res.ok) {
                         const errorBody = await res.text();
-                        // console.error('Failed to register user. Response:', errorBody);
-                        throw new Error('Someting went wrong, Failed to register user.');
+                        console.error('Failed to register user. Response:', errorBody);
+                        throw new Error('Something went wrong, Failed to register user.');
                     }
-                    const userTokens = await res.json()
 
-                    // console.log('line 67 userTokens==>', userTokens);
-                    user.access = userTokens.access
-                    user.refresh = userTokens.refresh
+                    const userTokens = await res.json();
+
+                    // console.log('userTokens--', userTokens);
+                    user.access = userTokens.access;
+                    user.refresh = userTokens.refresh;
                 }
             } catch (error) {
                 console.error("Error signing in==>", error);
@@ -145,7 +160,7 @@ export default {
                     return token
 
                 } catch (error) {
-                    console.error("Error refreshing access token==>", error);
+                    console.error("Error refreshing ==>", error);
                     return { ...token, error: "RefreshAccessTokenError" as const };
                 }
             }

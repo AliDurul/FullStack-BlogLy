@@ -5,6 +5,8 @@ import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import Providers from "@/components/shared/Providers";
+import getSession from "@/lib/utils";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
-  const session = await auth();
+  const session = await getSession();
 
 
   return (

@@ -1,6 +1,6 @@
 'use client'
 
-import { TInputField } from '@/lib/types'
+import { TInputField } from '@/types/index'
 import React, { useState } from 'react'
 
 export default function InputBox({ name, type, id, value, placeholder, icon, errors }: TInputField) {
