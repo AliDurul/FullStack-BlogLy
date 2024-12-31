@@ -6,7 +6,7 @@ const app = express()
 /* ------------------------------------------------------- */
 // Required Modules:
 
-require('dotenv').config()
+require('dotenv').config();
 const HOST = process.env?.HOST || '127.0.0.1'
 const PORT = process.env?.PORT || 8000
 
@@ -21,6 +21,11 @@ require('express-async-errors')
 // Database Connection:
 const { dbConnection } = require('./src/configs/dbConnection')
 dbConnection()
+
+// AWS S3 Connection:
+// const s3Client = require('./src/configs/awsConnection')
+
+
 
 /* ------------------------------------------------------- */
 // Middlewares:
