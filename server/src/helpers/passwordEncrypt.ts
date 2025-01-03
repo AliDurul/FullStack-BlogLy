@@ -1,4 +1,7 @@
 import { pbkdf2Sync } from 'node:crypto';
+import { config } from 'dotenv';
+
+config();
 
 const keyCode = process.env.SECRET_KEY,
     loopCount = 1000,

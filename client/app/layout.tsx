@@ -4,8 +4,8 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
-import Providers from "@/components/shared/Providers";
 import getSession from "@/lib/utils";
+import RootProviders from "@/components/shared/RootProviders";
 
 
 const geistSans = Geist({
@@ -31,9 +31,9 @@ export default async function RootLayout({ children, }: Readonly<{ children: Rea
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SessionProvider session={session} refetchInterval={60 * 30}>
-          <Providers>
+          <RootProviders>
             {children}
-          </Providers>
+          </RootProviders>
         </SessionProvider>
       </body>
     </html>
