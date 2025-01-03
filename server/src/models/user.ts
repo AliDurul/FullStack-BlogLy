@@ -1,14 +1,16 @@
-'use strict';
+import { mongoose } from '../configs/dbConnection';
+import passwordEncrypt from '../helpers/passwordEncrypt';
+import uniqueValidator from 'mongoose-unique-validator';
+import { v4 as uuidv4 } from 'uuid';
+import { User } from '../types/user';
 
-const { mongoose } = require('../configs/dbConnection')
-const passwordEncrypt = require('../helpers/passwordEncrypt')
-const uniqueValidator = require("mongoose-unique-validator");
-const { v4: uuidv4 } = require('uuid');
 
 let profile_imgs_name_list = ["Garfield", "Tinkerbell", "Annie", "Loki", "Cleo", "Angel", "Bob", "Mia", "Coco", "Gracie", "Bear", "Bella", "Abby", "Harley", "Cali", "Leo", "Luna", "Jack", "Felix", "Kiki"];
 let profile_imgs_collections_list = ["notionists-neutral", "adventurer-neutral", "fun-emoji"];
 
-const UserSchema = mongoose.Schema({
+
+
+const UserSchema = new mongoose.Schema<User>({
 
     _id: {
         type: String,
@@ -27,7 +29,7 @@ const UserSchema = mongoose.Schema({
             required: true,
             lowercase: true,
             validate: [
-                (email) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email),
+                (email: string) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email),
                 'Please fill a valid email address'
             ],
             unique: true
@@ -121,4 +123,4 @@ UserSchema.plugin(uniqueValidator, {
     message: "This {PATH} is exist",
 });
 
-module.exports = mongoose.model("User", UserSchema);
+export default mongoose.model('users', UserSchema);

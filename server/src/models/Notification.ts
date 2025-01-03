@@ -1,36 +1,37 @@
-import mongoose, { Schema } from "mongoose";
+import { mongoose } from "../configs/dbConnection";
 
-const notificationSchema = mongoose.Schema({
+
+const notificationSchema = new mongoose.Schema({
     type: {
         type: String,
         enum: ["like", "comment", "reply"],
         required: true
     },
     blog: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'blogs'
     },
     notification_for: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'users'
     },
     user: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'users'
     },
     comment: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'comments'
     },
     reply: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'comments'
-    }, 
-    replied_on_comment:{
-        type: Schema.Types.ObjectId,
+    },
+    replied_on_comment: {
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'comments'
     },
     seen: {
@@ -38,9 +39,9 @@ const notificationSchema = mongoose.Schema({
         default: false
     }
 },
-{
-    timestamps: true
-}
+    {
+        timestamps: true
+    }
 )
 
 export default mongoose.model("notification", notificationSchema)

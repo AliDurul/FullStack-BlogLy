@@ -1,14 +1,14 @@
-import mongoose, { Schema } from "mongoose";
+import { mongoose } from "../configs/dbConnection";
 
-const commentSchema = mongoose.Schema({
-    
+const commentSchema = new mongoose.Schema({
+
     blog_id: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'blogs'
     },
     blog_author: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'blogs',
     },
@@ -17,11 +17,11 @@ const commentSchema = mongoose.Schema({
         required: true
     },
     children: {
-        type: [Schema.Types.ObjectId],
+        type: [mongoose.Schema.Types.ObjectId],
         ref: 'comments'
     },
     commented_by: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         require: true,
         ref: 'users'
     },
@@ -29,15 +29,15 @@ const commentSchema = mongoose.Schema({
         type: Boolean,
     },
     parent: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'comments'
     }
 
 },
-{
-    timestamps: {
-        createdAt: 'commentedAt'
-    }
-})
+    {
+        timestamps: {
+            createdAt: 'commentedAt'
+        }
+    })
 
 export default mongoose.model("comments", commentSchema)

@@ -1,6 +1,7 @@
-import mongoose, { Schema } from "mongoose";
+import { mongoose } from "../configs/dbConnection";
 
-const blogSchema = mongoose.Schema({
+
+const blogSchema = new mongoose.Schema({
 
     blog_id: {
         type: String,
@@ -29,7 +30,7 @@ const blogSchema = mongoose.Schema({
         // required: true
     },
     author: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'users'
     },
@@ -52,7 +53,7 @@ const blogSchema = mongoose.Schema({
         },
     },
     comments: {
-        type: [Schema.Types.ObjectId],
+        type: [mongoose.Schema.Types.ObjectId],
         ref: 'comments'
     },
     draft: {
@@ -60,12 +61,12 @@ const blogSchema = mongoose.Schema({
         default: false
     }
 
-}, 
-{ 
-    timestamps: {
-        createdAt: 'publishedAt'
-    } 
+},
+    {
+        timestamps: {
+            createdAt: 'publishedAt'
+        }
 
-})
+    })
 
 export default mongoose.model("blogs", blogSchema);
