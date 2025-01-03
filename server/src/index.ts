@@ -5,7 +5,7 @@ import { config } from 'dotenv';
 import cors from 'cors';
 import { dbConnection } from './configs/dbConnection';
 import authentication from './middlewares/authentication';
-import logger from './middlewares/logger';
+// import logger from './middlewares/logger';
 import queryHandler from './middlewares/queryHandler';
 import routes from './routes';
 import errorHandler from './middlewares/errorHandler';
@@ -41,7 +41,7 @@ app.use('/uploads', express.static('uploads'));
 app.use(authentication);
 
 // Logger:
-app.use(logger);
+// app.use(logger);
 
 // Query Handler:
 app.use(queryHandler);
