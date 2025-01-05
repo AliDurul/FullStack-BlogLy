@@ -35,9 +35,10 @@ const commentSchema = new mongoose.Schema({
 
 },
     {
+        collection:'comments',
         timestamps: {
             createdAt: 'commentedAt'
         }
     })
 
-export default mongoose.model("comments", commentSchema)
+export default mongoose.model("Comment", commentSchema)

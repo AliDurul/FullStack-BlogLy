@@ -23,7 +23,7 @@ export interface AccountInfo {
     total_reads: number;
 }
 
-export interface User extends mongoose.Document {
+export interface IUser extends mongoose.Document {
     _id: string;
     personal_info: PersonalInfo;
     social_links: SocialLinks;

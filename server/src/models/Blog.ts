@@ -63,10 +63,11 @@ const blogSchema = new mongoose.Schema({
 
 },
     {
+        collection:'blogs',
         timestamps: {
             createdAt: 'publishedAt'
         }
 
     })
 
-export default mongoose.model("blogs", blogSchema);
+export default mongoose.model("Blog", blogSchema);

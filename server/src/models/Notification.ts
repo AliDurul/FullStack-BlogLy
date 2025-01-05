@@ -39,9 +39,9 @@ const notificationSchema = new mongoose.Schema({
         default: false
     }
 },
-    {
+    {   collection: 'notifications',
         timestamps: true
     }
 )
 
-export default mongoose.model("notification", notificationSchema)
+export default mongoose.model("Notification", notificationSchema)

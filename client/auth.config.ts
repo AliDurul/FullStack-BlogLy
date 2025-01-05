@@ -78,7 +78,7 @@ export default {
     ],
     callbacks: {
 
-        async signIn({ user, account, profile, email, credentials }) {
+        async signIn({ user, account, profile}) {
             if (!user) return false
 
             try {

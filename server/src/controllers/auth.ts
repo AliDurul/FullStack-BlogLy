@@ -4,6 +4,7 @@ import { Request, Response } from 'express-serve-static-core';
 import passwordEncrypt from '../helpers/passwordEncrypt';
 import { generateUsername, SetToken } from '../helpers/utils';
 import jwt from 'jsonwebtoken';
+import { IUser } from '../types/user';
 
 export const login = async (req: Request, res: Response) => {
     /*
@@ -100,10 +101,10 @@ export const refresh = async (req: Request, res: Response) => {
         }
     */
 
-    const refreshToken = req.body?.bearer?.refreshToken
+    const refreshToken = req.body?.refresh
 
     if (!refreshToken) throw new CustomError('Please enter token.refresh', 401)
-    
+
     const refreshKey = process.env.REFRESH_KEY;
 
     if (!refreshKey) throw new CustomError('Refresh key is not defined.', 422);
@@ -118,20 +119,11 @@ export const refresh = async (req: Request, res: Response) => {
 
             if (!_id) throw new CustomError('In token _id  not found.', 404)
 
-            const user = await User.findOne({ _id }).lean()
+            const user: IUser | null = await User.findOne({ _id }).lean()
 
             if (!user) throw new CustomError('User not found.', 404)
 
-            const accessKey = process.env.ACCESS_KEY;
-
-            if (!accessKey) throw new CustomError('Access key is not defined.', 422);
-
-            const accessToken = jwt.sign(user.toJSON(), accessKey, { expiresIn: '30m' })
-
-            res.send({
-                error: false,
-                bearer: { accessToken }
-            })
+            res.status(200).send(SetToken(user, true))
 
         }
 

@@ -2,7 +2,7 @@ import { mongoose } from '../configs/dbConnection';
 import passwordEncrypt from '../helpers/passwordEncrypt';
 import uniqueValidator from 'mongoose-unique-validator';
 import { v4 as uuidv4 } from 'uuid';
-import { User } from '../types/user';
+import { IUser } from '../types/user';
 
 
 let profile_imgs_name_list = ["Garfield", "Tinkerbell", "Annie", "Loki", "Cleo", "Angel", "Bob", "Mia", "Coco", "Gracie", "Bear", "Bella", "Abby", "Harley", "Cali", "Leo", "Luna", "Jack", "Felix", "Kiki"];
@@ -10,7 +10,7 @@ let profile_imgs_collections_list = ["notionists-neutral", "adventurer-neutral",
 
 
 
-const UserSchema = new mongoose.Schema<User>({
+const UserSchema = new mongoose.Schema<IUser>({
 
     _id: {
         type: String,

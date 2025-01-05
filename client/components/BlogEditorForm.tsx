@@ -1,16 +1,48 @@
 'use client'
 
 import Image from 'next/image'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import defaultBanner from "@/public/assets/images/blog-banner.png";
 import { uploadImage } from '@/lib/actions/uploadImageAction';
 import toast, { Toaster } from 'react-hot-toast';
 import { useEditorContext } from '@/contexts/EditorContext';
+import EditorJS from '@editorjs/editorjs'
+import { EditorTools } from './EditorTools';
 
 
 export default function BlogEditorForm() {
 
-  const { blog: { banner, title, content, tags, des, author }, setBlog } = useEditorContext()
+  const { blog: { banner, title, content, tags, des, author }, setTextEditor, setBlog } = useEditorContext()
+
+
+  useEffect(() => {
+    let editor: EditorJS;
+
+    const initEditor = async () => {
+      editor = new EditorJS({
+        holder: 'textEditor',
+        tools: EditorTools,
+        data: {
+          time: new Date().getTime(),
+          blocks: []
+        },
+        placeholder: "Let's write an awesome blog"
+      });
+
+      await editor.isReady;
+      setTextEditor({ isReady: true });
+    };
+
+    initEditor();
+
+    return () => {
+      if (editor) {
+        editor.destroy();
+      }
+    };
+  }, []);
+
+
 
   const handleBannerChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -77,6 +109,10 @@ export default function BlogEditorForm() {
         ></textarea>
 
         <hr className='w-full opacity-10 my-5' />
+
+        <div id='textEditor' className='font-gelasio'>
+
+        </div>
 
       </div>
     </section>
