@@ -16,30 +16,20 @@ export default function BlogEditorForm() {
 
 
   useEffect(() => {
-    let editor: EditorJS;
 
-    const initEditor = async () => {
-      editor = new EditorJS({
-        holder: 'textEditor',
-        tools: EditorTools,
-        data: {
-          time: new Date().getTime(),
-          blocks: []
-        },
-        placeholder: "Let's write an awesome blog"
-      });
 
-      await editor.isReady;
-      setTextEditor({ isReady: true });
-    };
+    setTextEditor(new EditorJS({
+      holder: 'textEditor',
+      tools: EditorTools,
+      placeholder: "Let's write an awesome blog",
+      data: {
+        time: new Date().getTime(),
+        blocks: content
+      },
+    }));
 
-    initEditor();
 
-    return () => {
-      if (editor) {
-        editor.destroy();
-      }
-    };
+
   }, []);
 
 
@@ -76,7 +66,6 @@ export default function BlogEditorForm() {
   }
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    console.log(e.target.value)
     let input = e.target
     input.style.height = 'auto'
     input.style.height = `${input.scrollHeight}px`
@@ -100,19 +89,16 @@ export default function BlogEditorForm() {
         </div>
 
         <textarea
-          name=""
-          id=""
-          placeholder='Write your blog here...'
+          defaultValue={title}
+          placeholder='Blog Title here...'
           className='text-4xl w-full h-24 font-medium outline-none resize-none mt-10 leading-tight placeholder:opacity-50 '
           onKeyDown={handleTitleKeyDown}
           onChange={handleTitleChange}
-        ></textarea>
+        />
 
         <hr className='w-full opacity-10 my-5' />
 
-        <div id='textEditor' className='font-gelasio'>
-
-        </div>
+        <div id='textEditor' className='font-gelasio' />
 
       </div>
     </section>

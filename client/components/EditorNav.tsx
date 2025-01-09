@@ -3,17 +3,36 @@
 import { useEditorContext } from '@/contexts/EditorContext'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 import toast from 'react-hot-toast'
 
 export default function EditorNav() {
-    const { blog: { title, banner }, setBlog } = useEditorContext()
-
+    const { blog: { title, banner }, blog, setBlog, textEditor } = useEditorContext()
+    const router = useRouter()
+    
     const handlePublish = () => {
-        
-        if(!title || !banner){
-            return toast.error('Please fill all the fields')
+
+        if (!title || !banner) {
+            return toast.error('Please fill title and banner fields')
         }
+        // save the content
+        if (textEditor?.isReady) {
+            textEditor.save().then((data: any) => {
+                if (data.blocks.length) {
+                    setBlog({ ...blog, content: data.blocks })
+                    router.push('/editor/publish')
+                } else {
+                    return toast.error('Please write something. Content is empty.')
+                }
+
+            })
+            .catch((err: any) => {
+                console.log(err)
+            })
+        }
+
+
     }
 
     return (
