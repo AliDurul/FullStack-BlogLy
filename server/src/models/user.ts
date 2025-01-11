@@ -10,7 +10,7 @@ let profile_imgs_collections_list = ["notionists-neutral", "adventurer-neutral",
 
 
 
-const UserSchema = new mongoose.Schema<IUser>({
+const UserSchema = new mongoose.Schema({
 
     _id: {
         type: String,
@@ -123,4 +123,4 @@ UserSchema.plugin(uniqueValidator, {
     message: "This {PATH} is exist",
 });
 
-export default mongoose.model('users', UserSchema);
+export default mongoose.model<IUser>('users', UserSchema);

@@ -12,10 +12,12 @@ export const generateUsername = async (email: string) => {
     return username
 }
 
-export const SetToken = (user: any, isRefresh: boolean = false) => {
+export const SetToken = (user: IUser, isRefresh: boolean = false) => {
 
-    const { profile_img, username, fullname } = user.personal_info;
+    const { _id, personal_info: { profile_img, username, fullname } } = user;
+
     const payload = {
+        _id,
         profile_img,
         username,
         fullname
@@ -25,7 +27,7 @@ export const SetToken = (user: any, isRefresh: boolean = false) => {
         throw new Error('Environment variables ACCESS_KEY and REFRESH_KEY must be defined');
     }
 
-    const access = jwt.sign(payload, process.env.ACCESS_KEY, { expiresIn: '30m' });
+    const access = jwt.sign(payload, process.env.ACCESS_KEY, { expiresIn: '1d' });
     const refresh = isRefresh ? null : jwt.sign({ _id: user._id }, process.env.REFRESH_KEY, { expiresIn: '3d' });
 
     return { error: false, access, refresh }

@@ -2,6 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "main": "index.js",
+  "title": "BlogLy",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
@@ -9,9 +10,9 @@
     "dev": "nodemon ./src/index.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "Ali Durul",
   "license": "ISC",
-  "description": "",
+  "description": "BlogLy is a blog platform that allows you to create, read, update, and delete blogs.",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.721.0",
     "@aws-sdk/s3-request-presigner": "^3.721.0",
@@ -24,6 +25,9 @@
     "mongoose-unique-validator": "^4.0.1",
     "morgan": "^1.10.0",
     "nanoid": "^5.0.9",
+    "redoc-express": "^2.1.0",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^11.0.3"
   },
   "devDependencies": {
@@ -33,6 +37,7 @@
     "@types/mongoose": "^5.11.96",
     "@types/mongoose-unique-validator": "^1.0.9",
     "@types/morgan": "^1.9.9",
+    "@types/swagger-ui-express": "^4.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   }
