@@ -14,10 +14,11 @@ export const generateUsername = async (email: string) => {
 
 export const SetToken = (user: IUser, isRefresh: boolean = false) => {
 
-    const { _id, personal_info: { profile_img, username, fullname } } = user;
-
+    const { user_id, _id, personal_info: { profile_img, username, fullname } } = user;
+    
     const payload = {
         _id,
+        user_id,
         profile_img,
         username,
         fullname

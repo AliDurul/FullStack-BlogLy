@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import User from '../models/user';
 import { Request, Response } from 'express-serve-static-core';
 
@@ -33,10 +34,7 @@ export const read = async (req: Request, res: Response) => {
         #swagger.summary = "Get Single User"
     */
 
-    // Admin olmayan başkasınıın kaydına erişemez:
-    req.params.id = req.user.isAdmin ? req.params.id : req.user._id
-
-    const data = await User.findOne({ _id: req.params.id })
+    const data = await User.findOne({ user_id: req.params.id })
 
     res.status(200).send({
         error: false,

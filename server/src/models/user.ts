@@ -12,7 +12,7 @@ let profile_imgs_collections_list = ["notionists-neutral", "adventurer-neutral",
 
 const UserSchema = new mongoose.Schema({
 
-    _id: {
+    user_id: {
         type: String,
         default: uuidv4,
     },

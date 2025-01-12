@@ -1,9 +1,10 @@
-import Blog from '../models/user';
+import Blog from '../models/blog';
 import { Request, Response } from 'express-serve-static-core';
 import { IBlog } from '../types/blog';
 import CustomError from '../helpers/customError';
 import { nanoid } from 'nanoid';
-
+import User from '../models/user';
+import { mongoose } from '../configs/dbConnection';
 
 export const list = async (req: Request, res: Response) => {
     /*
@@ -25,7 +26,7 @@ export const list = async (req: Request, res: Response) => {
     res.status(200).send({
         error: false,
         details: await res.getModelListDetails(Blog),
-        data
+        data,
     })
 }
 
@@ -43,19 +44,41 @@ export const create = async (req: Request, res: Response) => {
        }
    */
 
-    let { title, banner, des, content, tags, author } = req.body;
+    let { title, banner, des, content, tags, draft } = req.body;
+    const author = req.user._id;
+    console.log(req.user);
+
+    if(!author) throw new CustomError('Author not found', 404)
 
     if (!title || !banner || (!des && des.length > 200) || !content.blocks.length || (!tags.length && tags.length > 10)) {
         throw new CustomError('Title, banner, description, content and tags fields are required ', 400);
     }
 
     tags = tags.map((tag: string) => tag.toLowerCase());
+    
+    const blog_id = title.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, '-').trim() + nanoid(2);
 
-    const blogId = title.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, '-').trim() + nanoid(2)
+    const blog = await Blog.create({ blog_id, title, banner, des, content, tags, author, draft: !!draft });
+  
+    if (!blog) throw new CustomError('Blog could not be created', 400);
 
-    console.log(blogId)
+    const incrementVal = draft ? 0 : 1;
 
-    res.status(200).send({ error: false });
+    const user = await User.updateOne(
+        { _id: author },
+        { 
+            $inc: { "account_info.total_posts": incrementVal }, 
+            $push: { "blogs": blog._id } 
+        },
+        { new: true }  // Return updated document
+    );
+
+    if (!user.modifiedCount) throw new CustomError('User could not be updated', 404);
+
+    res.status(201).send({
+        error: false,
+        id: blog.blog_id,
+    });
 }
 
 export const read = async (req: Request, res: Response) => {
@@ -64,10 +87,7 @@ export const read = async (req: Request, res: Response) => {
         #swagger.summary = "Get Single Blog"
     */
 
-    // Admin olmayan başkasınıın kaydına erişemez:
-    req.params.id = req.user.isAdmin ? req.params.id : req.user._id
-
-    const data = await Blog.findOne({ _id: req.params.id })
+    const data = await Blog.findOne({ blog_id: req.params.id })
 
     res.status(200).send({
         error: false,

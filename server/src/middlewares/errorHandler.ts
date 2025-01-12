@@ -20,7 +20,7 @@ interface ErrorHandler {
 }
 
 const errorHandler: ErrorHandler = (err, req, res, next) => {
-    console.log(err);
+    console.log('from error handler', err);
 
     return res.status(err?.statusCode || res.errorStatusCode || 500).send({
         error: true,

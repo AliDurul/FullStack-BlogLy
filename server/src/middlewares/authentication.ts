@@ -16,7 +16,9 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 
     if (tokenKey) {
         if (tokenKey[0] == 'Bearer') {
-            jwt.verify(tokenKey[1], process.env.ACCESS_KEY, (err, userData) => req.user = userData)
+            jwt.verify(tokenKey[1], process.env.ACCESS_KEY, (err, userData) => {
+                req.user = userData
+            })
         }
     }
 

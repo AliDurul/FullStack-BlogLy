@@ -4,7 +4,7 @@ import { Request, Response } from 'express-serve-static-core';
 import passwordEncrypt from '../helpers/passwordEncrypt';
 import { generateUsername, SetToken } from '../helpers/utils';
 import jwt from 'jsonwebtoken';
-import { IUser } from '../types/user';
+import { IUser, IUserPayload } from '../types/user';
 
 export const login = async (req: Request, res: Response) => {
     /*
@@ -27,10 +27,10 @@ export const login = async (req: Request, res: Response) => {
 
     const user = await User.findOne({ 'personal_info.email': email }).lean()
 
+
     if (!user) throw new CustomError('User not found.', 404)
 
     if (user?.personal_info.password !== passwordEncrypt(password)) throw new CustomError('Wrong username/email or password.', 401)
-
 
 
     res.status(200).send(SetToken(user))
@@ -64,11 +64,11 @@ export const register = async (req: Request, res: Response) => {
     if (req.body.sub) {
         const { sub, fullname, email, picture, } = req.body;
 
-        user = await User.findOne({ _id: sub });
+        user = await User.findOne({ user_id: sub });
 
         if (user) return;
 
-        user = await User.create({ _id: sub, OAuth: true, personal_info: { fullname, email, profile_img: picture, username: await generateUsername(email) } })
+        user = await User.create({ user_id: sub, OAuth: true, personal_info: { fullname, email, profile_img: picture, username: await generateUsername(email) } })
 
     } else {
 
@@ -115,11 +115,11 @@ export const refresh = async (req: Request, res: Response) => {
             res.errorStatusCode = 401
             throw err
         } else {
-            const { _id } = userData
+            const { user_id } = userData as IUserPayload
 
-            if (!_id) throw new CustomError('In token _id  not found.', 404)
+            if (!user_id) throw new CustomError('In token user_id  not found.', 404)
 
-            const user: IUser | null = await User.findOne({ _id }).lean()
+            const user: IUser | null = await User.findOne({ user_id }).lean()
 
             if (!user) throw new CustomError('User not found.', 404)
 

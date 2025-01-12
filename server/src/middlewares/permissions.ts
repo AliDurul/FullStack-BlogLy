@@ -7,7 +7,6 @@ import CustomError from "../helpers/customError";
 
 export const isLogin = (req: Request, res: Response, next: NextFunction) => {
     const user = req.user as IUser;
-    console.log(user)
 
     if (process.env.NODE_ENV === 'production' && !user) {
         throw new CustomError('You are not authorized to access this resource', 401);

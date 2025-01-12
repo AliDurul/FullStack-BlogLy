@@ -25,9 +25,18 @@ export interface AccountInfo {
 
 export interface IUser extends mongoose.Document {
     _id: string;
+    user_id: string;
     personal_info: PersonalInfo;
     social_links: SocialLinks;
     account_info: AccountInfo;
     OAuth: boolean;
     blogs: mongoose.Types.ObjectId[];
+}
+
+export interface IUserPayload {
+    user_id: string;
+    _id: string;
+    profile_img: string;
+    username: string;
+    fullname: string;
 }
