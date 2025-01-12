@@ -1,34 +1,16 @@
-import { Request, Response, NextFunction } from 'express-serve-static-core';
+import { Request, Response, NextFunction } from 'express';
+import { CustomError } from '../helpers/utils';
 
-declare module 'express-serve-static-core' {
-    interface Response {
-        errorStatusCode?: number;
-    }
-}
 
-interface CustomError extends Error {
-    statusCode?: number;
-    cause?: string;
-}
 
-interface CustomResponse extends Response {
-    errorStatusCode?: number;
-}
+export const errorHandler = (err: CustomError, req: Request, res: Response, next: NextFunction) => {
+    const statusCode = err.statusCode || 500;
+    const message = err.message || 'Internal Server Error';
 
-interface ErrorHandler {
-    (err: CustomError, req: Request, res: CustomResponse, next: NextFunction): void;
-}
-
-const errorHandler: ErrorHandler = (err, req, res, next) => {
-    console.log('from error handler', err);
-
-    return res.status(err?.statusCode || res.errorStatusCode || 500).send({
-        error: true,
-        message: err.message,
-        cause: err.cause,
-        body: req.body,
-        stack: err.stack
+    res.status(statusCode).json({
+        success: false,
+        message,
+        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
     });
 };
 
-export default errorHandler;

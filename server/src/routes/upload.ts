@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { Request, Response } from "express";
 import { generateUploadUrl } from "../helpers/awsUpload";
-import CustomError from "../helpers/customError";
+import { CustomError } from "../helpers/utils";
 
 const router = Router();
 

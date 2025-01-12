@@ -1,7 +1,7 @@
 import { NextFunction } from "express";
 import { Request, Response } from 'express-serve-static-core';
 import { IUser } from "../types/user";
-import CustomError from "../helpers/customError";
+import { CustomError } from "../helpers/utils";
 
 
 

@@ -1,10 +1,12 @@
 import Blog from '../models/blog';
 import { Request, Response } from 'express-serve-static-core';
 import { IBlog } from '../types/blog';
-import CustomError from '../helpers/customError';
+import { CustomError } from '../helpers/utils';
 import { nanoid } from 'nanoid';
 import User from '../models/user';
 import { mongoose } from '../configs/dbConnection';
+import 'express-async-errors';
+
 
 export const list = async (req: Request, res: Response) => {
     /*
@@ -20,8 +22,11 @@ export const list = async (req: Request, res: Response) => {
             </ul>
         `
     */
+    throw new CustomError('Title, banner, description, content and tags fields are required ', 401);
+
 
     const data = await res.getModelList(Blog)
+
 
     res.status(200).send({
         error: false,
@@ -48,27 +53,27 @@ export const create = async (req: Request, res: Response) => {
     const author = req.user._id;
     console.log(req.user);
 
-    if(!author) throw new CustomError('Author not found', 404)
+    if (!author) throw new CustomError('Author not found', 404)
 
     if (!title || !banner || (!des && des.length > 200) || !content.blocks.length || (!tags.length && tags.length > 10)) {
         throw new CustomError('Title, banner, description, content and tags fields are required ', 400);
     }
 
     tags = tags.map((tag: string) => tag.toLowerCase());
-    
+
     const blog_id = title.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, '-').trim() + nanoid(2);
 
     const blog = await Blog.create({ blog_id, title, banner, des, content, tags, author, draft: !!draft });
-  
+
     if (!blog) throw new CustomError('Blog could not be created', 400);
 
     const incrementVal = draft ? 0 : 1;
 
     const user = await User.updateOne(
         { _id: author },
-        { 
-            $inc: { "account_info.total_posts": incrementVal }, 
-            $push: { "blogs": blog._id } 
+        {
+            $inc: { "account_info.total_posts": incrementVal },
+            $push: { "blogs": blog._id }
         },
         { new: true }  // Return updated document
     );

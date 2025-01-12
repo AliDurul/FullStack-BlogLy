@@ -11,3 +11,29 @@ export const credentialsSchema = z.object({
         .refine((val) => /\d/.test(val), "Password must include at least one number")
 });
 
+export const blogPublishSchema = z.object({
+    title: z.string().min(1, "Title is required"),
+    des: z.string()
+      .min(1, "Description is required")
+      .max(200, "Description must be less than 200 characters"),
+    banner: z.string().min(1, "Banner image is required"),
+    tags: z.array(z.string())
+      .min(1, "At least one tag is required")
+      .max(10, "Maximum 10 tags allowed"),
+    content: z.array(z.object({
+        id: z.string(),
+        type: z.string(),
+        data: z.object({
+            text: z.string().min(1, "Content is required"),
+            url: z.string().optional(),
+            caption: z.string().optional(),
+            children: z.array(z.object({
+                text: z.string().optional(),
+                url: z.string().optional(),
+                caption: z.string().optional(),
+            })).optional()
+        })
+    }))
+  });
+  
+  export type TBlogPublishSchema = z.infer<typeof blogPublishSchema>; 

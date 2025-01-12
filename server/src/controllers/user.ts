@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import User from '../models/user';
 import { Request, Response } from 'express-serve-static-core';
+import 'express-async-errors';
 
 
 

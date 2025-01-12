@@ -12,11 +12,13 @@ const router = Router();
 
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
-router.use('/upload-url', uploadRoutes);
 router.use('/blogs', blogRoutes);
+router.use('/upload-url', uploadRoutes);
 
 // document:
 router.use('/documents', documentRoutes);
+
+
 
 /* ------------------------------------------------------- */
 export default router;

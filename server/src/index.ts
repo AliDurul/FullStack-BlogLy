@@ -8,7 +8,7 @@ import authentication from './middlewares/authentication';
 // import logger from './middlewares/logger';
 import queryHandler from './middlewares/queryHandler';
 import routes from './routes';
-import errorHandler from './middlewares/errorHandler';
+import {errorHandler} from './middlewares/errorHandler';
 
 /* ------------------------------------------------------- */
 //* Requireds:
@@ -25,6 +25,7 @@ const PORT = process.env?.PORT || 8000
 
 // Catch async errors:
 import 'express-async-errors';
+
 
 // Database Connection:
 dbConnection();
@@ -51,6 +52,7 @@ app.use(queryHandler);
 
 // HomePath:
 app.all('/', (req, res) => {
+
     res.send({
         error: false,
         message: 'Welcome to BlogLy API',
@@ -63,7 +65,7 @@ app.all('/', (req, res) => {
 })
 
 // API Routes:
-app.use(routes);
+app.use('/api', routes);
 
 // Not Found:
 app.use('*', (req, res) => {
@@ -76,4 +78,5 @@ app.use('*', (req, res) => {
 // Error Handler:
 app.use(errorHandler);
 
-app.listen(PORT, ()=> console.log(`Server runing at: http://localhost:${PORT}`))
+
+app.listen(PORT, () => console.log(`Server runing at: http://localhost:${PORT}`))

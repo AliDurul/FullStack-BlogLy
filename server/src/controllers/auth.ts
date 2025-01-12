@@ -1,10 +1,11 @@
 import User from '../models/user';
-import CustomError from '../helpers/customError';
+import { CustomError } from '../helpers/utils';
 import { Request, Response } from 'express-serve-static-core';
 import passwordEncrypt from '../helpers/passwordEncrypt';
 import { generateUsername, SetToken } from '../helpers/utils';
 import jwt from 'jsonwebtoken';
 import { IUser, IUserPayload } from '../types/user';
+import 'express-async-errors';
 
 export const login = async (req: Request, res: Response) => {
     /*
@@ -31,6 +32,7 @@ export const login = async (req: Request, res: Response) => {
     if (!user) throw new CustomError('User not found.', 404)
 
     if (user?.personal_info.password !== passwordEncrypt(password)) throw new CustomError('Wrong username/email or password.', 401)
+
 
 
     res.status(200).send(SetToken(user))
@@ -112,7 +114,6 @@ export const refresh = async (req: Request, res: Response) => {
     jwt.verify(refreshToken, refreshKey, async function (err: any, userData: any) {
 
         if (err) {
-            res.errorStatusCode = 401
             throw err
         } else {
             const { user_id } = userData as IUserPayload

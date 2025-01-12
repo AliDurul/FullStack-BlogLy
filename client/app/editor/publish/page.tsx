@@ -4,16 +4,19 @@ import PublishHeaderBtn from '@/components/PublishHeaderBtn'
 import AnimationWrapper from '@/components/shared/AnimationWrapper'
 import Tag from '@/components/Tag'
 import { useEditorContext } from '@/contexts/EditorContext'
+import { createBlog } from '@/lib/actions/blogActions'
+import { blogPublishSchema } from '@/lib/zod'
 import Image from 'next/image'
-import React from 'react'
+import React, { useActionState } from 'react'
 import toast from 'react-hot-toast'
+import { z } from 'zod'
 
 export default function EditorPublishPage() {
 
   const charLimit = 200;
   const tagLimit = 10;
 
-  let { blog: { banner, title, tags, des }, setBlog } = useEditorContext()
+  let { blog: { banner, title, tags, des }, setBlog, blog } = useEditorContext()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -44,11 +47,46 @@ export default function EditorPublishPage() {
     }
   }
 
+  const handlePublishBlog = async (e: any) => {
+    // Validate the blog data
+
+    const result = blogPublishSchema.safeParse(blog);
+
+    if (!result.success) {
+      Object.values(result.error.flatten().fieldErrors).forEach((errors) => {
+        if (errors) {
+          errors.forEach((error) => {
+            toast.error(error);
+          });
+        }
+      });
+      return;
+    }
+
+    let loadingToast = toast.loading('Publishing...');
+
+    e.target.disabled = true;
+
+    const res = await createBlog(blog);
+
+    toast.dismiss(loadingToast);
+
+    if (res.success) {
+      toast.success(res.message);
+    } else {
+      toast.error(res.message);
+    }
+
+  }
+
+
+
+
   return (
     <AnimationWrapper>
       <section className='w-screen min-h-screen grid items-center lg:grid-cols-2 py-16 lg:gap-4'>
         <PublishHeaderBtn />
-    
+
         <div>
           <p className='text-dark-grey mb-1'>Preview</p>
           <div className='w-full aspect-video rounded-lg overflow-hidden bg-grey mt-4'>
@@ -87,8 +125,14 @@ export default function EditorPublishPage() {
 
           <p className='mt-1 mb-4 text-dark-grey text-right'> {tagLimit - tags.length} tags left </p>
 
-          <button className='btn-dark px-8'>Publish</button>
-          
+          <button
+            // disabled={isPending}
+            onClick={handlePublishBlog}
+            className='btn-dark px-8'
+          >
+            Publish
+          </button>
+
         </div>
 
       </section>

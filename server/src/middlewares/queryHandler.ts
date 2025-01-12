@@ -6,7 +6,6 @@ declare module 'express-serve-static-core' {
     interface Response {
         getModelList: any;
         getModelListDetails: any;
-        statusCode: number;
     }
 }
 
