@@ -1,5 +1,6 @@
 'use client'
 
+import { startTransition, useEffect } from 'react';
 import PublishHeaderBtn from '@/components/PublishHeaderBtn'
 import AnimationWrapper from '@/components/shared/AnimationWrapper'
 import Tag from '@/components/Tag'
@@ -10,9 +11,11 @@ import Image from 'next/image'
 import React, { useActionState } from 'react'
 import toast from 'react-hot-toast'
 import { z } from 'zod'
+import { useRouter } from 'next/navigation';
 
 export default function EditorPublishPage() {
 
+  const router = useRouter();
   const charLimit = 200;
   const tagLimit = 10;
 
@@ -47,38 +50,28 @@ export default function EditorPublishPage() {
     }
   }
 
-  const handlePublishBlog = async (e: any) => {
-    // Validate the blog data
+  const [state, action, isPending] = useActionState(createBlog, null)
 
-    const result = blogPublishSchema.safeParse(blog);
+  const handleCreateBlog = () => {
+    startTransition(() => {
+      action(blog);
+    });
+  };
 
-    if (!result.success) {
-      Object.values(result.error.flatten().fieldErrors).forEach((errors) => {
-        if (errors) {
-          errors.forEach((error) => {
-            toast.error(error);
-          });
-        }
-      });
-      return;
-    }
 
-    let loadingToast = toast.loading('Publishing...');
-
-    e.target.disabled = true;
-
-    const res = await createBlog(blog);
-
-    toast.dismiss(loadingToast);
-
-    if (res.success) {
-      toast.success(res.message);
+  useEffect(() => {
+    if (state?.success) {
+      toast.success(state.message);
+      setTimeout(() => {
+        router.push('/');
+      }, 500);
     } else {
-      toast.error(res.message);
+      console.log(state);
+      state?.errors?.forEach((error) => {
+        toast.error(error);
+      });
     }
-
-  }
-
+  }, [state?.success, state?.errors]);
 
 
 
@@ -126,11 +119,13 @@ export default function EditorPublishPage() {
           <p className='mt-1 mb-4 text-dark-grey text-right'> {tagLimit - tags.length} tags left </p>
 
           <button
-            // disabled={isPending}
-            onClick={handlePublishBlog}
-            className='btn-dark px-8'
+            disabled={isPending}
+            className={`btn-dark px-8 ${isPending && 'disabled:opacity-50 disabled:hover:bg-opacity-100 disabled:cursor-not-allowed'}`}
+            onClick={handleCreateBlog}
           >
-            Publish
+            {
+              isPending ? 'Publishing...' : 'Publish'
+            }
           </button>
 
         </div>

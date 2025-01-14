@@ -1,7 +1,7 @@
 'use server'
 
 import { auth } from "@/auth";
-import { blogPublishSchema, TBlogPublishSchema } from "../zod";
+import { blogDraftSchema, blogPublishSchema, TBlogPublishSchema } from "../zod";
 
 const API_URL = process.env.API_BASE_URL
 
@@ -16,28 +16,40 @@ const authConfig = async () => {
 };
 
 
-export const createBlog = async ( blog: TBlogPublishSchema) => {
+export const createBlog = async (prevState: unknown, blog: TBlogPublishSchema) => {
 
     const headers = await authConfig();
 
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    let result;
+
+    if (blog.draft) {
+        result = blogDraftSchema.safeParse(blog);
+    } else {
+        result = blogPublishSchema.safeParse(blog);
+    }
+
+    if (!result.success) {
+        return { success: false, errors: Object.values(result.error.flatten().fieldErrors) }
+    }
     const res = await fetch(API_URL + '/blogs', {
         method: 'POST',
-        body: JSON.stringify(blog),
+        body: JSON.stringify(result.data),
         headers
     })
 
-    if (!res.ok) {
+    const data = await res.json();
+
+    if (!res.ok && data.error) {
         return {
             success: false,
-            message: 'Failed to create blog',
+            errors: [data.message],
         }
     }
-
-    const data = await res.json();
 
     return {
         success: true,
         message: 'Blog created successfully',
-        data
     }
 }

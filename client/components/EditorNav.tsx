@@ -1,16 +1,21 @@
 'use client'
 
 import { useEditorContext } from '@/contexts/EditorContext'
+import { createBlog } from '@/lib/actions/blogActions'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { startTransition, useActionState, useEffect } from 'react'
 import toast from 'react-hot-toast'
+import { set } from 'zod'
 
 export default function EditorNav() {
     const { blog: { title, banner }, blog, setBlog, textEditor } = useEditorContext()
     const router = useRouter()
-    
+
+    const [state, action, isPending] = useActionState(createBlog, null)
+
+
     const handlePublish = () => {
 
         if (!title || !banner) {
@@ -27,13 +32,48 @@ export default function EditorNav() {
                 }
 
             })
-            .catch((err: any) => {
-                console.log(err)
-            })
+                .catch((err: any) => {
+                    console.log(err)
+                })
         }
 
 
     }
+
+    const handleDraft = () => {
+
+        if (!title) {
+            return toast.error('Please fill title field.')
+        }
+
+        if (textEditor?.isReady) {
+            textEditor.save().then((data: any) => {
+                // setBlog({ ...blog, content: data.blocks, draft: true })
+
+                let draftData = { ...blog, content: data.blocks, draft: true }
+
+                startTransition(() => {
+                    action(draftData);
+                });
+
+            })
+        }
+    }
+
+    useEffect(() => {
+        if (state?.success) {
+            toast.success(state.message);
+            setTimeout(() => {
+                router.push('/');
+            }, 500);
+        } else {
+            console.log(state);
+            state?.errors?.forEach((error) => {
+                toast.error(error);
+            });
+        }
+    }, [state?.success, state?.errors]);
+
 
     return (
         <nav className='navbar'>
@@ -46,7 +86,12 @@ export default function EditorNav() {
 
             <div className='flex gap-4 ml-auto'>
                 <button className='btn-dark py-2 ' onClick={handlePublish}>Publish</button>
-                <button className='btn-light py-2'>Save Draft</button>
+                <button
+                    disabled={isPending}
+                    className={`btn-light px-2 ${isPending && 'disabled:opacity-50 disabled:hover:bg-opacity-100 disabled:cursor-not-allowed'}`}
+                    onClick={handleDraft}>
+                    {isPending ? 'Saving draft...' : 'Save Draft'}
+                </button>
             </div>
 
         </nav>

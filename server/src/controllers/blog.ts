@@ -51,15 +51,26 @@ export const create = async (req: Request, res: Response) => {
 
     let { title, banner, des, content, tags, draft } = req.body;
     const author = req.user._id;
-    console.log(req.user);
 
-    if (!author) throw new CustomError('Author not found', 404)
+    if (!author) throw new CustomError('Author not found.', 404)
 
-    if (!title || !banner || (!des && des.length > 200) || !content.blocks.length || (!tags.length && tags.length > 10)) {
-        throw new CustomError('Title, banner, description, content and tags fields are required ', 400);
+    const validations = [
+        { condition: !title, message: 'Title is required.' },
+        { condition: !banner, message: 'Banner is required.' },
+        { condition: !des || des?.length > 200, message: 'Description is required and should not exceed 200 characters.' },
+        { condition: !content?.length, message: 'Content is required.' },
+        { condition: !tags?.length || tags?.length > 10, message: 'Tags are required and should not exceed 10.' },
+    ];
+
+    if (!draft) {
+        for (const { condition, message } of validations) {
+            if (condition) {
+                throw new CustomError(message, 400);
+            }
+        }
     }
 
-    tags = tags.map((tag: string) => tag.toLowerCase());
+    tags = tags?.map((tag: string) => tag.toLowerCase());
 
     const blog_id = title.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, '-').trim() + nanoid(2);
 

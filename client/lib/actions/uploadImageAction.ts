@@ -11,7 +11,10 @@ export const uploadImage = async (img: File) => {
         headers: { 'Content-Type': 'application/json' },
     });
 
+    
     const { uploadURL } = await res.json();
+
+    // console.log('imgUrl', uploadURL);
 
     await fetch(uploadURL, {
         method: 'PUT',
@@ -20,6 +23,7 @@ export const uploadImage = async (img: File) => {
     });
 
     imgUrl = uploadURL.split('?')[0];
+
 
     return imgUrl;
 

@@ -12,11 +12,12 @@ import { EditorTools } from './EditorTools';
 
 export default function BlogEditorForm() {
 
-  const { blog: { banner, title, content, tags, des, author }, setTextEditor, setBlog } = useEditorContext()
+  const { blog: { banner, title, content, tags, des, author }, setTextEditor, setBlog, textEditor } = useEditorContext()
 
 
   useEffect(() => {
 
+    // if (!textEditor) return
 
     setTextEditor(new EditorJS({
       holder: 'textEditor',
@@ -27,8 +28,6 @@ export default function BlogEditorForm() {
         blocks: content
       },
     }));
-
-
 
   }, []);
 

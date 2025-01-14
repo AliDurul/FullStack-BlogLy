@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 import EditorJS from '@editorjs/editorjs'
 
 interface IBlogState {
+    draft?: boolean;
     title: string;
     banner: string;
     content: any[];
@@ -18,6 +19,7 @@ interface IBlogContextType {
 }
 
 const initialState: IBlogState = {
+    draft: false,
     title: '',
     banner: '',
     content: [],
