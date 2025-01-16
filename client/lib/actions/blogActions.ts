@@ -53,3 +53,33 @@ export const createBlog = async (prevState: unknown, blog: TBlogPublishSchema) =
         message: 'Blog created successfully',
     }
 }
+
+export const fetchLatestBlogs = async () => {
+
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    try {
+        const res = await fetch(API_URL + '/blogs/latest', {
+            method: 'GET',
+
+        })
+
+        const data = await res.json();
+
+        if (!res.ok && data.error) {
+            return {
+                success: false,
+                errors: [data.message],
+            }
+        }
+
+        return data
+    } catch (error) {
+        return {
+            success: false,
+            message: (error as Error).message,
+        }
+    }
+
+
+}

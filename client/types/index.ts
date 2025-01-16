@@ -51,3 +51,36 @@ export type TSession = {
     refresh: string;
 } | null;
 
+/* Latest Blog */
+export interface TLatestBlog {
+    success: boolean;
+    result: LatestBlogResult[];
+}
+
+export interface LatestBlogResult {
+    activity: LatestBlogActivity;
+    blog_id: string;
+    title: string;
+    banner: string;
+    des: string;
+    tags: string[];
+    author: LatestBlogAuthor;
+    publishedAt: Date;
+}
+
+export interface LatestBlogActivity {
+    total_likes: number;
+    total_comments: number;
+    total_reads: number;
+    total_parent_comments: number;
+}
+
+export interface LatestBlogAuthor {
+    personal_info: LatestBlogPersonalInfo;
+}
+
+export interface LatestBlogPersonalInfo {
+    fullname: string;
+    username: string;
+    profile_img: string;
+}

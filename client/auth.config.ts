@@ -127,7 +127,6 @@ export default {
             return true
         },
 
-
         async jwt({ token, user }: { token: JWT, user: User }) {
 
             if (user) {

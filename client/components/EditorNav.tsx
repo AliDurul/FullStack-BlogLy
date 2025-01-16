@@ -43,7 +43,7 @@ export default function EditorNav() {
     const handleDraft = () => {
 
         if (!title) {
-            return toast.error('Please fill title field.')
+            return toast.error('Write blog title before saving is as a draft.')
         }
 
         if (textEditor?.isReady) {

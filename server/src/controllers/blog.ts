@@ -153,3 +153,24 @@ export const deletee = async (req: Request, res: Response) => {
     })
 
 }
+
+export const latestBlog = async (req: Request, res: Response) => {
+    /*
+        #swagger.tags = ["Blogs"]
+        #swagger.summary = "Get Latest Blog"
+    */
+
+    const maxLimit = 5;
+
+    const result = await Blog.find({ draft: false })
+        .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
+        .sort({ publishedAt: -1 })
+        .select('blog_id title des publishedAt banner tags activity -_id')
+        .limit(maxLimit)
+
+    res.status(200).send({
+        success: true,
+        result
+    })
+
+}

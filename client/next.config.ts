@@ -1,8 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
- images: {
-    domains: [ 'lh3.googleusercontent.com', 'api.dicebear.com', 'fullstack-blogly.s3.eu-north-1.amazonaws.com'],
+
+  images: {
+    domains: [
+      'lh3.googleusercontent.com', 
+      'api.dicebear.com', 
+      'fullstack-blogly.s3.eu-north-1.amazonaws.com'
+    ], 
     remotePatterns: [
       {
         protocol: 'https',
@@ -19,9 +24,8 @@ const nextConfig: NextConfig = {
         hostname: 'api.dicebear.com',
         port: ''
       }
-    ],
-    dangerouslyAllowSVG: true,
-    // contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
+    ], 
+    dangerouslyAllowSVG: true, // Allows SVG images
   }
 };
 
