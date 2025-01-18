@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth";
 import { blogDraftSchema, blogPublishSchema, TBlogPublishSchema } from "../zod";
+import { revalidatePath } from "next/cache";
 
 const API_URL = process.env.API_BASE_URL
 
@@ -54,12 +55,19 @@ export const createBlog = async (prevState: unknown, blog: TBlogPublishSchema) =
     }
 }
 
-export const fetchLatestBlogs = async () => {
+export const fetchLatestBlogs = async ({ category, query }: { category: string, query: string }) => {
 
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
+    let url = `${API_URL}/blogs/latest`;
+
+    const params = new URLSearchParams();
+    if (category) params.append("category", category);
+    if (query) params.append("query", query);
+    if (params.toString()) url += `?${params.toString()}`;
+
     try {
-        const res = await fetch(API_URL + '/blogs/latest', {
+        const res = await fetch(url, {
             method: 'GET',
 
         })
@@ -74,6 +82,36 @@ export const fetchLatestBlogs = async () => {
         }
 
         return data
+    } catch (error) {
+        return {
+            success: false,
+            message: (error as Error).message,
+        }
+    }
+
+
+}
+
+export const fetchTrendingBlogs = async () => {
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    try {
+        const res = await fetch(API_URL + '/blogs/trending', {
+            method: 'GET',
+        })
+
+        const data = await res.json();
+
+        if (!res.ok && data.error) {
+            return {
+                success: false,
+                errors: [data.message],
+            }
+        }
+
+        return data
+
     } catch (error) {
         return {
             success: false,

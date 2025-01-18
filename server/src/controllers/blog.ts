@@ -162,7 +162,12 @@ export const latestBlog = async (req: Request, res: Response) => {
 
     const maxLimit = 5;
 
-    const result = await Blog.find({ draft: false })
+    // Custom Filter
+    const { category } = req.query
+    let filter: any = { draft: false };
+    if (category) filter = { ...filter, tags: { $in: [category] } }
+
+    const result = await Blog.find(filter)
         .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
         .sort({ publishedAt: -1 })
         .select('blog_id title des publishedAt banner tags activity -_id')
@@ -172,5 +177,24 @@ export const latestBlog = async (req: Request, res: Response) => {
         success: true,
         result
     })
+}
+
+export const trendingBlog = async (req: Request, res: Response) => {
+    /*
+        #swagger.tags = ["Blogs"]
+        #swagger.summary = "Get Trending Blog"
+    */
+
+    const result = await Blog.find({ draft: false })
+        .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
+        .sort({ "activity.total_read": -1, "activity.total_likes": -1, "publishedAt": -1 })
+        .select('blog_id title  publishedAt -_id')
+        .limit(5);
+
+    res.status(200).send({
+        success: true,
+        result
+    })
+
 
 }

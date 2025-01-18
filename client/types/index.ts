@@ -1,3 +1,21 @@
+// ====== URL QUERY PARAMS
+export type TUrlQueryParams = {
+    params: string
+    key: string
+    value: string | null
+}
+
+export type TRemoveUrlQueryParams = {
+    params: string
+    keysToRemove: string[]
+}
+
+export type TSearchParamProps = {
+    params: { id: string }
+    searchParams: { [key: string]: string | string[] | undefined }
+}
+
+//
 export type TInputField = {
     name: string;
     type: 'text' | 'email' | 'password';
@@ -52,7 +70,7 @@ export type TSession = {
 } | null;
 
 /* Latest Blog */
-export interface TLatestBlog {
+export interface TLatestBlogResponse {
     success: boolean;
     result: LatestBlogResult[];
 }
@@ -76,11 +94,31 @@ export interface LatestBlogActivity {
 }
 
 export interface LatestBlogAuthor {
-    personal_info: LatestBlogPersonalInfo;
+    personal_info: BlogPersonalInfo;
 }
 
-export interface LatestBlogPersonalInfo {
+export interface BlogPersonalInfo {
     fullname: string;
     username: string;
     profile_img: string;
 }
+
+
+/* Trending Blog */
+export interface TTrendingBlogResponse {
+    success: boolean;
+    result: TTrendingBlog[];
+}
+
+export interface TTrendingBlog {
+    blog_id: string;
+    title: string;
+    author: TrendingBlogAuthor;
+    publishedAt: Date;
+}
+
+export interface TrendingBlogAuthor {
+    personal_info: BlogPersonalInfo;
+}
+
+

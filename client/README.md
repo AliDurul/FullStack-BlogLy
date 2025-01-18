@@ -3,3 +3,4 @@
 - image upload function carry it somewre before save 
 - login messages come two
 - Page - add parallel fetching
+- page - after filter by category revalidate
