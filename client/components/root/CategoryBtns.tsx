@@ -1,37 +1,49 @@
 'use client';
 
 import { formUrlQuery, removeKeysFromQuery } from '@/lib/utils';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { use, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
+import { activeTabeRef } from '../InPageNavigation';
 
 export default function CategoryBtn() {
-    const categories = ['All', 'Tech', 'Science', 'Health', 'Business', 'Entertainment', 'Sports', 'Travel', 'Fashion', 'Food', 'Lifestyle']
+    const categories = ['Tech', 'Science', 'Health', 'Business', 'Entertainment', 'Sports', 'Travel', 'Fashion', 'Food', 'Lifestyle']
 
     const searchParams = useSearchParams();
-    const [query, setQuery] = useState('All');
+    const category = searchParams.get('category');
+    const [query, setQuery] = useState(category);
     // const query = searchParams.get('category'); 
     const router = useRouter();
 
     const handleCategoryFilter = (category: string) => {
         let newUrl = '';
 
-        if (category && category !== 'All') {
+        if (query === category) {
+            newUrl = removeKeysFromQuery({
+                params: searchParams.toString(),
+                keysToRemove: ['category']
+            });
+            setQuery('');
+        } else {
             newUrl = formUrlQuery({
                 params: searchParams.toString(),
                 key: 'category',
                 value: category
-            })
-        } else {
-            newUrl = removeKeysFromQuery({
-                params: searchParams.toString(),
-                keysToRemove: ['category']
-            })
+            });
+            setQuery(category);
         }
-        setQuery(category);
         router.push(newUrl, { scroll: false });
-
+        revalidateTag('Blogs');
     }
+
+    useEffect(() => {
+        
+        if (activeTabeRef.current) {
+            activeTabeRef.current.click();
+        }
+    
+    }, [category])
+    
 
     return (
         <>

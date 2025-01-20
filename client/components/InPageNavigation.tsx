@@ -2,10 +2,13 @@
 
 import React, { act, useEffect, useState } from 'react'
 
+export let activeTabLineRef: React.RefObject<HTMLHRElement | null>;
+export let activeTabeRef: React.RefObject<HTMLButtonElement | null>;
+
 export default function InPageNavigation({ routes, defaultHidden = [], defaultActiveIndex = 0, children }: { children: React.ReactNode, routes: string[], defaultHidden?: string[], defaultActiveIndex?: number }) {
     // const router = useRouter();
-    const activeTabLineRef = React.useRef<HTMLHRElement>(null);
-    const activeTabeRef = React.useRef<HTMLButtonElement>(null);
+    activeTabLineRef = React.useRef<HTMLHRElement>(null);
+    activeTabeRef = React.useRef<HTMLButtonElement>(null);
 
     const [navIndex, setNavIndex] = useState(defaultActiveIndex)
 

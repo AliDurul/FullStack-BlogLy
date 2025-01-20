@@ -160,10 +160,15 @@ export const latestBlog = async (req: Request, res: Response) => {
         #swagger.summary = "Get Latest Blog"
     */
 
-    const maxLimit = 5;
+
+    const maxLimit = Number(process.env.PAGE_SIZE) || 3;
+
+    // pagination
+    let page = Number(req.query.page)
+    page = page > 0 ? (page - 1) : 0
 
     // Custom Filter
-    const { category } = req.query
+    const { category, } = req.query
     let filter: any = { draft: false };
     if (category) filter = { ...filter, tags: { $in: [category] } }
 
@@ -171,10 +176,12 @@ export const latestBlog = async (req: Request, res: Response) => {
         .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
         .sort({ publishedAt: -1 })
         .select('blog_id title des publishedAt banner tags activity -_id')
+        .skip(page * maxLimit)
         .limit(maxLimit)
 
     res.status(200).send({
         success: true,
+        details: await res.getModelListDetails(Blog, filter).then((details: any) => details.pages),
         result
     })
 }

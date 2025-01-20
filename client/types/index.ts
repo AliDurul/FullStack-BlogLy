@@ -71,9 +71,19 @@ export type TSession = {
 
 /* Latest Blog */
 export interface TLatestBlogResponse {
+    details: IDetails;
     success: boolean;
     result: LatestBlogResult[];
 }
+
+export interface IDetails {
+    previous: boolean | number;
+    current: number;
+    next: number | boolean;
+    total: number;
+    totalRecords: number;
+}
+
 
 export interface LatestBlogResult {
     activity: LatestBlogActivity;

@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { blogDraftSchema, blogPublishSchema, TBlogPublishSchema } from "../zod";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 const API_URL = process.env.API_BASE_URL
 
@@ -55,7 +55,7 @@ export const createBlog = async (prevState: unknown, blog: TBlogPublishSchema) =
     }
 }
 
-export const fetchLatestBlogs = async ({ category, query }: { category: string, query: string }) => {
+export const fetchLatestBlogs = async ({ category, query, page }: { category: string, query: string, page: string | number }) => {
 
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
@@ -64,13 +64,14 @@ export const fetchLatestBlogs = async ({ category, query }: { category: string, 
     const params = new URLSearchParams();
     if (category) params.append("category", category);
     if (query) params.append("query", query);
+    if (page) params.append("page", page as string)
     if (params.toString()) url += `?${params.toString()}`;
 
     try {
         const res = await fetch(url, {
             method: 'GET',
-
-        })
+            next: { tags: ['Blogs'] }
+        },)
 
         const data = await res.json();
 
