@@ -33,7 +33,7 @@ export default function CategoryBtn() {
             setQuery(category);
         }
         router.push(newUrl, { scroll: false });
-        revalidateTag('Blogs');
+        // revalidateTag('Blogs');
     }
 
     useEffect(() => {

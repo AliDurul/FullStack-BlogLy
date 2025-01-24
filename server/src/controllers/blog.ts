@@ -51,7 +51,7 @@ export const create = async (req: Request, res: Response) => {
 
     let { title, banner, des, content, tags, draft } = req.body;
     const author = req.user._id;
-
+    console.log(req.body);
     if (!author) throw new CustomError('Author not found.', 404)
 
     const validations = [

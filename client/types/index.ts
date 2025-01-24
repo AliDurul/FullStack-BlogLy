@@ -26,6 +26,14 @@ export type TInputField = {
     errors?: any;
 };
 
+// Error Response
+export type TError = {
+    success: boolean;
+    message?: string;
+    errors?: [string]
+
+}
+
 export type TAnimationWrapper = {
     children: React.ReactNode;
     initial?: Record<string, any>;

@@ -8,11 +8,9 @@ import { Suspense } from "react";
 import TrendingBlogs from "@/components/root/TrendingBlogs";
 import { TrendingIcon } from "@/components/icons";
 import CategoryBtns from "@/components/root/CategoryBtns";
-import dynamic from "next/dynamic";
+import LatestBlogs from "@/components/root/LatestBlogs";
 
-const LatestBlogs = dynamic(() => import('@/components/root/LatestBlogs'), {
-  loading: () => <Loader />,
-})
+
 
 type Params = Promise<{ slug: string }>
 type SearchParams = Promise<{ [key: string]: string | undefined }>
@@ -33,16 +31,17 @@ export default async function Home(props: { searchParams: SearchParams }) {
         {/* latest blogs */}
         <div className="w-full">
 
-          <InPageNavigation routes={[category == '' ? 'Home' : category, 'trending blogs']} defaultHidden={['trending blogs']} >
+          <InPageNavigation routes={[category === '' ? 'Home' : category, 'trending blogs']} defaultHidden={['trending blogs']} >
+
+
+            <LatestBlogs />
 
             <Suspense fallback={<Loader />}>
               <TrendingBlogs />
             </Suspense>
-            <Suspense fallback={<Loader />}>
-              <LatestBlogs category={category} query={query} page={page} />
-            </Suspense>
 
-            <LatestBlogs category={category} query={query} page={page} />
+
+
 
 
           </InPageNavigation>

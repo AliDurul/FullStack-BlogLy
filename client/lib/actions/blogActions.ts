@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { blogDraftSchema, blogPublishSchema, TBlogPublishSchema } from "../zod";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { IDetails, TError, TLatestBlogResponse } from "@/types";
 
 const API_URL = process.env.API_BASE_URL
 
@@ -55,16 +56,17 @@ export const createBlog = async (prevState: unknown, blog: TBlogPublishSchema) =
     }
 }
 
-export const fetchLatestBlogs = async ({ category, query, page }: { category: string, query: string, page: string | number }) => {
+export const fetchLatestBlogs = async ({ category, query, pageParam }: { category: string, query: string, pageParam: string | number }) => {
 
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    // await new Promise((resolve) => setTimeout(resolve, 3000));
+    console.log('fetch blog calisti/', pageParam);
 
     let url = `${API_URL}/blogs/latest`;
 
     const params = new URLSearchParams();
     if (category) params.append("category", category);
     if (query) params.append("query", query);
-    if (page) params.append("page", page as string)
+    if (pageParam) params.append("page", pageParam as string)
     if (params.toString()) url += `?${params.toString()}`;
 
     try {
@@ -78,7 +80,7 @@ export const fetchLatestBlogs = async ({ category, query, page }: { category: st
         if (!res.ok && data.error) {
             return {
                 success: false,
-                errors: [data.message],
+                message: data.message,
             }
         }
 
