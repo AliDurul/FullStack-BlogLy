@@ -16,8 +16,7 @@ const queryHandler = (req: Request, res: Response, next: NextFunction) => {
     const filter: object = typeof req.query?.filter === 'object' ? req.query.filter : {};
 
     // ### SEARCHING ###
-    const search: any = req.query?.search || {};
-    for (let key in search) search[key] = { $regex: search[key], $options: 'i' };
+    const search: any = req.query?.search ? { title: new RegExp(req.query?.search as string, 'i') } : {};
 
     // ### SORTING ###
     const sort = req.query?.sort || {};
@@ -61,7 +60,7 @@ const queryHandler = (req: Request, res: Response, next: NextFunction) => {
         };
 
         details.pages.next = (typeof details.pages.next === 'number' && details.pages.next > details.pages.total ? false : details.pages.next);
-        
+
         if (details.totalRecords <= limit) {
             details.pages = {
                 totalRecords: details.totalRecords,

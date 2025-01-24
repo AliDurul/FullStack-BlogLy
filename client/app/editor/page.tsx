@@ -1,7 +1,7 @@
 import React from 'react';
-import BlogEditorForm from '@/components/BlogEditorForm';
 import AnimationWrapper from '@/components/shared/AnimationWrapper';
-import EditorNav from '@/components/EditorNav';
+import EditorNav from '@/components/editor/EditorNav';
+import BlogEditorForm from '@/components/editor/BlogEditorForm';
 
 // this is protected route
 export default async function EditorPage() {

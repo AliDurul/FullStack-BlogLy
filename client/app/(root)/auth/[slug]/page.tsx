@@ -1,8 +1,8 @@
 import AnimationWrapper from '@/components/shared/AnimationWrapper';
 import Link from 'next/link';
 import React from 'react'
-import AuthForm from '@/components/AuthForm';
-import SocialBtns from '@/components/SocialBtns';
+import AuthForm from '@/components/auth/AuthForm';
+import SocialBtns from '@/components/auth/SocialBtns';
 
 export default async function AuthSlugPage({ params, }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params

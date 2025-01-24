@@ -5,9 +5,10 @@ export default auth(async function middleware(req) {
     const { nextUrl } = req;
     const isLoggedIn = !!req.auth
     const userInfo = req.auth?.user;
+    // console.log('path==>', nextUrl.pathname);
 
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-    const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
+    const isPublicRoute = publicRoutes.includes(nextUrl.pathname) || nextUrl.pathname.startsWith('/search');
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
     if (isApiAuthRoute) return;

@@ -1,10 +1,7 @@
 import React from 'react'
-import AnimationWrapper from './shared/AnimationWrapper'
+import AnimationWrapper from './AnimationWrapper'
 import Link from 'next/link'
 import { signOut } from 'next-auth/react'
-
-
-
 
 
 export default function UserNavigationPanel({ username }: { username: string }) {

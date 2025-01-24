@@ -4,7 +4,7 @@ import { formUrlQuery, removeKeysFromQuery } from '@/lib/utils';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { use, useEffect, useState } from 'react'
-import { activeTabeRef } from '../InPageNavigation';
+import { activeTabeRef } from '../auth/InPageNavigation';
 
 export default function CategoryBtn() {
     const categories = ['Tech', 'Science', 'Health', 'Business', 'Entertainment', 'Sports', 'Travel', 'Fashion', 'Food', 'Lifestyle']
@@ -33,7 +33,6 @@ export default function CategoryBtn() {
             setQuery(category);
         }
         router.push(newUrl, { scroll: false });
-        // revalidateTag('Blogs');
     }
 
     useEffect(() => {

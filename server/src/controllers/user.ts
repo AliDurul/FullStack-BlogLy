@@ -19,13 +19,20 @@ export const list = async (req: Request, res: Response) => {
             </ul>
         `
     */
+    
+    const { username } = req.query
 
-    const data = await res.getModelList(User)
+    let filter = {};
+
+    if (username) filter = { 'personal_info.username': new RegExp(username as string, 'i') }
+
+
+    const result = await User.find(filter).limit(50).select("personal_info.fullname personal_info.username personal_info.email personal_info.profile_img -_id")
 
     res.status(200).send({
         error: false,
-        details: await res.getModelListDetails(User),
-        data
+        details: await res.getModelListDetails(User, filter),
+        result
     })
 }
 

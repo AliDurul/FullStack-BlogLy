@@ -22,8 +22,6 @@ export const list = async (req: Request, res: Response) => {
             </ul>
         `
     */
-    throw new CustomError('Title, banner, description, content and tags fields are required ', 401);
-
 
     const data = await res.getModelList(Blog)
 
@@ -51,7 +49,7 @@ export const create = async (req: Request, res: Response) => {
 
     let { title, banner, des, content, tags, draft } = req.body;
     const author = req.user._id;
-    console.log(req.body);
+
     if (!author) throw new CustomError('Author not found.', 404)
 
     const validations = [
@@ -160,18 +158,23 @@ export const latestBlog = async (req: Request, res: Response) => {
         #swagger.summary = "Get Latest Blog"
     */
 
-
     const maxLimit = Number(process.env.PAGE_SIZE) || 3;
 
     // pagination
     let page = Number(req.query.page)
     page = page > 0 ? (page - 1) : 0
 
-    // Custom Filter
+    // Queries
+    const { search } = req.query
     const { category, } = req.query
-    let filter: any = { draft: false };
-    if (category) filter = { ...filter, tags: { $in: [category] } }
 
+    // Custom Filter
+    let filter: any = { draft: false };
+
+    if (category) filter = { ...filter, tags: { $in: [category] } }
+    else if (search) filter = { ...filter, title: new RegExp(search as string, 'i') }
+
+    // db request
     const result = await Blog.find(filter)
         .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
         .sort({ publishedAt: -1 })

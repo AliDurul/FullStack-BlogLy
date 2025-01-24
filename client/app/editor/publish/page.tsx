@@ -1,9 +1,9 @@
 'use client'
 
 import { startTransition, useEffect } from 'react';
-import PublishHeaderBtn from '@/components/PublishHeaderBtn'
+import PublishHeaderBtn from '@/components/editor/PublishHeaderBtn'
 import AnimationWrapper from '@/components/shared/AnimationWrapper'
-import Tag from '@/components/Tag'
+import Tag from '@/components/editor/Tag'
 import { useEditorContext } from '@/contexts/EditorContext'
 import { createBlog } from '@/lib/actions/blogActions'
 import { blogPublishSchema } from '@/lib/zod'

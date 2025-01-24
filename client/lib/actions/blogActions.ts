@@ -56,19 +56,19 @@ export const createBlog = async (prevState: unknown, blog: TBlogPublishSchema) =
     }
 }
 
-export const fetchLatestBlogs = async ({ category, query, pageParam }: { category: string, query: string, pageParam: string | number }) => {
+export const fetchLatestBlogs = async ({ category, search, pageParam }: { category: string, search: string, pageParam: string | number }) => {
 
     // await new Promise((resolve) => setTimeout(resolve, 3000));
-    console.log('fetch blog calisti/', pageParam);
 
     let url = `${API_URL}/blogs/latest`;
 
     const params = new URLSearchParams();
     if (category) params.append("category", category);
-    if (query) params.append("query", query);
+    if (search) params.append("search", search);
     if (pageParam) params.append("page", pageParam as string)
     if (params.toString()) url += `?${params.toString()}`;
 
+    console.log('url', url);
     try {
         const res = await fetch(url, {
             method: 'GET',
