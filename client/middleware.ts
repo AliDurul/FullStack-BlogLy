@@ -15,12 +15,12 @@ export default auth(async function middleware(req) {
 
     if (isAuthRoute) {
         
-        if (isLoggedIn) return Response.redirect(new URL('/', nextUrl));
+        // if (isLoggedIn) return Response.redirect(new URL('/', nextUrl));
 
         return;
     }
 
-    if (!isLoggedIn && !isPublicRoute) return Response.redirect(new URL('/auth/sign-in', nextUrl));
+    // if (!isLoggedIn && !isPublicRoute) return Response.redirect(new URL('/auth/sign-in', nextUrl));
 
 
     return;

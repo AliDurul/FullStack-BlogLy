@@ -68,7 +68,6 @@ export const fetchLatestBlogs = async ({ category, search, pageParam }: { catego
     if (pageParam) params.append("page", pageParam as string)
     if (params.toString()) url += `?${params.toString()}`;
 
-    console.log('url', url);
     try {
         const res = await fetch(url, {
             method: 'GET',

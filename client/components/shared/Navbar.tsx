@@ -9,7 +9,7 @@ import getSession from "@/lib/utils";
 
 export default async function Navbar() {
   const session = await getSession()
-  // console.log('navbar session==>', session);
+
   return (
     <nav className='navbar'>
       <Link href='/' className='flex-none w-10 ' >
