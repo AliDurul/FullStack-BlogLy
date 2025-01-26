@@ -23,13 +23,35 @@ export const list = async (req: Request, res: Response) => {
         `
     */
 
-    const data = await res.getModelList(Blog)
+    const maxLimit = Number(process.env.PAGE_SIZE) || 3;
 
+    // pagination
+    let page = Number(req.query.page)
+    page = page > 0 ? (page - 1) : 0
+
+    // Queries
+    const { search, category, author } = req.query
+    console.log(!!search, !!category, !!author);
+
+    // Custom Filter
+    let filter: any = { draft: false };
+
+    if (category) filter = { ...filter, tags: { $in: [category] } }
+    else if (search) filter = { ...filter, title: new RegExp(search as string, 'i') }
+    else if (author) filter = { ...filter, author}
+
+    // db request
+    const result = await Blog.find(filter)
+        .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
+        .sort({ publishedAt: -1 })
+        .select('blog_id title des publishedAt banner tags activity -_id')
+        .skip(page * maxLimit)
+        .limit(maxLimit)
 
     res.status(200).send({
-        error: false,
-        details: await res.getModelListDetails(Blog),
-        data,
+        success: true,
+        details: await res.getModelListDetails(Blog, filter).then((details: any) => details.pages),
+        result
     })
 }
 
@@ -150,43 +172,6 @@ export const deletee = async (req: Request, res: Response) => {
         data
     })
 
-}
-
-export const latestBlog = async (req: Request, res: Response) => {
-    /*
-        #swagger.tags = ["Blogs"]
-        #swagger.summary = "Get Latest Blog"
-    */
-
-    const maxLimit = Number(process.env.PAGE_SIZE) || 3;
-
-    // pagination
-    let page = Number(req.query.page)
-    page = page > 0 ? (page - 1) : 0
-
-    // Queries
-    const { search } = req.query
-    const { category, } = req.query
-
-    // Custom Filter
-    let filter: any = { draft: false };
-
-    if (category) filter = { ...filter, tags: { $in: [category] } }
-    else if (search) filter = { ...filter, title: new RegExp(search as string, 'i') }
-
-    // db request
-    const result = await Blog.find(filter)
-        .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
-        .sort({ publishedAt: -1 })
-        .select('blog_id title des publishedAt banner tags activity -_id')
-        .skip(page * maxLimit)
-        .limit(maxLimit)
-
-    res.status(200).send({
-        success: true,
-        details: await res.getModelListDetails(Blog, filter).then((details: any) => details.pages),
-        result
-    })
 }
 
 export const trendingBlog = async (req: Request, res: Response) => {

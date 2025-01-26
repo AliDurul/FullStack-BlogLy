@@ -1,7 +1,6 @@
 'use client';
 
-import { fetchLatestBlogs } from '@/lib/actions/blogActions';
-import { LatestBlogResult, TLatestBlogResponse } from '@/types';
+import { fetchBlogs } from '@/lib/actions/blogActions';
 import React, { useEffect, useState } from 'react'
 import BlogCard from './BlogCard';
 import AnimationWrapper from '../shared/AnimationWrapper';
@@ -11,7 +10,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import Loader from '../shared/Loader';
 import { useInView } from 'react-intersection-observer'
 
-export default function Blogs() {
+export default function Blogs({author}: {author?: string}) {
 
     const searParams = useSearchParams();
     const category = searParams.get('category') || '';
@@ -21,7 +20,7 @@ export default function Blogs() {
 
     const { data, error, status, fetchNextPage, isFetchingNextPage, hasNextPage, } = useInfiniteQuery({
         queryKey: ['posts', category, search],
-        queryFn: ({ pageParam }) => fetchLatestBlogs({ category, search, pageParam }),
+        queryFn: ({ pageParam }) => fetchBlogs({ category, search, pageParam, author }),
         initialPageParam: 1,
         getNextPageParam: (lastPage) => {
             if (!lastPage?.details?.next) return null

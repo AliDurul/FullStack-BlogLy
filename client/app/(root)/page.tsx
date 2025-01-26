@@ -1,9 +1,6 @@
-import { auth } from "@/auth";
 import InPageNavigation from "@/components/auth/InPageNavigation";
 import Loader from "@/components/shared/Loader";
 import AnimationWrapper from "@/components/shared/AnimationWrapper";
-import { fetchLatestBlogs } from "@/lib/actions/blogActions";
-import getSession from "@/lib/utils";
 import { Suspense } from "react";
 import TrendingBlogs from "@/components/root/TrendingBlogs";
 import { TrendingIcon } from "@/components/icons";

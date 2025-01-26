@@ -56,16 +56,24 @@ export const createBlog = async (prevState: unknown, blog: TBlogPublishSchema) =
     }
 }
 
-export const fetchLatestBlogs = async ({ category, search, pageParam }: { category: string, search: string, pageParam: string | number }) => {
+type TFetchBlogsProps = {
+    category: string,
+    search: string,
+    pageParam: string | number
+    author?: string
+}
+
+export const fetchBlogs = async ({ category, search, pageParam, author }: TFetchBlogsProps) => {
 
     // await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    let url = `${API_URL}/blogs/latest`;
+    let url = `${API_URL}/blogs`;
 
     const params = new URLSearchParams();
     if (category) params.append("category", category);
     if (search) params.append("search", search);
     if (pageParam) params.append("page", pageParam as string)
+    if (author) params.append("author", author);
     if (params.toString()) url += `?${params.toString()}`;
 
     try {
@@ -96,7 +104,7 @@ export const fetchLatestBlogs = async ({ category, search, pageParam }: { catego
 
 export const fetchTrendingBlogs = async () => {
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
 
     try {
         const res = await fetch(API_URL + '/blogs/trending', {

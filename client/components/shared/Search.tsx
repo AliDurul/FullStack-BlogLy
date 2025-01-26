@@ -30,15 +30,15 @@ export default function Search() {
                     params: searchParams.toString(),
                     keysToRemove: ['search']
                 });
-                router.push(newUrl, { scroll: false });
             }
 
             router.push(newUrl, { scroll: false });
         }, 500)
 
-        if (activeTabeRef.current) {
-            activeTabeRef.current.click();
-        }
+        // ! getting error on this line
+        // if (activeTabeRef.current) {
+        //     activeTabeRef.current.click();
+        // }
 
         return () => clearTimeout(delayBounceFn)
 

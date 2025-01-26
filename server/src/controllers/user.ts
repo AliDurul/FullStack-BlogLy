@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
 import User from '../models/user';
 import { Request, Response } from 'express-serve-static-core';
 import 'express-async-errors';
+import { CustomError } from '../helpers/utils';
 
 
 
@@ -19,7 +19,7 @@ export const list = async (req: Request, res: Response) => {
             </ul>
         `
     */
-    
+
     const { username } = req.query
 
     let filter = {};
@@ -42,11 +42,14 @@ export const read = async (req: Request, res: Response) => {
         #swagger.summary = "Get Single User"
     */
 
-    const data = await User.findOne({ user_id: req.params.id })
+    const result = await User.findOne({ 'personal_info.username': req.params.username })
+        .select("-personal_info.password -google_auth -updatedAt -blogs")
+
+    if (!result) throw new CustomError('User not found with username: ' + req.params.username, 404)
 
     res.status(200).send({
         error: false,
-        data
+        result
     })
 
 }

@@ -9,7 +9,7 @@ const { list, read, update, deletee } = require('../controllers/user');
 router.route('/')
     .get(list)
 
-router.route('/:id')
+router.route('/:username')
     .get(read)
     .put(update)
     .patch(update)

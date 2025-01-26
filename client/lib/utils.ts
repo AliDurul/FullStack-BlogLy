@@ -20,6 +20,11 @@ export const formatDate = (date: Date) => {
   return `${d.getDate()} ${months[d.getMonth()]}`
 };
 
+export const getFullDay = (date: Date) => {
+  const d = new Date(date)
+  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`
+}
+
 // Query handler
 import qs from 'query-string'
 

@@ -27,13 +27,9 @@ export type TInputField = {
 };
 
 // Error Response
-export type TError = {
-    success: boolean;
-    message?: string;
-    errors?: [string]
+export type TError =  { error: boolean, errors?: string[], message?: string }
 
-}
-
+// Animation Wrapper
 export type TAnimationWrapper = {
     children: React.ReactNode;
     initial?: Record<string, any>;
@@ -139,4 +135,41 @@ export interface TrendingBlogAuthor {
     personal_info: BlogPersonalInfo;
 }
 
+/* User */
+export interface IUserResponse {
+    error: boolean;
+    result: UserResult;
+}
+
+export interface UserResult {
+    personal_info: UserPersonalInfo;
+    social_links: UserSocialLinks;
+    account_info: UserAccountInfo;
+    _id: string;
+    OAuth: boolean;
+    user_id: string;
+    joinedAt: Date;
+}
+
+export interface UserAccountInfo {
+    total_posts: number;
+    total_reads: number;
+}
+
+export interface UserPersonalInfo {
+    fullname: string;
+    email: string;
+    username: string;
+    bio: string;
+    profile_img: string;
+}
+
+export interface UserSocialLinks {
+    youtube: string;
+    instagram: string;
+    facebook: string;
+    twitter: string;
+    github: string;
+    website: string;
+}
 

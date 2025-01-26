@@ -18,8 +18,8 @@ export default async function TrendingBlogs({ search }: { search: string }) {
     return (
       <>
         {
-          trendingBlogs.result.length ? (
-            trendingBlogs.result.map((blog: TTrendingBlog, i: number) => {
+          trendingBlogs?.result?.length ? (
+            trendingBlogs?.result?.map((blog: TTrendingBlog, i: number) => {
               return (
                 <AnimationWrapper transition={{ duration: 1, delay: i * .1 }} key={i}>
                   <MinimalBlogCard blog={blog} index={i} />
@@ -35,8 +35,8 @@ export default async function TrendingBlogs({ search }: { search: string }) {
     return (
       <>
         {
-          users.result.length ? (
-            users.result.map((user: any, i: number) => {
+          users?.result?.length ? (
+            users?.result?.map((user: any, i: number) => {
               return (
                 <AnimationWrapper transition={{ duration: 1, delay: i * .1 }} key={i}>
                  <MiniUserCard user={user} />
