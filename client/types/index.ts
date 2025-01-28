@@ -27,7 +27,7 @@ export type TInputField = {
 };
 
 // Error Response
-export type TError =  { error: boolean, errors?: string[], message?: string }
+export type TError = { success: boolean, message: string }
 
 // Animation Wrapper
 export type TAnimationWrapper = {
@@ -173,3 +173,45 @@ export interface UserSocialLinks {
     website: string;
 }
 
+/* Single Blog */
+
+export interface IApiArrRes<T> {
+    success: boolean;
+    result: T[];
+}
+
+export interface IApiObjRes<T> {
+    success: boolean;
+    result: T;
+}
+
+export interface SingleBlog {
+    activity: Activity;
+    _id: string;
+    blog_id: string;
+    title: string;
+    banner: string;
+    des: string;
+    content: number[];
+    tags: string[];
+    author: Author;
+    publishedAt: Date;
+}
+
+export interface Activity {
+    total_likes: number;
+    total_comments: number;
+    total_reads: number;
+    total_parent_comments: number;
+}
+
+export interface Author {
+    personal_info: PersonalInfo;
+    _id: string;
+}
+
+export interface PersonalInfo {
+    fullname: string;
+    username: string;
+    profile_img: string;
+}

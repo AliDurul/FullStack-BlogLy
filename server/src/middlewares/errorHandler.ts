@@ -10,7 +10,7 @@ export const errorHandler = (err: CustomError, req: Request, res: Response, next
     console.log('errorHandler->', err);
 
     res.status(statusCode).json({
-        error: true,
+        success: false,
         message,
         stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
     });

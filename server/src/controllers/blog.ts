@@ -1,6 +1,6 @@
 import Blog from '../models/blog';
 import { Request, Response } from 'express-serve-static-core';
-import { IBlog } from '../types/blog';
+import { findOneAndUpdate, IBlog} from '../types/blog';
 import { CustomError } from '../helpers/utils';
 import { nanoid } from 'nanoid';
 import User from '../models/user';
@@ -31,14 +31,13 @@ export const list = async (req: Request, res: Response) => {
 
     // Queries
     const { search, category, author } = req.query
-    console.log(!!search, !!category, !!author);
 
     // Custom Filter
     let filter: any = { draft: false };
 
     if (category) filter = { ...filter, tags: { $in: [category] } }
     else if (search) filter = { ...filter, title: new RegExp(search as string, 'i') }
-    else if (author) filter = { ...filter, author}
+    else if (author) filter = { ...filter, author }
 
     // db request
     const result = await Blog.find(filter)
@@ -123,11 +122,21 @@ export const read = async (req: Request, res: Response) => {
         #swagger.summary = "Get Single Blog"
     */
 
-    const data = await Blog.findOne({ blog_id: req.params.id })
+    const { id } = req.params;
+    const incrementVal = 1;
+
+    const result: findOneAndUpdate = await Blog
+        .findOneAndUpdate({ blog_id: id }, { $inc: { "activity.total_reads": incrementVal } })
+        .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname')
+        .select('title des content banner activity publishedAt blog_id tags');
+
+    if (!result) throw new CustomError('Blog not found.', 404);
+
+    await User.findOneAndUpdate({ 'personal_info.username': result.author.personal_info.username }, { $inc: { "account_info.total_reads": incrementVal } })
 
     res.status(200).send({
-        error: false,
-        data
+        success: true,
+        result
     })
 
 }

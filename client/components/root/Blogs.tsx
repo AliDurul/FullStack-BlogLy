@@ -35,7 +35,6 @@ export default function Blogs({author}: {author?: string}) {
     //     }
     // }, [fetchNextPage, inView])
 
-    console.log(data);
     
     if (status === 'pending') return <Loader />
     if (error) return <NoDataFound message='Failed to load blogs 😞' />

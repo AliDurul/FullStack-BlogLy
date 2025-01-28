@@ -67,7 +67,7 @@ export default function EditorNav() {
                 router.push('/');
             }, 500);
         } else {
-            console.log(state);
+            // console.log(state);
             state?.errors?.forEach((error) => {
                 toast.error(error);
             });

@@ -3,7 +3,7 @@
 import { auth } from "@/auth";
 import { blogDraftSchema, blogPublishSchema, TBlogPublishSchema } from "../zod";
 import { revalidatePath, revalidateTag } from "next/cache";
-import { IDetails, TError, TLatestBlogResponse } from "@/types";
+import { IApiObjRes, IDetails, SingleBlog, TError, TLatestBlogResponse } from "@/types";
 
 const API_URL = process.env.API_BASE_URL
 
@@ -43,9 +43,9 @@ export const createBlog = async (prevState: unknown, blog: TBlogPublishSchema) =
 
     const data = await res.json();
 
-    if (!res.ok && data.error) {
+    if (!res.ok && !data.success) {
         return {
-            success: false,
+            success: data.success,
             errors: [data.message],
         }
     }
@@ -84,9 +84,49 @@ export const fetchBlogs = async ({ category, search, pageParam, author }: TFetch
 
         const data = await res.json();
 
-        if (!res.ok && data.error) {
+        if (!res.ok && !data.success) {
             return {
-                success: false,
+                success: data.success,
+                message: data.message,
+            }
+        }
+
+        return data
+    } catch (error) {
+        return {
+            success: false,
+            message: (error as Error).message,
+        }
+    }
+
+
+}
+
+type TfetchBlogFn = (blogId: string) => Promise<IApiObjRes<SingleBlog> | TError>
+
+export const fetchBlog: TfetchBlogFn = async (blogId) => {
+
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    let url = `${API_URL}/blogs/${blogId}`;
+
+    // const params = new URLSearchParams();
+    // if (category) params.append("category", category);
+    // if (search) params.append("search", search);
+    // if (pageParam) params.append("page", pageParam as string)
+    // if (author) params.append("author", author);
+    // if (params.toString()) url += `?${params.toString()}`;
+
+    try {
+        const res = await fetch(url, {
+            method: 'GET',
+        },)
+
+        const data = await res.json();
+
+        if (!res.ok && !data.success) {
+            return {
+                success: data.success,
                 message: data.message,
             }
         }
@@ -113,9 +153,9 @@ export const fetchTrendingBlogs = async () => {
 
         const data = await res.json();
 
-        if (!res.ok && data.error) {
+        if (!res.ok && !data.success) {
             return {
-                success: false,
+                success: data.success,
                 errors: [data.message],
             }
         }

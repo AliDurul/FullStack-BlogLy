@@ -9,7 +9,6 @@ import Blogs from "@/components/root/Blogs";
 
 
 
-type Params = Promise<{ slug: string }>
 type SearchParams = Promise<{ [key: string]: string | undefined }>
 
 
