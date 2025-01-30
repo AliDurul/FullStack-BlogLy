@@ -15,12 +15,15 @@ export const handleError = (error: unknown) => {
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Fridat', 'Saturday']
 
-export const formatDate = (date: Date) => {
+
+type TDateFn = (date: Date) => string
+
+export const formatDate: TDateFn = (date) => {
   const d = new Date(date)
   return `${d.getDate()} ${months[d.getMonth()]}`
 };
 
-export const getFullDay = (date: Date) => {
+export const getFullDay: TDateFn = (date) => {
   const d = new Date(date)
   return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`
 }

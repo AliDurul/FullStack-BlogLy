@@ -3,7 +3,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import NavbarActionBox from './NavbarActionBox'
-import { auth } from '@/auth'
 import getSession from "@/lib/utils";
 
 
