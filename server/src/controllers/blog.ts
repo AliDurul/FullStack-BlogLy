@@ -1,10 +1,9 @@
-import Blog from '../models/blog';
 import { Request, Response } from 'express-serve-static-core';
 import { findOneAndUpdate, IBlog} from '../types/blog';
 import { CustomError } from '../helpers/utils';
 import { nanoid } from 'nanoid';
 import User from '../models/user';
-import { mongoose } from '../configs/dbConnection';
+import Blog from '../models/blog';
 import 'express-async-errors';
 
 
@@ -195,6 +194,8 @@ export const trendingBlog = async (req: Request, res: Response) => {
         .select('blog_id title  publishedAt -_id')
         .limit(5);
 
+    if(!result) throw new CustomError('Trending Blogs not found.', 404);
+    
     res.status(200).send({
         success: true,
         result

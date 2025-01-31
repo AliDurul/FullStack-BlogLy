@@ -1,7 +1,8 @@
 'use server'
 
 import { auth } from "@/auth";
-import { IUserResponse, TError } from "@/types";
+import { IApiArrRes, IApiObjRes, TError } from "@/types";
+import { ISearchUser, IUser } from "@/types/userTypes";
 
 const API_URL = process.env.API_BASE_URL
 
@@ -16,8 +17,9 @@ const authConfig = async () => {
 };
 
 
+type TfetchUsersFn = (username?: string) => Promise<IApiArrRes<ISearchUser> | TError>
 
-export const fetchUsers = async ({ username }: { username?: string }) => {
+export const fetchUsers: TfetchUsersFn = async (username) => {
 
     // await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -37,7 +39,7 @@ export const fetchUsers = async ({ username }: { username?: string }) => {
         if (!res.ok && data.error) {
             return {
                 success: false,
-                errors: [data.message],
+                message: data.message,
             }
         }
 
@@ -53,8 +55,9 @@ export const fetchUsers = async ({ username }: { username?: string }) => {
 
 }
 
+type TfetchUserFn = (username?: string) => Promise<IApiObjRes<IUser> | TError>
 
-export const fetchUser = async ({ username }: { username?: string }): Promise<IUserResponse | TError> => {
+export const fetchUser: TfetchUserFn = async (username) => {
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 

@@ -8,9 +8,10 @@ router.route('/')
     .get(list)
     .post(isLogin, create);
 
-router.get('/:id',read);
-
 router.get('/trending', trendingBlog);
+
+router.get('/:id', read);
+
 
 
 

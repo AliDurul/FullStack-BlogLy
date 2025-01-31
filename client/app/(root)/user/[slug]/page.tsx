@@ -14,9 +14,9 @@ export default async function UserProfilePage({ params, }: { params: Promise<{ s
   const { slug } = await params
   const session = await getSession()
 
-  const user = await fetchUser({ username: slug })
+  const user = await fetchUser(slug)
 
-  if (user.error) redirect('/404');
+  if ('message' in user) redirect('/404');
 
   if ('result' in user) {
 
@@ -32,7 +32,7 @@ export default async function UserProfilePage({ params, }: { params: Promise<{ s
     return (
       <AnimationWrapper>
         <section className='h-cover md:flex flex-row-reverse items-start gap-5 min-[1100px]:gap-12'>
-          <div className='flex flex-col max-md:items-center gap-5 min-w-[250px] md:w-[50%] md:pl-8 md:border-2 md:border-grey md:sticky md:top-[100px] md:py-10'>
+          <div className='flex flex-col max-md:items-center gap-5 min-w-[250px] md:w-[50%] md:pl-8 md:border md:border-grey md:sticky md:top-[100px] md:py-10'>
             <Image src={profile_img} alt={fullname} width={200} height={200} className='rounded-full bg-grey size-48 md:size-32' />
             <h1 className='text-2xl font-medium'> {username} </h1>
             <p className='text-xl capitalize h-6'> {fullname} </p>

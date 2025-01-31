@@ -1,7 +1,16 @@
 'use client'
 
-import { TInputField } from '@/types/index'
 import React, { useState } from 'react'
+
+type TInputField = {
+  name: string;
+  type: 'text' | 'email' | 'password';
+  placeholder: string;
+  id?: string;
+  value?: string;
+  icon: string;
+  errors?: any;
+};
 
 export default function InputBox({ name, type, id, value, placeholder, icon, errors }: TInputField) {
   const [isPassVisible, setIsPassVisible] = useState(false)

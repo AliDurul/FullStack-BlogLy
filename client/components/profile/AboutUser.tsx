@@ -1,12 +1,12 @@
 import { getFullDay } from '@/lib/utils';
-import { UserSocialLinks } from '@/types';
+import { ISocialLinks } from '@/types/userTypes';
 import Link from 'next/link';
 import React from 'react'
 
 
 type TAboutUserProps = {
     className?: string;
-    social_links: UserSocialLinks;
+    social_links: ISocialLinks;
     bio: string;
     joinedAt: Date;
 }
@@ -19,12 +19,12 @@ export default function AboutUser({ bio, social_links, joinedAt, className }: TA
                 {
                     Object.keys(social_links).map((key: string, i: number) => {
 
-                        let link = social_links[key as keyof UserSocialLinks]
+                        let link = social_links[key as keyof ISocialLinks]
 
                         if (!link) return null
 
                         return (
-                            <Link key={i} href={social_links[key as keyof UserSocialLinks]} target='_blank' className='flex items-center gap-1'>
+                            <Link key={i} href={social_links[key as keyof ISocialLinks]} target='_blank' className='flex items-center gap-1'>
                                 <i className={`text-2xl hover:text-black fi ${key !== 'website' ? 'fi-brands-' + key : 'fi-rr-globe'} text-2xl`} />
                                 {/* <p className='capitalize'>{key}</p> */}
                             </Link>

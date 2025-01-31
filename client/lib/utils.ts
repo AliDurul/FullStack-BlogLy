@@ -1,6 +1,6 @@
 // caching session data
 import { auth } from "@/auth";
-import { TRemoveUrlQueryParams, TUrlQueryParams } from "@/types";
+
 import { cache } from "react";
 export default cache(auth)
 
@@ -31,6 +31,12 @@ export const getFullDay: TDateFn = (date) => {
 // Query handler
 import qs from 'query-string'
 
+type TUrlQueryParams = {
+  params: string
+  key: string
+  value: string | null
+}
+
 export function formUrlQuery({ params, key, value }: TUrlQueryParams) {
 
   const currentUrl = qs.parse(params)
@@ -44,6 +50,11 @@ export function formUrlQuery({ params, key, value }: TUrlQueryParams) {
     },
     { skipNull: true }
   )
+}
+
+type TRemoveUrlQueryParams = {
+  params: string
+  keysToRemove: string[]
 }
 
 export function removeKeysFromQuery({ params, keysToRemove }: TRemoveUrlQueryParams) {

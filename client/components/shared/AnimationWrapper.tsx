@@ -2,7 +2,14 @@
 
 import React from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { TAnimationWrapper } from '@/types/index'
+
+type TAnimationWrapper = {
+  children: React.ReactNode;
+  initial?: Record<string, number>;
+  animate?: Record<string, number>;
+  transition?: Record<string, number>;
+  className?: string;
+}
 
 export default function AnimationWrapper({
   children,

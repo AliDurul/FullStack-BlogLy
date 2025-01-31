@@ -2,8 +2,8 @@
 
 import { auth } from "@/auth";
 import { blogDraftSchema, blogPublishSchema, TBlogPublishSchema } from "../zod";
-import { revalidatePath, revalidateTag } from "next/cache";
-import { IApiObjRes, IDetails, SingleBlog, TError, TLatestBlogResponse } from "@/types";
+import { IApiArrRes, IApiObjRes, TError } from "@/types";
+import { ISingleBlog, ITrendingBlog } from "@/types/blogTypes";
 
 const API_URL = process.env.API_BASE_URL
 
@@ -56,7 +56,7 @@ export const createBlog = async (prevState: unknown, blog: TBlogPublishSchema) =
     }
 }
 
-type TFetchBlogsProps = {
+interface TFetchBlogsProps {
     category: string,
     search: string,
     pageParam: string | number
@@ -102,7 +102,7 @@ export const fetchBlogs = async ({ category, search, pageParam, author }: TFetch
 
 }
 
-type TfetchBlogFn = (blogId: string) => Promise<IApiObjRes<SingleBlog> | TError>
+type TfetchBlogFn = (blogId: string) => Promise<IApiObjRes<ISingleBlog> | TError>
 
 export const fetchBlog: TfetchBlogFn = async (blogId) => {
 
@@ -142,7 +142,9 @@ export const fetchBlog: TfetchBlogFn = async (blogId) => {
 
 }
 
-export const fetchTrendingBlogs = async () => {
+type TfetchTrendingBlogsFn = () => Promise<IApiArrRes<ITrendingBlog> | TError>
+
+export const fetchTrendingBlogs: TfetchTrendingBlogsFn = async () => {
 
     // await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -156,7 +158,7 @@ export const fetchTrendingBlogs = async () => {
         if (!res.ok && !data.success) {
             return {
                 success: data.success,
-                errors: [data.message],
+                message: data.message,
             }
         }
 

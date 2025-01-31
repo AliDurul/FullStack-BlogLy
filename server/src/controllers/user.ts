@@ -26,11 +26,13 @@ export const list = async (req: Request, res: Response) => {
 
     if (username) filter = { 'personal_info.username': new RegExp(username as string, 'i') }
 
-
     const result = await User.find(filter).limit(50).select("personal_info.fullname personal_info.username personal_info.email personal_info.profile_img -_id")
 
+    if (!result) throw new CustomError('Users not found ', 404)
+
+
     res.status(200).send({
-        error: false,
+        success: true,
         details: await res.getModelListDetails(User, filter),
         result
     })
@@ -48,7 +50,7 @@ export const read = async (req: Request, res: Response) => {
     if (!result) throw new CustomError('User not found with username: ' + req.params.username, 404)
 
     res.status(200).send({
-        error: false,
+        success: true,
         result
     })
 
