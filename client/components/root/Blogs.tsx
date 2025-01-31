@@ -10,7 +10,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import Loader from '../shared/Loader';
 import { useInView } from 'react-intersection-observer'
 
-export default function Blogs({author}: {author?: string}) {
+export default function Blogs({ author }: { author?: string }) {
 
     const searParams = useSearchParams();
     const category = searParams.get('category') || '';
@@ -22,7 +22,7 @@ export default function Blogs({author}: {author?: string}) {
         queryKey: ['posts', category, search],
         queryFn: ({ pageParam }) => fetchBlogs({ category, search, pageParam, author }),
         initialPageParam: 1,
-        getNextPageParam: (lastPage) => {
+        getNextPageParam: (lastPage: any) => {
             if (!lastPage?.details?.next) return null
             return lastPage?.details?.next
         },
@@ -35,10 +35,10 @@ export default function Blogs({author}: {author?: string}) {
     //     }
     // }, [fetchNextPage, inView])
 
-    
+
     if (status === 'pending') return <Loader />
     if (error) return <NoDataFound message='Failed to load blogs 😞' />
-    
+
 
 
     return (

@@ -8,6 +8,13 @@ export type TSearchParamProps = {
 export interface IApiArrRes<T> {
     success: boolean;
     result: T[];
+    details?: {
+        previous: boolean | number;
+        current: number;
+        next: number | boolean;
+        total: number;
+        totalRecords: number;
+    };
 }
 
 export interface IApiObjRes<T> {

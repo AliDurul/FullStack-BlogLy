@@ -63,7 +63,10 @@ interface TFetchBlogsProps {
     author?: string
 }
 
-export const fetchBlogs = async ({ category, search, pageParam, author }: TFetchBlogsProps) => {
+type TfetchBlogsFn = ({ category, search, pageParam, author }: TFetchBlogsProps) => Promise<IApiArrRes<ISingleBlog> | TError>
+
+
+export const fetchBlogs: TfetchBlogsFn = async ({ category, search, pageParam, author }) => {
 
     // await new Promise((resolve) => setTimeout(resolve, 3000));
 
