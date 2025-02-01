@@ -10,24 +10,33 @@ import EditorJS from '@editorjs/editorjs'
 import { EditorTools } from './EditorTools';
 
 
-export default function BlogEditorForm() {
+export default function BlogEditorForm({ editableBlog }: { editableBlog?: any }) {
 
-  const { blog: { banner, title, content, tags, des, author }, setTextEditor, setBlog, textEditor } = useEditorContext()
+  const { blog: { banner, title, content, tags, des, author }, blog, setTextEditor, setBlog, textEditor } = useEditorContext();
 
+
+  useEffect(() => {
+    if (editableBlog) {
+      console.log('editableBlog', editableBlog);
+      setBlog(editableBlog)
+    }
+  }, [])
 
   useEffect(() => {
 
     // if (!textEditor) return
 
-    setTextEditor(new EditorJS({
-      holder: 'textEditor',
-      tools: EditorTools,
-      placeholder: "Let's write an awesome blog",
-      data: {
-        time: new Date().getTime(),
-        blocks: content
-      },
-    }));
+    if (!textEditor?.isReady) {
+      setTextEditor(new EditorJS({
+        holder: 'textEditor',
+        tools: EditorTools,
+        placeholder: "Let's write an awesome blog",
+        data: {
+          time: new Date().getTime(),
+          blocks: Array.isArray(content) ? editableBlog.content : content
+        },
+      }));
+    }
 
   }, []);
 

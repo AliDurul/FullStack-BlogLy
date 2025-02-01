@@ -18,7 +18,7 @@ const authConfig = async () => {
 };
 
 
-export const createBlog = async (prevState: unknown, blog: TBlogPublishSchema) => {
+export const createOupdateBlog = async (prevState: unknown, blog: TBlogPublishSchema) => {
 
     const headers = await authConfig();
 
@@ -35,11 +35,26 @@ export const createBlog = async (prevState: unknown, blog: TBlogPublishSchema) =
     if (!result.success) {
         return { success: false, errors: Object.values(result.error.flatten().fieldErrors) }
     }
-    const res = await fetch(API_URL + '/blogs', {
-        method: 'POST',
-        body: JSON.stringify(result.data),
-        headers
-    })
+
+
+    let res;
+    const url = API_URL + '/blogs';
+
+    if (blog._id) {
+        res = await fetch(url + `/${blog._id}`, {
+            method: 'PUT',
+            body: JSON.stringify(result.data),
+            headers
+        })
+    } else {
+        res = await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(result.data),
+            headers
+        })
+    }
+
+
 
     const data = await res.json();
 
@@ -60,13 +75,14 @@ interface TFetchBlogsProps {
     category: string,
     search: string,
     pageParam: string | number
-    author?: string
+    author?: string,
+    limit?: string
+    excludedId?: string
 }
 
-type TfetchBlogsFn = ({ category, search, pageParam, author }: TFetchBlogsProps) => Promise<IApiArrRes<ISingleBlog> | TError>
+type TfetchBlogsFn = ({ category, search, pageParam, author, limit, excludedId }: TFetchBlogsProps) => Promise<IApiArrRes<ISingleBlog> | TError>
 
-
-export const fetchBlogs: TfetchBlogsFn = async ({ category, search, pageParam, author }) => {
+export const fetchBlogs: TfetchBlogsFn = async ({ category, search, pageParam, author, limit, excludedId }) => {
 
     // await new Promise((resolve) => setTimeout(resolve, 3000));
 
@@ -77,6 +93,8 @@ export const fetchBlogs: TfetchBlogsFn = async ({ category, search, pageParam, a
     if (search) params.append("search", search);
     if (pageParam) params.append("page", pageParam as string)
     if (author) params.append("author", author);
+    if (limit) params.append("limit", limit);
+    if (excludedId) params.append("excludedId", excludedId);
     if (params.toString()) url += `?${params.toString()}`;
 
     try {
@@ -105,20 +123,17 @@ export const fetchBlogs: TfetchBlogsFn = async ({ category, search, pageParam, a
 
 }
 
-type TfetchBlogFn = (blogId: string) => Promise<IApiObjRes<ISingleBlog> | TError>
+type TfetchBlogFn = (blogId: string, mode?: string) => Promise<IApiObjRes<ISingleBlog> | TError>
 
-export const fetchBlog: TfetchBlogFn = async (blogId) => {
+export const fetchBlog: TfetchBlogFn = async (blogId, mode) => {
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     let url = `${API_URL}/blogs/${blogId}`;
 
-    // const params = new URLSearchParams();
-    // if (category) params.append("category", category);
-    // if (search) params.append("search", search);
-    // if (pageParam) params.append("page", pageParam as string)
-    // if (author) params.append("author", author);
-    // if (params.toString()) url += `?${params.toString()}`;
+    const params = new URLSearchParams();
+    if (mode) params.append("mode", mode);
+    if (params.toString()) url += `?${params.toString()}`;
 
     try {
         const res = await fetch(url, {

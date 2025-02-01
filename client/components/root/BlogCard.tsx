@@ -1,10 +1,10 @@
 import { formatDate } from '@/lib/utils'
-import { LatestBlogAuthor, BlogPersonalInfo, LatestBlogResult } from '@/types'
+import { IPersonalInfo, ISingleBlog } from '@/types/blogTypes'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
-export default function BlogCard({ blog, author }: { blog: LatestBlogResult, author: BlogPersonalInfo }) {
+export default function BlogCard({ blog, author }: { blog: ISingleBlog, author: IPersonalInfo }) {
 
 
     const { publishedAt, tags, title, des, banner, activity: { total_likes }, blog_id: id } = blog

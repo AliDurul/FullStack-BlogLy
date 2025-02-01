@@ -1,7 +1,7 @@
 'use client'
 
 import { useEditorContext } from '@/contexts/EditorContext'
-import { createBlog } from '@/lib/actions/blogActions'
+import { createOupdateBlog } from '@/lib/actions/blogActions'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -10,10 +10,12 @@ import toast from 'react-hot-toast'
 import { set } from 'zod'
 
 export default function EditorNav() {
+
     const { blog: { title, banner }, blog, setBlog, textEditor } = useEditorContext()
+
     const router = useRouter()
 
-    const [state, action, isPending] = useActionState(createBlog, null)
+    const [state, action, isPending] = useActionState(createOupdateBlog, null)
 
 
     const handlePublish = () => {

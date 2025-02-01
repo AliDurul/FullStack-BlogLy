@@ -1,5 +1,5 @@
 import { Request, Response } from 'express-serve-static-core';
-import { findOneAndUpdate, IBlog} from '../types/blog';
+import { findOneAndUpdate, IBlog } from '../types/blog';
 import { CustomError } from '../helpers/utils';
 import { nanoid } from 'nanoid';
 import User from '../models/user';
@@ -22,19 +22,21 @@ export const list = async (req: Request, res: Response) => {
         `
     */
 
-    const maxLimit = Number(process.env.PAGE_SIZE) || 3;
+
+    // Queries
+    const { search, category, author, limit, excludedId } = req.query;
+
+    const maxLimit = Number(limit) || Number(process.env.PAGE_SIZE) || 3;
+
 
     // pagination
     let page = Number(req.query.page)
     page = page > 0 ? (page - 1) : 0
 
-    // Queries
-    const { search, category, author } = req.query
-
     // Custom Filter
     let filter: any = { draft: false };
 
-    if (category) filter = { ...filter, tags: { $in: [category] } }
+    if (category) filter = { ...filter, tags: { $in: [category] }, blog_id: { $ne: excludedId } }
     else if (search) filter = { ...filter, title: new RegExp(search as string, 'i') }
     else if (author) filter = { ...filter, author }
 
@@ -122,7 +124,9 @@ export const read = async (req: Request, res: Response) => {
     */
 
     const { id } = req.params;
-    const incrementVal = 1;
+    const { mode } = req.query
+
+    const incrementVal = mode !== 'edit' ? 1 : 0;
 
     const result: findOneAndUpdate = await Blog
         .findOneAndUpdate({ blog_id: id }, { $inc: { "activity.total_reads": incrementVal } })
@@ -132,6 +136,10 @@ export const read = async (req: Request, res: Response) => {
     if (!result) throw new CustomError('Blog not found.', 404);
 
     await User.findOneAndUpdate({ 'personal_info.username': result.author.personal_info.username }, { $inc: { "account_info.total_reads": incrementVal } })
+
+    
+    // throw an error if the blog is a draft query is draft
+
 
     res.status(200).send({
         success: true,
@@ -146,15 +154,14 @@ export const update = async (req: Request, res: Response) => {
         #swagger.summary = "Update Blog"
         #swagger.parameters['body'] = {
             in: 'body',
-            required: true,
+            required: true, 
             schema: {
                 
             }
         }
     */
-
-    // Admin olmayan başkasınıın kaydına erişemez:
-    req.params.id = req.user.isAdmin ? req.params.id : req.user._id
+    
+    console.log(req.params.id);
 
     // const data = await Blog.updateOne({ _id: req.params.id }, req.body, { runValidators: true })
     const data = await Blog.updateOne({ _id: req.params.id }, req.body, { runValidators: true })
@@ -194,8 +201,8 @@ export const trendingBlog = async (req: Request, res: Response) => {
         .select('blog_id title  publishedAt -_id')
         .limit(5);
 
-    if(!result) throw new CustomError('Trending Blogs not found.', 404);
-    
+    if (!result) throw new CustomError('Trending Blogs not found.', 404);
+
     res.status(200).send({
         success: true,
         result

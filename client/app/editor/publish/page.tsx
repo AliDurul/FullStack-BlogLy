@@ -5,7 +5,7 @@ import PublishHeaderBtn from '@/components/editor/PublishHeaderBtn'
 import AnimationWrapper from '@/components/shared/AnimationWrapper'
 import Tag from '@/components/editor/Tag'
 import { useEditorContext } from '@/contexts/EditorContext'
-import { createBlog } from '@/lib/actions/blogActions'
+import { createOupdateBlog } from '@/lib/actions/blogActions'
 import { blogPublishSchema } from '@/lib/zod'
 import Image from 'next/image'
 import React, { useActionState } from 'react'
@@ -50,7 +50,7 @@ export default function EditorPublishPage() {
     }
   }
 
-  const [state, action, isPending] = useActionState(createBlog, null)
+  const [state, action, isPending] = useActionState(createOupdateBlog, null)
 
   const handleCreateBlog = () => {
     startTransition(() => {

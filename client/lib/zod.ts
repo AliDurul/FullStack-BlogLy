@@ -13,6 +13,7 @@ export const credentialsSchema = z.object({
 
 export const blogPublishSchema = z.object({
   draft: z.boolean().optional(),
+  _id: z.string().optional(),
   title: z.string().min(1, "Title is required"),
   des: z.string()
     .min(1, "Description is required")
@@ -24,16 +25,7 @@ export const blogPublishSchema = z.object({
   content: z.array(z.object({
     id: z.string(),
     type: z.string(),
-    data: z.object({
-      text: z.string().min(1, "Content is required"),
-      url: z.string().optional(),
-      caption: z.string().optional(),
-      children: z.array(z.object({
-        text: z.string().optional(),
-        url: z.string().optional(),
-        caption: z.string().optional(),
-      })).optional()
-    })
+    data: z.any()
   }))
 });
 

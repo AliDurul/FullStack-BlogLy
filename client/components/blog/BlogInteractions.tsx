@@ -1,9 +1,9 @@
-'use client';
 
 import { ISingleBlog } from '@/types/blogTypes';
-import { useSession } from 'next-auth/react';
-import Link from 'next/link'
-import React from 'react'
+import Link from 'next/link';
+import React from 'react';
+import getSession from '@/lib/utils';
+import BlogShareBtns from './BlogShareBtns';
 
 interface IBlogInteractionProps {
     blog: ISingleBlog
@@ -23,8 +23,10 @@ export const LikeCommentBtn = ({ data, icon }: { data: number, icon: string }) =
 
 
 
-export default function BlogInteractions({ blog }: IBlogInteractionProps) {
-    const { data: session } = useSession()
+export default async function BlogInteractions({ blog }: IBlogInteractionProps) {
+    // const { data: session } = useSession()
+
+    const session = await getSession()
 
     const { title, tags, blog_id, activity, activity: { total_likes, total_comments }, author: { personal_info: { fullname, username: author_username, profile_img } } } = blog
 
@@ -50,14 +52,8 @@ export default function BlogInteractions({ blog }: IBlogInteractionProps) {
                             </button>
                         </Link>
                     }
+                    <BlogShareBtns title={title} tags={tags} />
 
-                    <Link href={`https://x.com/intent/tweet?text=Read ${title}&url=${location.href}`} >
-                        <i className='fi fi-brands-twitter size-10 text-xl hover:text-twitter' />
-                    </Link>
-
-                    <Link href={`https://www.linkedin.com/feed/?shareActive=true&text=${title} ${location.href} %23${tags[0]}`}>
-                        <i className='fi fi-brands-linkedin size-10 text-xl hover:text-twitter' />
-                    </Link>
                 </div>
 
 
