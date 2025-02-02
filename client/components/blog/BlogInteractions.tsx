@@ -4,22 +4,14 @@ import Link from 'next/link';
 import React from 'react';
 import getSession from '@/lib/utils';
 import BlogShareBtns from './BlogShareBtns';
+import { LikeCommentBtn } from './LikeCommentBtn';
 
 interface IBlogInteractionProps {
     blog: ISingleBlog
 }
 
 
-export const LikeCommentBtn = ({ data, icon }: { data: number, icon: string }) => {
-    return (
-        <>
-            <button className='size-10 rounded-full flex items-center justify-center bg-grey/80'>
-                <i className={`fi fi-rr-${icon}`} />
-            </button>
-            <p className='text-xl text-dark-grey'>{data}</p>
-        </>
-    )
-}
+
 
 
 
@@ -31,6 +23,8 @@ export default async function BlogInteractions({ blog }: IBlogInteractionProps) 
     const { title, tags, blog_id, activity, activity: { total_likes, total_comments }, author: { personal_info: { fullname, username: author_username, profile_img } } } = blog
 
 
+
+
     return (
         <>
             <hr className='border-grey border-2 my-2' />
@@ -38,8 +32,8 @@ export default async function BlogInteractions({ blog }: IBlogInteractionProps) 
             <div className='flex justify-between '>
 
                 <div className='flex gap-3 items-center'>
-                    <LikeCommentBtn data={total_likes} icon={'heart'} />
-                    <LikeCommentBtn data={total_comments} icon={'comment-dots'} />
+                    <LikeCommentBtn data={total_likes} icon={'heart'} blog={blog} session={session} />
+                    <LikeCommentBtn data={total_comments} icon={'comment-dots'} blog={blog} session={session}/>
                 </div>
 
                 <div className='flex gap-6 items-center'>
@@ -52,6 +46,7 @@ export default async function BlogInteractions({ blog }: IBlogInteractionProps) 
                             </button>
                         </Link>
                     }
+
                     <BlogShareBtns title={title} tags={tags} />
 
                 </div>

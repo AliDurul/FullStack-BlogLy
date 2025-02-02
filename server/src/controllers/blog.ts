@@ -137,7 +137,7 @@ export const read = async (req: Request, res: Response) => {
 
     await User.findOneAndUpdate({ 'personal_info.username': result.author.personal_info.username }, { $inc: { "account_info.total_reads": incrementVal } })
 
-    
+
     // throw an error if the blog is a draft query is draft
 
 
@@ -160,16 +160,12 @@ export const update = async (req: Request, res: Response) => {
             }
         }
     */
-    
-    console.log(req.params.id);
 
-    // const data = await Blog.updateOne({ _id: req.params.id }, req.body, { runValidators: true })
-    const data = await Blog.updateOne({ _id: req.params.id }, req.body, { runValidators: true })
+
+    const result = await Blog.findOneAndUpdate({ _id: req.params.id }, req.body, { runValidators: true })
 
     res.status(202).send({
-        error: false,
-        data,
-        new: await Blog.findOne({ _id: req.params.id })
+        success: true
     })
 
 }
@@ -208,5 +204,22 @@ export const trendingBlog = async (req: Request, res: Response) => {
         result
     })
 
+
+}
+
+export const likeBlog = async (req: Request, res: Response) => {
+    /*
+        #swagger.tags = ["Blogs"]
+        #swagger.summary = "Like Blog"
+    */
+
+    const { id } = req.params;
+    console.log(id);
+
+    // const result = await Blog.findOneAndUpdate({ blog_id: id }, { $inc: { "activity.total_likes": 1 } })
+
+    res.status(202).send({
+        success: true
+    })
 
 }

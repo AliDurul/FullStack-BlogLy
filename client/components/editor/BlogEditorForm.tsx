@@ -17,7 +17,6 @@ export default function BlogEditorForm({ editableBlog }: { editableBlog?: any })
 
   useEffect(() => {
     if (editableBlog) {
-      console.log('editableBlog', editableBlog);
       setBlog(editableBlog)
     }
   }, [])

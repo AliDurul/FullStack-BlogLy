@@ -191,3 +191,37 @@ export const fetchTrendingBlogs: TfetchTrendingBlogsFn = async () => {
 
 
 }
+
+
+type TlikeBlogFn = (prevState: unknown, blogId: string) => Promise<IApiObjRes<ITrendingBlog> | TError>
+
+export const likeBLog: TlikeBlogFn = async (prevState, blogId) => {
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    let url = `${API_URL}/blogs/${blogId}/like`;
+
+    try {
+        const res = await fetch(url, {
+            method: 'GET',
+        },)
+
+        const data = await res.json();
+
+        if (!res.ok && !data.success) {
+            return {
+                success: data.success,
+                message: data.message,
+            }
+        }
+
+        return data
+    } catch (error) {
+        return {
+            success: false,
+            message: (error as Error).message,
+        }
+    }
+
+
+}

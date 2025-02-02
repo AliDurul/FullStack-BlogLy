@@ -46,6 +46,7 @@ export default async function DetailBlogPage({ params }: { params: Promise<{ blo
                 </div>
 
                 <BlogInteractions blog={blog.result} />
+
                 <div className='my-12 font-gelasio blog-page-content'>
                     {
                         content.map((block, i) => {
@@ -58,7 +59,7 @@ export default async function DetailBlogPage({ params }: { params: Promise<{ blo
                     }
                 </div>
 
-                <BlogInteractions blog={blog.result} />
+                {/* <BlogInteractions blog={blog.result} /> */}
 
                 {
                     similarBlogs.result.length > 0 && (
