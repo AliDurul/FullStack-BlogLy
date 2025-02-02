@@ -1,4 +1,5 @@
 import { mongoose } from "../configs/dbConnection";
+import { INotification } from "../types/notification";
 
 
 const notificationSchema = new mongoose.Schema({
@@ -44,4 +45,4 @@ const notificationSchema = new mongoose.Schema({
     }
 )
 
-export default mongoose.model("Notification", notificationSchema)
+export default mongoose.model<INotification>("Notification", notificationSchema)

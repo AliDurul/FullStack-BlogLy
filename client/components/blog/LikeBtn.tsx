@@ -1,13 +1,12 @@
 'use client';
 import { likeBLog } from '@/lib/actions/blogActions';
-import React, { startTransition, useActionState, useState } from 'react'
+import React, { startTransition, useActionState, useState, useEffect } from 'react'
 import toast from 'react-hot-toast';
 import { ring } from 'ldrs'
 
 ring.register()
 
 // Default values shown
-
 
 interface ILikeCommentBtnProps {
     data: number;
@@ -16,52 +15,41 @@ interface ILikeCommentBtnProps {
     session: any;
 }
 
-export const LikeCommentBtn = ({ data, icon, blog, session }: ILikeCommentBtnProps) => {
+const LikeBtn = ({ data, icon, blog, session }: ILikeCommentBtnProps) => {
 
-    let { blog_id, activity: { total_likes, total_comments }, author: { personal_info: { username: author_username } } } = blog;
-    const { user: { username } } = session;
+    let { blog_id, author: { personal_info: { username: author_username } } } = blog;
 
-    const [isLiked, setIsLiked] = useState(false);
-    const [totalLikeState, setTotalLikeState] = useState(total_likes)
+    const userHasLiked = blog.activity.likes.includes(session ? session?.user._id : '');
 
-    const [state, action, isPending,] = useActionState(likeBLog, null)
+    const [isLiked, setIsLiked] = useState(!!userHasLiked);
 
+    const [state, action, isPending] = useActionState(likeBLog, null)
 
     const handleClick = () => {
-
-        if (icon === 'heart') {
-            if (!session) {
-                toast.error('Please login to like the blog');
-                return;
-            }
-
-            startTransition(() => {
-                action(blog);
-            });
-
-
-            if (state && 'message' in state) {
-                toast.error(state.message);
-            }
-
-            if (state?.success) {
-                setIsLiked(prev => !prev)
-                setTimeout(() => {
-                    setTotalLikeState((prev: number) => isLiked ? prev - 1 : prev + 1)
-                }, 2000)
-            };
-
-
-
-        } else {
-            if (session) {
-                toast.error('Please login to comment on the blog');
-            }
+        if (!session) {
+            toast.error('Please login to like the blog');
+            return;
         }
 
+        startTransition(() => {
+            action(blog._id);
+        });
     }
 
-    console.log('state', totalLikeState);
+    useEffect(() => {
+        if (state && 'message' in state) {
+            toast.error(state.message);
+        }
+
+        if (state?.success) {
+            setIsLiked(prev => !prev);
+            if (isLiked) {
+                blog.activity.likes = blog.activity.likes.filter((id: any) => id !== session.user._id);
+            } else {
+                blog.activity.likes.push(session.user._id);
+            }
+        }
+    }, [state]);
 
     return (
         <>
@@ -77,16 +65,14 @@ export const LikeCommentBtn = ({ data, icon, blog, session }: ILikeCommentBtnPro
                         </div>
                     ) : (
                         <>
-                            <i className={`fi ${isLiked ? `fi-sr-${icon}` : `fi-rr-${icon}`}  ${isLiked && 'text-red'}`} />
-                            {
-                                state && 'message' in state && state.message
-                            }
+                            <i className={`fi ${isLiked ? `fi-sr-heart` : `fi-rr-heart`}  ${isLiked && 'text-red'}`} />
                         </>
-
                     )
                 }
             </button>
-            <p className='text-xl text-dark-grey'>{totalLikeState}</p>
+            <p className='text-xl text-dark-grey'>{blog.activity.likes.length}</p>
         </>
     )
 }
+
+export default LikeBtn;

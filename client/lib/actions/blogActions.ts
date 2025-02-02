@@ -22,7 +22,7 @@ export const createOupdateBlog = async (prevState: unknown, blog: TBlogPublishSc
 
     const headers = await authConfig();
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
 
     let result;
 
@@ -127,7 +127,7 @@ type TfetchBlogFn = (blogId: string, mode?: string) => Promise<IApiObjRes<ISingl
 
 export const fetchBlog: TfetchBlogFn = async (blogId, mode) => {
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
 
     let url = `${API_URL}/blogs/${blogId}`;
 
@@ -193,20 +193,26 @@ export const fetchTrendingBlogs: TfetchTrendingBlogsFn = async () => {
 }
 
 
-type TlikeBlogFn = (prevState: unknown, blogId: string) => Promise<IApiObjRes<ITrendingBlog> | TError>
+type TlikeBlogFn = (_: unknown, blogId: string,) => Promise<IApiObjRes<{ likesCount: number }> | TError>
 
-export const likeBLog: TlikeBlogFn = async (prevState, blogId) => {
+export const likeBLog: TlikeBlogFn = async (_, blogId) => {
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 4000));
+
+
+    const headers = await authConfig();
 
     let url = `${API_URL}/blogs/${blogId}/like`;
 
     try {
         const res = await fetch(url, {
             method: 'GET',
+            headers
         },)
 
         const data = await res.json();
+
+        console.log(data);
 
         if (!res.ok && !data.success) {
             return {

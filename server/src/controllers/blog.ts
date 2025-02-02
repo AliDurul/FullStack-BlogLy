@@ -5,6 +5,7 @@ import { nanoid } from 'nanoid';
 import User from '../models/user';
 import Blog from '../models/blog';
 import 'express-async-errors';
+import Notification from '../models/notification';
 
 
 export const list = async (req: Request, res: Response) => {
@@ -214,12 +215,83 @@ export const likeBlog = async (req: Request, res: Response) => {
     */
 
     const { id } = req.params;
-    console.log(id);
 
-    // const result = await Blog.findOneAndUpdate({ blog_id: id }, { $inc: { "activity.total_likes": 1 } })
+    const { isLikedByUser } = req.query;
 
-    res.status(202).send({
-        success: true
-    })
+    const incrementVal = isLikedByUser === 'true' ? -1 : 1;
 
-}
+
+    const blog = await Blog.findOneAndUpdate({ _id: id }, { $inc: { "activity.total_likes": incrementVal } })
+
+    if (!blog) throw new CustomError('Blog not found and not liked.', 404);
+
+    if (!isLikedByUser) {
+        const like = new Notification({
+            type: 'like',
+            user: req.user._id,
+            blog: id,
+            notification_for: blog.author
+        })
+
+        const notification = await like.save();
+
+        if (!notification) throw new CustomError('Notification could not be created.', 400);
+
+        res.status(202).send({
+            success: true,
+            liked_by_user: true
+        })
+    } else {
+        res.status(202).send({
+            success: true,
+            liked_by_user: false
+        })
+    }
+
+
+
+};
+
+export const Like = async (req: Request, res: Response) => {
+    /*
+        #swagger.tags = ["Blogs"]
+        #swagger.summary = "Add or Remove Like from a Blog"
+        #swagger.description = "This endpoint allows a user to add or remove their like from a specific blog post."
+        #swagger.parameters['id'] = {
+            description: "ID of the blog post",
+            required: true,
+            type: "string",
+            in: "path"
+        }
+
+    */
+    const blogId = req.params.id;
+    const userId = req.user._id;
+
+
+    const blog = await Blog.findById(blogId);
+
+    if (!blog) throw new CustomError("Blog not found", 404);
+
+
+    if (blog._id.toString() === userId.toString()) throw new CustomError("You cannot like your own blog", 400);
+
+
+    const likeIndex = blog.activity.likes.indexOf(userId);
+
+    if (likeIndex === -1) {
+        blog.activity.likes.push(userId);
+    } else {
+        blog.activity.likes.splice(likeIndex, 1);
+    }
+
+    await blog.save();
+
+    res.status(200).send({
+        success: true,
+        // message: likeIndex === -1 ? "Like added" : "Like removed",
+        result: {
+            likesCount: blog.activity.likes.length,
+        },
+    });
+};

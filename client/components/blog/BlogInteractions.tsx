@@ -4,7 +4,7 @@ import Link from 'next/link';
 import React from 'react';
 import getSession from '@/lib/utils';
 import BlogShareBtns from './BlogShareBtns';
-import { LikeCommentBtn } from './LikeCommentBtn';
+import LikeBtn from './LikeBtn';
 
 interface IBlogInteractionProps {
     blog: ISingleBlog
@@ -20,9 +20,7 @@ export default async function BlogInteractions({ blog }: IBlogInteractionProps) 
 
     const session = await getSession()
 
-    const { title, tags, blog_id, activity, activity: { total_likes, total_comments }, author: { personal_info: { fullname, username: author_username, profile_img } } } = blog
-
-
+    const { title, tags, blog_id, activity, activity: { total_likes, total_comments, likes }, author: { personal_info: { fullname, username: author_username, profile_img } } } = blog
 
 
     return (
@@ -32,8 +30,8 @@ export default async function BlogInteractions({ blog }: IBlogInteractionProps) 
             <div className='flex justify-between '>
 
                 <div className='flex gap-3 items-center'>
-                    <LikeCommentBtn data={total_likes} icon={'heart'} blog={blog} session={session} />
-                    <LikeCommentBtn data={total_comments} icon={'comment-dots'} blog={blog} session={session}/>
+                    <LikeBtn data={total_likes} icon={'heart'} blog={blog} session={session} />
+                    {/* <LikeCommentBtn data={total_comments} icon={'comment-dots'} blog={blog} session={session} /> */}
                 </div>
 
                 <div className='flex gap-6 items-center'>

@@ -5,7 +5,6 @@ export default auth(async function middleware(req) {
     const { nextUrl } = req;
     const isLoggedIn = !!req.auth
     const userInfo = req.auth?.user;
-    // console.log('path==>', nextUrl.pathname);
 
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname) || nextUrl.pathname.startsWith('/search');
@@ -14,13 +13,13 @@ export default auth(async function middleware(req) {
     if (isApiAuthRoute) return;
 
     if (isAuthRoute) {
-        
-        // if (isLoggedIn) return Response.redirect(new URL('/', nextUrl));
+
+        if (isLoggedIn) return Response.redirect(new URL('/', nextUrl));
 
         return;
     }
 
-    // if (!isLoggedIn && !isPublicRoute) return Response.redirect(new URL('/auth/sign-in', nextUrl));
+    if (!isLoggedIn && !isPublicRoute) return Response.redirect(new URL('/auth/sign-in', nextUrl));
 
 
     return;

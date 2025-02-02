@@ -6,6 +6,7 @@ export interface IPersonalInfo {
 }
 
 export interface IActivity {
+    likes: string[];
     total_likes: number;
     total_comments: number;
     total_reads: number;

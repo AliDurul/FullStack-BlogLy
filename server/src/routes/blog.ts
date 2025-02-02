@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { list, create, trendingBlog, read, update, likeBlog } from "../controllers/blog";
+import { list, create, trendingBlog, read, update, likeBlog, Like } from "../controllers/blog";
 import { isLogin } from "../middlewares/permissions";
 
 const router = Router();
@@ -12,7 +12,7 @@ router.get('/trending', trendingBlog);
 
 router.route('/:id').get(read).put(isLogin, update);
 
-router.get('/:id/like', likeBlog)
+router.get('/:id/like', Like)
 
 
 

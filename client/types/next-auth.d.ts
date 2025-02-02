@@ -5,6 +5,7 @@ export interface userInfo {
 
     profile_img: string,
     username: string,
+    _id: string,
     fullname: string,
     iat: number,
     exp: number

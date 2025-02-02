@@ -8,12 +8,7 @@ export interface IBlog extends Document {
     content: any[];
     tags: string[];
     author: string;
-    activity: {
-        total_likes: number;
-        total_comments: number;
-        total_reads: number;
-        total_parent_comments: number;
-    };
+    activity: Activity;
     comments: string[];
     draft: boolean;
 }
@@ -32,6 +27,7 @@ export interface findOneAndUpdate {
 }
 
 export interface Activity {
+    likes: string[];
     total_likes: number;
     total_comments: number;
     total_reads: number;

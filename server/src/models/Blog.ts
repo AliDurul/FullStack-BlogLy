@@ -36,6 +36,12 @@ const blogSchema = new mongoose.Schema({
         ref: 'users'
     },
     activity: {
+        likes: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
         total_likes: {
             type: Number,
             default: 0
@@ -64,7 +70,7 @@ const blogSchema = new mongoose.Schema({
 
 },
     {
-        collection:'blogs',
+        collection: 'blogs',
         timestamps: {
             createdAt: 'publishedAt'
         }
