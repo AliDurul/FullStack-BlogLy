@@ -1,10 +1,10 @@
 import { formatDate } from '@/lib/utils';
-import { TTrendingBlog } from '@/types';
+import { ITrendingBlog } from '@/types/blogTypes';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
 
-export default function MinimalBlogCard({ blog, index }: { blog: TTrendingBlog, index: any }) {
+export default function MinimalBlogCard({ blog, index }: { blog: ITrendingBlog, index: any }) {
 
     const { title, blog_id: id, author: { personal_info: { fullname, username, profile_img } }, publishedAt } = blog;
 
