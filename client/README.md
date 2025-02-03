@@ -5,3 +5,5 @@
 - Page - add parallel fetching
 - page - after filter by category revalidate
 - likebtn - add loading 
+- change bg color
+- add subcription feature

@@ -1,7 +1,7 @@
 'use server'
 
 import { auth } from "@/auth";
-import { blogDraftSchema, blogPublishSchema, TBlogPublishSchema } from "../zod";
+import { blogDraftSchema, blogPublishSchema, commentSchema, TBlogPublishSchema } from "../zod";
 import { IApiArrRes, IApiObjRes, TError } from "@/types";
 import { ISingleBlog, ITrendingBlog } from "@/types/blogTypes";
 
@@ -227,4 +227,44 @@ export const likeBLog: TlikeBlogFn = async (_, blogId) => {
     }
 
 
+}
+
+export const createComment = async (prevState: unknown, payload: FormData) => {
+
+
+    const { _id, comment, blog_author } = Object.fromEntries(payload.entries());
+
+    const commentObj = { _id, comment, blog_author };
+
+    console.log(commentObj);
+    const result = commentSchema.safeParse(commentObj);
+
+
+    if (!result.success) {
+        return { success: false, errors: result.error.flatten().fieldErrors }
+    }
+
+    const url = API_URL + '/comments';
+    const headers = await authConfig();
+
+    const res = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(result.data),
+        headers
+    })
+
+
+    const data = await res.json();
+
+    if (!res.ok && !data.success) {
+        return {
+            success: data.success,
+            errors: { comment: data.message },
+        }
+    }
+
+    return {
+        success: true,
+        message: 'Comment created successfully',
+    }
 }

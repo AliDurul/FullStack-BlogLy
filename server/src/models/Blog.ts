@@ -42,10 +42,17 @@ const blogSchema = new mongoose.Schema({
                 ref: "User",
             },
         ],
+        comments: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Comment",
+            },
+        ],
         total_likes: {
             type: Number,
             default: 0
         },
+        
         total_comments: {
             type: Number,
             default: 0
@@ -58,10 +65,6 @@ const blogSchema = new mongoose.Schema({
             type: Number,
             default: 0
         },
-    },
-    comments: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'comments'
     },
     draft: {
         type: Boolean,

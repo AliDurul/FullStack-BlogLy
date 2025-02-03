@@ -1,24 +1,21 @@
 import { mongoose } from "../configs/dbConnection";
+import { IComment } from "../types/comment";
 
 const commentSchema = new mongoose.Schema({
 
     blog_id: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'blogs'
+        ref: 'Blog'
     },
-    blog_author: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'blogs',
-    },
+    // blog_author: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     required: true,
+    //     ref: 'blogs',
+    // },
     comment: {
         type: String,
         required: true
-    },
-    children: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'comments'
     },
     commented_by: {
         type: mongoose.Schema.Types.ObjectId,
@@ -28,17 +25,21 @@ const commentSchema = new mongoose.Schema({
     isReply: {
         type: Boolean,
     },
+    children: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Comment'
+    },
     parent: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'comments'
+        ref: 'Comment'
     }
 
 },
     {
-        collection:'comments',
+        collection: 'comments',
         timestamps: {
             createdAt: 'commentedAt'
         }
     })
 
-export default mongoose.model("Comment", commentSchema)
+export default mongoose.model<IComment>("Comment", commentSchema)
