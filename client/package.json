@@ -20,6 +20,7 @@
     "@editorjs/marker": "^1.4.0",
     "@editorjs/quote": "^2.7.6",
     "@flaticon/flaticon-uicons": "^3.3.1",
+    "@headlessui/react": "^2.2.0",
     "@tanstack/react-query": "^5.64.1",
     "framer-motion": "^11.15.0",
     "jwt-decode": "^4.0.0",

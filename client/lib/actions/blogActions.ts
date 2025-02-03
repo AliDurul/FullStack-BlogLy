@@ -197,9 +197,6 @@ type TlikeBlogFn = (_: unknown, blogId: string,) => Promise<IApiObjRes<{ likesCo
 
 export const likeBLog: TlikeBlogFn = async (_, blogId) => {
 
-    await new Promise((resolve) => setTimeout(resolve, 4000));
-
-
     const headers = await authConfig();
 
     let url = `${API_URL}/blogs/${blogId}/like`;

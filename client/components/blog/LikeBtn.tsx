@@ -3,21 +3,18 @@ import { likeBLog } from '@/lib/actions/blogActions';
 import React, { startTransition, useActionState, useState, useEffect } from 'react'
 import toast from 'react-hot-toast';
 import { ring } from 'ldrs'
+import { ISingleBlog } from '@/types/blogTypes';
 
 ring.register()
 
 // Default values shown
 
 interface ILikeCommentBtnProps {
-    data: number;
-    icon: string;
-    blog: any;
+    blog: ISingleBlog;
     session: any;
 }
 
-const LikeBtn = ({ data, icon, blog, session }: ILikeCommentBtnProps) => {
-
-    let { blog_id, author: { personal_info: { username: author_username } } } = blog;
+const LikeBtn = ({ blog, session }: ILikeCommentBtnProps) => {
 
     const userHasLiked = blog.activity.likes.includes(session ? session?.user._id : '');
 

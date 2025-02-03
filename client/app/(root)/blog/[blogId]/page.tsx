@@ -24,7 +24,8 @@ export default async function DetailBlogPage({ params }: { params: Promise<{ blo
 
     return (
         <AnimationWrapper>
-            <div className='max-w-[900px] center py-10 max-lg:px-[5vw]'>
+            <div className='max-w-[900px] center py-10 max-lg:px-[5vw] relative'>
+
                 <Image src={banner} alt={title} width={900} height={500} className='rounded-lg aspect-video' />
 
                 <div className="mt-12">
