@@ -4,6 +4,46 @@ import Comment from "../models/comment";
 import blog from "../models/blog";
 import Notification from "../models/notification";
 
+
+export const list = async (req: Request, res: Response) => {
+    /*
+        #swagger.tags = ["Comments"]
+        #swagger.summary = "List Comments"
+        #swagger.description = "Endpoint to list all comments."
+        #swagger.parameters['obj'] = {
+            in: 'query',
+            description: 'Blog ID',
+            required: true,
+            schema: { $ref: "#/definitions/BlogId" }
+        }
+    */
+
+    const { blog_id } = req.params;
+    const { skip, limit } = req.query;
+
+    console.log(blog_id);
+
+    const maxLimit = limit ? parseInt(limit as string) : 10;
+    const skipNumber = skip ? parseInt(skip as string) : 0;
+
+
+    const result = await Comment.find({ blog_id, isReply: false })
+        .populate('commented_by', 'personal_info.username personal_info.fullname personal_info.profile_img')
+        .skip(skipNumber)
+        .limit(maxLimit)
+        .sort({ commentedAt: -1 });
+
+    
+    
+    res.status(200).send({
+        success: true,
+        result,
+        details: await res.getModelListDetails(Comment).then((details: any) => details.pages)
+    })
+
+}
+
+
 export const create = async (req: Request, res: Response) => {
     /*
         #swagger.tags = ["Comments"]
@@ -26,7 +66,7 @@ export const create = async (req: Request, res: Response) => {
     const newComment = new Comment({
         blog_id: _id,
         comment,
-        commented_by: req.user._id,
+        commented_by: user_id,
         blog_author,
     })
 

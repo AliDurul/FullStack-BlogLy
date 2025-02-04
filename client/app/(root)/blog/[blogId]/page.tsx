@@ -15,10 +15,9 @@ export default async function DetailBlogPage({ params }: { params: Promise<{ blo
 
     if ('message' in blog) return <h1>Something went wrong</h1>
 
-    const { title, blog_id, content, tags, banner, author: { personal_info: { fullname, username: author_username, profile_img } }, publishedAt } = blog.result
+    const { title, blog_id, content, tags, banner, author: { personal_info: { fullname, username: author_username, profile_img } }, publishedAt } = blog.result;
 
     const similarBlogs = await fetchBlogs({ category: tags[0], search: '', pageParam: '', author: '', limit: '3', excludedId: blog_id });
-
 
     if ('message' in similarBlogs) return <h1>Something went wrong</h1>
 
@@ -48,6 +47,7 @@ export default async function DetailBlogPage({ params }: { params: Promise<{ blo
 
                 <BlogInteractions blog={blog.result} />
 
+                {/* Blog Content */}
                 <div className='my-12 font-gelasio blog-page-content'>
                     {
                         content.map((block, i) => {
@@ -60,8 +60,8 @@ export default async function DetailBlogPage({ params }: { params: Promise<{ blo
                     }
                 </div>
 
-                {/* <BlogInteractions blog={blog.result} /> */}
 
+                {/* Similar Posts */}
                 {
                     similarBlogs.result.length > 0 && (
                         <>

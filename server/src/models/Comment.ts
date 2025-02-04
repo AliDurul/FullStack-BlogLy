@@ -8,11 +8,11 @@ const commentSchema = new mongoose.Schema({
         required: true,
         ref: 'Blog'
     },
-    // blog_author: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     required: true,
-    //     ref: 'blogs',
-    // },
+    blog_author: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Blog',
+    },
     comment: {
         type: String,
         required: true
@@ -20,10 +20,11 @@ const commentSchema = new mongoose.Schema({
     commented_by: {
         type: mongoose.Schema.Types.ObjectId,
         require: true,
-        ref: 'users'
+        ref: 'User'
     },
     isReply: {
         type: Boolean,
+        default: false
     },
     children: {
         type: [mongoose.Schema.Types.ObjectId],

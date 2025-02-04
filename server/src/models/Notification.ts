@@ -11,29 +11,29 @@ const notificationSchema = new mongoose.Schema({
     blog: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'blogs'
+        ref: 'Blog'
     },
     notification_for: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'users'
+        ref: 'User'
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'users'
+        ref: 'User'
     },
     comment: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'comments'
+        ref: 'Comment'
     },
     reply: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'comments'
+        ref: 'Comment'
     },
     replied_on_comment: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'comments'
+        ref: 'Comment'
     },
     seen: {
         type: Boolean,

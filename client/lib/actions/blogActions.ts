@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { blogDraftSchema, blogPublishSchema, commentSchema, TBlogPublishSchema } from "../zod";
 import { IApiArrRes, IApiObjRes, TError } from "@/types";
 import { ISingleBlog, ITrendingBlog } from "@/types/blogTypes";
+import { revalidateTag } from "next/cache";
 
 const API_URL = process.env.API_BASE_URL
 
@@ -138,7 +139,8 @@ export const fetchBlog: TfetchBlogFn = async (blogId, mode) => {
     try {
         const res = await fetch(url, {
             method: 'GET',
-        },)
+            next: { tags: ['Blog'] }
+        })
 
         const data = await res.json();
 
@@ -159,6 +161,8 @@ export const fetchBlog: TfetchBlogFn = async (blogId, mode) => {
 
 
 }
+
+
 
 type TfetchTrendingBlogsFn = () => Promise<IApiArrRes<ITrendingBlog> | TError>
 
@@ -191,7 +195,6 @@ export const fetchTrendingBlogs: TfetchTrendingBlogsFn = async () => {
 
 
 }
-
 
 type TlikeBlogFn = (_: unknown, blogId: string,) => Promise<IApiObjRes<{ likesCount: number }> | TError>
 
@@ -236,7 +239,6 @@ export const createComment = async (prevState: unknown, payload: FormData) => {
 
     const commentObj = { _id, comment, blog_author };
 
-    console.log(commentObj);
     const result = commentSchema.safeParse(commentObj);
 
 
@@ -263,8 +265,40 @@ export const createComment = async (prevState: unknown, payload: FormData) => {
         }
     }
 
-    return {
-        success: true,
-        message: 'Comment created successfully',
+    return data
+}
+
+export async function revalidateFn(tag: string) {
+    revalidateTag(tag);
+}
+
+export const fetchCommentsOfBlog = async (blogId: string, pageParam:number) => {
+
+
+    let url = `${API_URL}/comments/${blogId}/?limit=2`;
+
+    try {
+        const res = await fetch(url, {
+            method: 'GET',
+            next: { tags: ['Comments'] }
+        })
+
+        const data = await res.json();
+
+        if (!res.ok && !data.success) {
+            return {
+                success: data.success,
+                message: data.message,
+            }
+        }
+
+        return data
+    } catch (error) {
+        return {
+            success: false,
+            message: (error as Error).message,
+        }
     }
+
+
 }

@@ -99,7 +99,7 @@ const UserSchema = new mongoose.Schema({
     },
     blogs: {
         type: [mongoose.Schema.Types.ObjectId],
-        ref: 'blogs',
+        ref: 'Blog',
         default: [],
     }
 
@@ -123,4 +123,4 @@ UserSchema.plugin(uniqueValidator, {
     message: "This {PATH} is exist",
 });
 
-export default mongoose.model<IUser>('users', UserSchema);
+export default mongoose.model<IUser>('User', UserSchema);

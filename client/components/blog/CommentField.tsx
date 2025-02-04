@@ -1,20 +1,33 @@
 'use client';
 
 import { authCredential } from '@/lib/actions/authActions';
-import { createComment, likeBLog } from '@/lib/actions/blogActions';
+import { createComment, likeBLog, revalidateFn } from '@/lib/actions/blogActions';
 import { ISingleBlog } from '@/types/blogTypes';
-import React, { useActionState, useState } from 'react'
+import { useSession } from 'next-auth/react';
+import React, { useActionState, useEffect, useState } from 'react'
 
 export default function CommentField({ actionType, blog }: { actionType: string, blog: ISingleBlog }) {
-    const [comment, setComment] = useState('')
 
+    const [comment, setComment] = useState('')
 
     const [state, action, isPending] = useActionState(createComment, null)
     console.log(state);
 
+    // useEffect(() => {
+   
+    // }, [state])
+    
+
+    const handelAction = async (formData: FormData) => {
+        action(formData)
+
+        revalidateFn('Blog')
+        setComment('')
+    }
+
     return (
-        <form action={action}>
-            <input type="hidden" name="_id" value={blog.blog_id} />
+        <form action={handelAction}>
+            <input type="hidden" name="_id" value={blog._id} />
             <input type="hidden" name="blog_author" value={blog.author._id} />
             <textarea
                 name="comment"
@@ -29,7 +42,9 @@ export default function CommentField({ actionType, blog }: { actionType: string,
             {
                 state?.errors && state.errors?.comment && <p className='text-red  pt-1 text-sm '>{state.errors?.comment}</p>
             }
-            <button type='submit' className='btn-dark mt-5 px-10'> {actionType}</button>
+            <button disabled={isPending} type='submit' className='btn-dark mt-5 px-10'>
+                {isPending ? 'Sending...' : actionType}
+            </button>
         </form>
     )
 }

@@ -39,8 +39,6 @@ export default function Blogs({ author }: { author?: string }) {
     if (status === 'pending') return <Loader />
     if (error) return <NoDataFound message='Failed to load blogs 😞' />
 
-
-
     return (
         <>
             {

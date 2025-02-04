@@ -46,17 +46,14 @@ export default async function Home(props: { searchParams: SearchParams }) {
         <div className="min-w-[40%] lg:min-w-[400px] max-w-min border-l-2 border-grey pl-8 pt-3 max-md:hidden">
           {
             search ? (
-              (
-                <>
-                  <h1 className="font-medium text-xl mb-8">User related to search <i className="fi fi-rr-user" /> </h1>
+              <>
+                <h1 className="font-medium text-xl mb-8">User related to search <i className="fi fi-rr-user" /> </h1>
 
-                  <Suspense fallback={<Loader />}>
-                    <TrendingBlogs search={search} />
-                  </Suspense>
-                </>
+                <Suspense fallback={<Loader />}>
+                  <TrendingBlogs search={search} />
+                </Suspense>
 
-
-              )
+              </>
             ) : (
               <div className="flex flex-col gap-10">
                 <div>

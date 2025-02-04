@@ -4,6 +4,9 @@ import { useState } from 'react'
 import { Dialog, DialogPanel, DialogTitle, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ISingleBlog } from '@/types/blogTypes'
 import CommentField from './CommentField'
+import { useInfiniteQuery } from '@tanstack/react-query'
+import { fetchCommentsOfBlog } from '@/lib/actions/blogActions'
+import Loader from '../shared/Loader'
 // import { XMarkIcon } from '@heroicons/react/24/outline'
 // import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 
@@ -14,6 +17,20 @@ interface ICommentsContainerProps {
 }
 
 export default function CommentsContainer({ open, setOpen, blog }: ICommentsContainerProps) {
+
+
+  const { data, error, status, fetchNextPage, isFetchingNextPage, hasNextPage, } = useInfiniteQuery({
+    queryKey: ['comments', blog._id],
+    queryFn: ({ pageParam }) => fetchCommentsOfBlog(blog._id, pageParam),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage: any) => {
+      if (!lastPage?.details?.next) return null
+      return lastPage?.details?.next
+    },
+  });
+
+
+  console.log(data);
 
   return (
     <Dialog open={open} onClose={setOpen} className="relative z-10">
@@ -50,7 +67,9 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
                 {/* Main */}
                 <div className='px-4 sm:px-6'>
                   <CommentField actionType='comment' blog={blog} />
-
+                  {
+                    status === 'pending' && <Loader />
+                  }
                 </div>
               </div>
             </DialogPanel>
