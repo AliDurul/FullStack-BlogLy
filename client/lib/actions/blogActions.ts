@@ -272,10 +272,16 @@ export async function revalidateFn(tag: string) {
     revalidateTag(tag);
 }
 
-export const fetchCommentsOfBlog = async (blogId: string, pageParam:number) => {
+export const fetchCommentsOfBlog = async (blogId: string, pageParam: string | number) => {
 
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    let url = `${API_URL}/comments/${blogId}/?limit=2`;
+    let url = `${API_URL}/comments/${blogId}`;
+
+    const params = new URLSearchParams();
+    if (pageParam) params.append("page", pageParam as string)
+
+    if (params.toString()) url += `?${params.toString()}`;
 
     try {
         const res = await fetch(url, {
@@ -293,6 +299,7 @@ export const fetchCommentsOfBlog = async (blogId: string, pageParam:number) => {
         }
 
         return data
+        
     } catch (error) {
         return {
             success: false,

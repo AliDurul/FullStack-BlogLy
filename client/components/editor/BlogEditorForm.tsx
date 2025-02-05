@@ -32,13 +32,12 @@ export default function BlogEditorForm({ editableBlog }: { editableBlog?: any })
         placeholder: "Let's write an awesome blog",
         data: {
           time: new Date().getTime(),
-          blocks: Array.isArray(content) ? editableBlog.content : content
+          blocks: Array.isArray(blog?.content) && editableBlog ? editableBlog.content : blog?.content
         },
       }));
     }
 
   }, []);
-
 
 
   const handleBannerChange = async (e: React.ChangeEvent<HTMLInputElement>) => {

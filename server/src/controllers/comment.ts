@@ -21,24 +21,25 @@ export const list = async (req: Request, res: Response) => {
     const { blog_id } = req.params;
     const { skip, limit } = req.query;
 
-    console.log(blog_id);
+    // pagination
+    let page = Number(req.query.page)
+    page = page > 0 ? (page - 1) : 0
 
-    const maxLimit = limit ? parseInt(limit as string) : 10;
-    const skipNumber = skip ? parseInt(skip as string) : 0;
+    const maxLimit = limit && typeof limit === 'string' && parseInt(limit) > 0 ? parseInt(limit) : 2;
+    const skipNumber = skip && typeof skip === 'string' && parseInt(skip) > 0 ? parseInt(skip) : (page * maxLimit);
 
 
     const result = await Comment.find({ blog_id, isReply: false })
         .populate('commented_by', 'personal_info.username personal_info.fullname personal_info.profile_img')
-        .skip(skipNumber)
+        .skip(page * skipNumber)
         .limit(maxLimit)
         .sort({ commentedAt: -1 });
 
-    
-    
+
     res.status(200).send({
         success: true,
         result,
-        details: await res.getModelListDetails(Comment).then((details: any) => details.pages)
+        details: await res.getModelListDetails(Comment, { blog_id, isReply: false }).then((details: any) => details.pages)
     })
 
 }
@@ -63,14 +64,21 @@ export const create = async (req: Request, res: Response) => {
 
     if (comment.length < 1) throw new CustomError('Comment cannot be empty.', 400);
 
-    const newComment = new Comment({
+    // const newComment = new Comment({
+    //     blog_id: _id,
+    //     comment,
+    //     commented_by: user_id,
+    //     blog_author,
+    // })
+
+    // const commentedData = await newComment.save();
+
+    let commentedData = await Comment.create({
         blog_id: _id,
         comment,
         commented_by: user_id,
         blog_author,
-    })
-
-    const commentedData = await newComment.save();
+    }).then((data: any) => data.populate('commented_by', 'personal_info.username personal_info.fullname personal_info.profile_img'));
 
     if (!commentedData) throw new CustomError('Comment could not be created.', 400);
 
@@ -87,11 +95,8 @@ export const create = async (req: Request, res: Response) => {
 
     await notification.save();
 
-    const { commentedAt, } = commentedData;
-
     res.status(201).send({
         success: true,
         result: commentedData
     })
-
 }

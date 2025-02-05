@@ -67,3 +67,25 @@ export interface IAuthor {
     personal_info: IPersonalInfo;
     _id: string;
 }
+
+
+export interface IComment {
+    _id: string;
+    blog_id: string;
+    blog_author: string;
+    comment: string;
+    commented_by: CommentedBy;
+    isReply: boolean;
+    children: any[];
+    commentedAt: Date;
+    updatedAt: Date;
+    __v: number;
+}
+
+export interface CommentedBy {
+    personal_info: IPersonalInfo;
+    _id: string;
+}
+
+
+

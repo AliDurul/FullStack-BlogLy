@@ -5,23 +5,27 @@ import { createComment, likeBLog, revalidateFn } from '@/lib/actions/blogActions
 import { ISingleBlog } from '@/types/blogTypes';
 import { useSession } from 'next-auth/react';
 import React, { useActionState, useEffect, useState } from 'react'
+import { useCommentsContext } from './CommentsContainer';
 
-export default function CommentField({ actionType, blog }: { actionType: string, blog: ISingleBlog }) {
+interface ICommentFieldProps {
+    blog: ISingleBlog,
+    actionType: string
+    action: (formData: FormData) => void
+    state: any
+    isPending: boolean
+}
+
+// export default function CommentField({ actionType, blog, action, state, isPending }: ICommentFieldProps) {
+export default function CommentField({ actionType }: { actionType: string }) {
+    const { action, state, blog, isPending, } = useCommentsContext()
 
     const [comment, setComment] = useState('')
-
-    const [state, action, isPending] = useActionState(createComment, null)
-    console.log(state);
-
-    // useEffect(() => {
-   
-    // }, [state])
-    
 
     const handelAction = async (formData: FormData) => {
         action(formData)
 
         revalidateFn('Blog')
+        // revalidateFn('Comments')
         setComment('')
     }
 
