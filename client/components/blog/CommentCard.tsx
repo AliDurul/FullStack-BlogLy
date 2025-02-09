@@ -1,20 +1,33 @@
 import { formatDate, getFullDay } from '@/lib/utils'
 import { IComment, IPersonalInfo } from '@/types/blogTypes'
+import { useSession } from 'next-auth/react'
 import Image from 'next/image'
-import React from 'react'
+import React, { useState } from 'react'
+import CommentField from './CommentField'
+import { useCommentsContext } from './CommentsContainer'
 
 interface ICommentCardProps {
-    commentData: IComment,
-    // index: number,
-
+    commentData: IComment & { childrenLevel: number, isReplyLoaded: boolean },
+    index: number,
 }
 
-export default function CommentCard({ commentData }: ICommentCardProps) {
+export default function CommentCard({ commentData, index }: ICommentCardProps) {
+    const session = useSession()
+    const { _id, comment, commentedAt, commented_by: { personal_info: { profile_img, fullname, username } }, children, childrenLevel, isReplyLoaded } = commentData
+    const { replyingTo, setReplyingTo } = useCommentsContext()
 
-    const { comment, commentedAt, commented_by: { personal_info: { profile_img, fullname, username } } } = commentData
+    const [showReplies, setShowReplies] = useState(false)
+
+    const handleHideReply = () => {
+        setShowReplies(!showReplies)
+    }
+
+    const handleReplyClick = () => {
+        setReplyingTo(replyingTo === commentData._id ? null : commentData._id)
+    }
 
     return (
-        <div className='w-full' style={{ paddingLeft: `${2 * 10}` }}>
+        <div className='w-full' >
             <div className='my-5 p-6 rounded-md border border-grey'>
                 <div className='flex gap-3 items-center mb-8'>
                     <Image
@@ -28,18 +41,32 @@ export default function CommentCard({ commentData }: ICommentCardProps) {
                         <span className='text-dark-grey opacity-75'>{fullname}</span>
                         <span className='font-semibold text-black'> @{username}</span>
                     </p>
-
                     <p className='min-w-fit'>{formatDate(commentedAt)}</p>
-
                 </div>
-                
                 <p className='font-gelasio text-xl ml-3'>{comment}</p>
-                
-                {/* <div>
-                    <button className='text-dark-grey font-semibold mt-2'>Reply</button>
-                </div> */}
-
-
+                <div className='flex gap-5 items-center mt-5'>
+                    {
+                        children.length > 0 && (
+                            <button onClick={handleHideReply} className='text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center gap-2'>
+                                <i className='fi fi-rr-comment-dots' />
+                                {showReplies ? 'Hide Reply' : 'Show Reply'}
+                            </button>
+                        )
+                    }
+                    <button className='text-dark-grey font-serif underline' onClick={handleReplyClick}>Reply</button>
+                </div>
+                {
+                    replyingTo === commentData._id && (
+                        <div className='mt-8'>
+                            <CommentField actionType='reply' index={index} replyingTo={_id} />
+                        </div>
+                    )
+                }
+                {
+                    showReplies && children.map((childComment, i) => (
+                        <CommentCard key={i} commentData={childComment} index={i} />
+                    ))
+                }
             </div>
         </div>
     )

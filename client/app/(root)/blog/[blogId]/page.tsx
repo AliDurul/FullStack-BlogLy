@@ -1,12 +1,14 @@
 import BlogContent from '@/components/blog/BlogContent';
 import BlogInteractions from '@/components/blog/BlogInteractions';
+import SimilarBlogs from '@/components/blog/SimilarBlogs';
 import BlogCard from '@/components/root/BlogCard';
 import AnimationWrapper from '@/components/shared/AnimationWrapper';
+import Loader from '@/components/shared/Loader';
 import { fetchBlog, fetchBlogs } from '@/lib/actions/blogActions';
 import { formatDate } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react'
+import React, { Suspense } from 'react'
 
 export default async function DetailBlogPage({ params }: { params: Promise<{ blogId: string }> }) {
     const { blogId } = await params;
@@ -16,10 +18,6 @@ export default async function DetailBlogPage({ params }: { params: Promise<{ blo
     if ('message' in blog) return <h1>Something went wrong</h1>
 
     const { title, blog_id, content, tags, banner, author: { personal_info: { fullname, username: author_username, profile_img } }, publishedAt } = blog.result;
-
-    const similarBlogs = await fetchBlogs({ category: tags[0], search: '', pageParam: '', author: '', limit: '3', excludedId: blog_id });
-
-    if ('message' in similarBlogs) return <h1>Something went wrong</h1>
 
     return (
         <AnimationWrapper>
@@ -62,20 +60,9 @@ export default async function DetailBlogPage({ params }: { params: Promise<{ blo
 
 
                 {/* Similar Posts */}
-                {
-                    similarBlogs.result.length > 0 && (
-                        <>
-                            <h1 className='text-2xl mt-14 mb-10 font-medium'> Similar Blogs</h1>
-                            {
-                                similarBlogs.result.map((blog, i) => (
-                                    <AnimationWrapper key={i} transition={{ duration: 1, delay: i * 0.08 }} >
-                                        <BlogCard blog={blog} author={blog?.author.personal_info} />
-                                    </AnimationWrapper>
-                                ))
-                            }
-                        </>
-                    )
-                }
+                <Suspense fallback={<Loader />}>
+                    <SimilarBlogs blog_id={blog_id} tags={tags} />
+                </Suspense>
             </div>
         </AnimationWrapper >
     )

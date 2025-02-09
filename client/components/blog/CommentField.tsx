@@ -16,8 +16,8 @@ interface ICommentFieldProps {
 }
 
 // export default function CommentField({ actionType, blog, action, state, isPending }: ICommentFieldProps) {
-export default function CommentField({ actionType }: { actionType: string }) {
-    const { action, state, blog, isPending, } = useCommentsContext()
+export default function CommentField({ actionType, index = undefined, replyingTo = undefined }: { actionType: string, index?: number, replyingTo?: string }) {
+    const { action, state, blog, isPending } = useCommentsContext()
 
     const [comment, setComment] = useState('')
 
@@ -31,6 +31,9 @@ export default function CommentField({ actionType }: { actionType: string }) {
 
     return (
         <form action={handelAction}>
+            {
+                replyingTo && <input type="hidden" name='replying_to' value={replyingTo} />
+            }
             <input type="hidden" name="_id" value={blog._id} />
             <input type="hidden" name="blog_author" value={blog.author._id} />
             <textarea

@@ -79,6 +79,7 @@ export interface IComment {
     children: any[];
     commentedAt: Date;
     updatedAt: Date;
+    parent: string;
     __v: number;
 }
 

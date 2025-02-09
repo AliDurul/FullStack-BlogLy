@@ -40,4 +40,5 @@ export const commentSchema = z.object({
   comment: z.string().min(1, "Comment is required."),
   _id: z.string().min(1, "Blog id is not captured."),
   blog_author: z.string().min(1, "Blog author id is not captured."),
+  replying_to: z.string().nullable().optional(),
 })

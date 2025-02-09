@@ -1,8 +1,8 @@
 'use client'
 
 import { useActionState, useEffect, useState } from 'react'
-import { Dialog, DialogPanel, DialogTitle, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { ISingleBlog } from '@/types/blogTypes'
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
+import { IComment, ISingleBlog } from '@/types/blogTypes'
 import CommentField from './CommentField'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { createComment, fetchCommentsOfBlog } from '@/lib/actions/blogActions'
@@ -11,9 +11,6 @@ import NoDataFound from '../root/NoDataFound'
 import AnimationWrapper from '../shared/AnimationWrapper'
 import CommentCard from './CommentCard'
 import { createContext, useContext } from 'react';
-
-// import { XMarkIcon } from '@heroicons/react/24/outline'
-// import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 
 interface ICommentsContainerProps {
   open: boolean
@@ -29,6 +26,8 @@ interface CommentsContextProps {
   action: any;
   isPending: boolean;
   blog: ISingleBlog;
+  replyingTo: string | null;
+  setReplyingTo: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const CommentsContext = createContext<CommentsContextProps | undefined>(undefined);
@@ -47,12 +46,9 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
   const [newComments, setNewComments] = useState<any[]>([])
 
   const [state, action, isPending] = useActionState(createComment, null)
+  const [customizedCommentsArr, setCustomizedCommentsArr] = useState<any[]>([])
 
-  useEffect(() => {
-    if (state?.success && state?.result) {
-      setNewComments(prev => [...prev, state.result])
-    }
-  }, [state])
+  const [replyingTo, setReplyingTo] = useState<string | null>(null)
 
 
   const { data, error, status, fetchNextPage, isFetchingNextPage, hasNextPage, } = useInfiniteQuery({
@@ -65,11 +61,81 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
     },
   });
 
+  const findAndAddReply = (comments: IComment[], reply: IComment): boolean => {
+    for (let comment of comments) {
+      if (comment._id === reply.parent) {
+        // Check if the reply already exists in the children array
+        const replyExists = comment.children.some((child: IComment) => child._id === reply._id);
+        if (!replyExists) {
+          comment.children = [reply, ...comment.children];
+        }
+        return true;
+      }
+      if (comment.children.length > 0) {
+        const found = findAndAddReply(comment.children, reply);
+        if (found) return true;
+      }
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    if (data?.pages) {
+      // const pagesWithLevels = data.pages.map((page: any) => ({
+      //   ...page,
+      //   result: page.result.map((comment: IComment) => ({
+      //     ...comment,
+      //     childrenLevel: 0,
+      //     isReplyLoaded: false,
+      //   })),
+      // }));
+      setCustomizedCommentsArr(data.pages);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (state?.success && state?.result) {
+      setCustomizedCommentsArr(prev => {
+        const newCommentsArr = [...prev];
+        const firstPageComments = newCommentsArr[0].result;
+
+        if (state.result.isReply) {
+          // Recursively find the parent comment and add the reply to its children array
+          findAndAddReply(firstPageComments, state.result);
+        } else {
+          // Check if the new comment already exists
+          const commentExists = firstPageComments.some((comment: IComment) => comment._id === state.result._id);
+
+          if (!commentExists) {
+            state.result.childrenLevel = 0;
+            state.result.isReplyLoaded = false;
+            newCommentsArr[0].result = [state.result, ...firstPageComments];
+          }
+        }
+
+        return newCommentsArr;
+      });
+      setReplyingTo(null);
+    }
+  }, [state]);
+
+  console.log(customizedCommentsArr);
+
+  const sharedValues = {
+    newComments,
+    setNewComments,
+    state,
+    action,
+    isPending,
+    blog,
+    replyingTo,
+    setReplyingTo
+  }
 
   return (
     <Dialog open={open} onClose={setOpen} className="relative z-10">
       <div className="fixed inset-0" />
-      <CommentsContext.Provider value={{ newComments, setNewComments, state, action, isPending, blog }}>
+      <CommentsContext.Provider value={sharedValues}>
         <div className="fixed inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
             <div className="pointer-events-none fixed inset-y-0 right-0 top-[80px] flex max-w-full pl-10 sm:pl-16">
@@ -107,24 +173,24 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
                       status === 'pending' && <Loader />
                     }
 
-                    {
+                    {/* {
                       newComments.length > 0 && (
                         <>
                           {
-                            newComments.map((comment, i) => {
+                            newComments.map((comment: IComment, i) => {
                               return (
                                 <AnimationWrapper transition={{ duration: 1, delay: i * .1 }} key={i}>
-                                  <CommentCard commentData={comment} />
+                                  <CommentCard commentData={comment} index={i} />
                                 </AnimationWrapper>
                               )
                             })
                           }
                         </>
                       )
-                    }
+                    } */}
 
                     {
-                      data?.pages.map((page: any, i: number) => {
+                      customizedCommentsArr?.map((page: any, i: number) => {
                         return (
                           <div key={i}>
                             {
@@ -132,7 +198,7 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
                                 page?.result.map((comment: any, i: number) => {
                                   return (
                                     <AnimationWrapper transition={{ duration: 1, delay: i * .1 }} key={i}>
-                                      <CommentCard commentData={comment} />
+                                      <CommentCard commentData={comment} index={i} />
                                     </AnimationWrapper>
                                   )
                                 })

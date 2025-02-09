@@ -2,12 +2,7 @@
 import { likeBLog } from '@/lib/actions/blogActions';
 import React, { startTransition, useActionState, useState, useEffect } from 'react'
 import toast from 'react-hot-toast';
-import { ring } from 'ldrs'
 import { ISingleBlog } from '@/types/blogTypes';
-
-ring.register()
-
-// Default values shown
 
 interface ILikeCommentBtnProps {
     blog: ISingleBlog;
@@ -34,18 +29,21 @@ const LikeBtn = ({ blog, session }: ILikeCommentBtnProps) => {
     }
 
     useEffect(() => {
-        if (state && 'message' in state) {
-            toast.error(state.message);
-        }
 
-        if (state?.success) {
-            setIsLiked(prev => !prev);
-            if (isLiked) {
-                blog.activity.likes = blog.activity.likes.filter((id: any) => id !== session.user._id);
-            } else {
-                blog.activity.likes.push(session.user._id);
+            if (state && 'message' in state) {
+                toast.error(state.message);
             }
-        }
+
+            if (state?.success) {
+                setIsLiked(prev => !prev);
+                if (isLiked) {
+                    blog.activity.likes = blog.activity.likes.filter((id: any) => id !== session.user._id);
+                } else {
+                    blog.activity.likes.push(session.user._id);
+                }
+            }
+
+
     }, [state]);
 
     return (

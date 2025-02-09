@@ -18,6 +18,9 @@ const authConfig = async () => {
     };
 };
 
+export async function revalidateFn(tag: string) {
+    revalidateTag(tag);
+}
 
 export const createOupdateBlog = async (prevState: unknown, blog: TBlogPublishSchema) => {
 
@@ -85,7 +88,7 @@ type TfetchBlogsFn = ({ category, search, pageParam, author, limit, excludedId }
 
 export const fetchBlogs: TfetchBlogsFn = async ({ category, search, pageParam, author, limit, excludedId }) => {
 
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     let url = `${API_URL}/blogs`;
 
@@ -128,7 +131,7 @@ type TfetchBlogFn = (blogId: string, mode?: string) => Promise<IApiObjRes<ISingl
 
 export const fetchBlog: TfetchBlogFn = async (blogId, mode) => {
 
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
 
     let url = `${API_URL}/blogs/${blogId}`;
 
@@ -161,8 +164,6 @@ export const fetchBlog: TfetchBlogFn = async (blogId, mode) => {
 
 
 }
-
-
 
 type TfetchTrendingBlogsFn = () => Promise<IApiArrRes<ITrendingBlog> | TError>
 
@@ -232,12 +233,12 @@ export const likeBLog: TlikeBlogFn = async (_, blogId) => {
 
 }
 
-export const createComment = async (prevState: unknown, payload: FormData) => {
+export const createComment = async (_: unknown, payload: FormData) => {
 
 
-    const { _id, comment, blog_author } = Object.fromEntries(payload.entries());
+    const { _id, comment, blog_author, replying_to } = Object.fromEntries(payload.entries());
 
-    const commentObj = { _id, comment, blog_author };
+    const commentObj = { _id, comment, blog_author, replying_to };
 
     const result = commentSchema.safeParse(commentObj);
 
@@ -268,10 +269,6 @@ export const createComment = async (prevState: unknown, payload: FormData) => {
     return data
 }
 
-export async function revalidateFn(tag: string) {
-    revalidateTag(tag);
-}
-
 export const fetchCommentsOfBlog = async (blogId: string, pageParam: string | number) => {
 
     // await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -299,7 +296,7 @@ export const fetchCommentsOfBlog = async (blogId: string, pageParam: string | nu
         }
 
         return data
-        
+
     } catch (error) {
         return {
             success: false,

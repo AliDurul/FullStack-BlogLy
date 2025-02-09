@@ -2,9 +2,9 @@ import { ISingleBlog } from '@/types/blogTypes';
 import Link from 'next/link';
 import React from 'react';
 import getSession from '@/lib/utils';
-import BlogShareBtns from './BlogShareBtns';
 import LikeBtn from './LikeBtn';
 import CommentBtn from './CommentBtn';
+import BlogShareBtns from './BlogShareBtns';
 
 interface IBlogInteractionProps {
     blog: ISingleBlog
