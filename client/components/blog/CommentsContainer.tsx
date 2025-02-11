@@ -46,6 +46,7 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
   const [newComments, setNewComments] = useState<any[]>([])
 
   const [state, action, isPending] = useActionState(createComment, null)
+  
   const [customizedCommentsArr, setCustomizedCommentsArr] = useState<any[]>([])
 
   const [replyingTo, setReplyingTo] = useState<string | null>(null)
@@ -81,14 +82,6 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
 
   useEffect(() => {
     if (data?.pages) {
-      // const pagesWithLevels = data.pages.map((page: any) => ({
-      //   ...page,
-      //   result: page.result.map((comment: IComment) => ({
-      //     ...comment,
-      //     childrenLevel: 0,
-      //     isReplyLoaded: false,
-      //   })),
-      // }));
       setCustomizedCommentsArr(data.pages);
     }
   }, [data]);
@@ -107,8 +100,6 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
           const commentExists = firstPageComments.some((comment: IComment) => comment._id === state.result._id);
 
           if (!commentExists) {
-            state.result.childrenLevel = 0;
-            state.result.isReplyLoaded = false;
             newCommentsArr[0].result = [state.result, ...firstPageComments];
           }
         }
@@ -119,7 +110,6 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
     }
   }, [state]);
 
-  console.log(customizedCommentsArr);
 
   const sharedValues = {
     newComments,
@@ -129,7 +119,8 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
     isPending,
     blog,
     replyingTo,
-    setReplyingTo
+    setReplyingTo,
+    setCustomizedCommentsArr
   }
 
   return (
@@ -172,22 +163,6 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
                     {
                       status === 'pending' && <Loader />
                     }
-
-                    {/* {
-                      newComments.length > 0 && (
-                        <>
-                          {
-                            newComments.map((comment: IComment, i) => {
-                              return (
-                                <AnimationWrapper transition={{ duration: 1, delay: i * .1 }} key={i}>
-                                  <CommentCard commentData={comment} index={i} />
-                                </AnimationWrapper>
-                              )
-                            })
-                          }
-                        </>
-                      )
-                    } */}
 
                     {
                       customizedCommentsArr?.map((page: any, i: number) => {

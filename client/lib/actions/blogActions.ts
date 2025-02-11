@@ -306,3 +306,41 @@ export const fetchCommentsOfBlog = async (blogId: string, pageParam: string | nu
 
 
 }
+
+export const fetchRepliesOfComment = async (commentId: string) => {
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    let url = `${API_URL}/comments/replies/${commentId}`;
+
+    // const params = new URLSearchParams();
+    // if (pageParam) params.append("page", pageParam as string)
+
+    // if (params.toString()) url += `?${params.toString()}`;
+
+    try {
+        const res = await fetch(url, {
+            method: 'GET',
+            next: { tags: ['CommentReplies'] }
+        })
+
+        const data = await res.json();
+
+        if (!res.ok && !data.success) {
+            return {
+                success: data.success,
+                message: data.message,
+            }
+        }
+
+        return data
+
+    } catch (error) {
+        return {
+            success: false,
+            message: (error as Error).message,
+        }
+    }
+
+
+}

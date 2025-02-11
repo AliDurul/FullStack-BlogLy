@@ -20,6 +20,7 @@ export default function CommentCard({ commentData, index }: ICommentCardProps) {
 
     const handleHideReply = () => {
         setShowReplies(!showReplies)
+        // 
     }
 
     const handleReplyClick = () => {

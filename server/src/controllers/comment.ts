@@ -24,6 +24,24 @@ const populateChildren = (path = 'children') => {
                         populate: {
                             path: 'commented_by',
                             select: 'personal_info.username personal_info.fullname personal_info.profile_img'
+                        },
+                        options: {
+                            populate: {
+                                path: 'children',
+                                populate: {
+                                    path: 'commented_by',
+                                    select: 'personal_info.username personal_info.fullname personal_info.profile_img'
+                                },
+                                options: {
+                                    populate: {
+                                        path: 'children',
+                                        populate: {
+                                            path: 'commented_by',
+                                            select: 'personal_info.username personal_info.fullname personal_info.profile_img'
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -68,6 +86,34 @@ export const list = async (req: Request, res: Response) => {
         success: true,
         result,
         details: await res.getModelListDetails(Comment, { blog_id, isReply: false }).then((details: any) => details.pages)
+    })
+
+};
+
+export const listReplies = async (req: Request, res: Response) => {
+    /*
+        #swagger.tags = ["Comments"]
+        #swagger.summary = "List Replies"
+        #swagger.description = "Endpoint to list all replies."
+        #swagger.parameters['obj'] = {
+            in: 'query',
+            description: 'Parent Comment ID',
+            required: true,
+            schema: { $ref: "#/definitions/ParentCommentId" }
+        }
+    */
+
+    const { parentId } = req.params;
+
+
+    const result = await Comment.findOne({ _id: parentId })
+        .populate(populateChildren())
+        .select('childeren')
+        .then((doc: any) => { return doc.children })
+    
+    res.status(200).send({
+        success: true,
+        result
     })
 
 }
