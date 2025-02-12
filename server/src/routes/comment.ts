@@ -1,15 +1,14 @@
 import { Router } from 'express';
-import { listReplies } from '../controllers/comment';
+import { listReplies, createComment, listRelatedCommets, deleteComment } from '../controllers/comment';
 
 const router = Router();
 
-const { create, list} = require('../controllers/comment');
 
 // URL: /comments
 
-router.route('/').post(create);
+router.route('/').post(createComment);
 
-router.route('/:blog_id').get(list);
+router.route('/:blog_id').get(listRelatedCommets).delete(deleteComment);
 
 router.route('/replies/:parentId/').get(listReplies);
 

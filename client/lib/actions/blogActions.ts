@@ -344,3 +344,39 @@ export const fetchRepliesOfComment = async (commentId: string) => {
 
 
 }
+
+export const deleteComment = async (_: unknown, commentId: string) => {
+
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    let url = `${API_URL}/comments/${commentId}`;
+
+    const headers = await authConfig();
+
+    try {
+        const res = await fetch(url, {
+            method: 'DELETE',
+            headers,
+            next: { tags: ['deleteComment'] }
+        })
+
+        const data = await res.json();
+
+        if (!res.ok && !data.success) {
+            return {
+                success: data.success,
+                message: data.message,
+            }
+        }
+
+        return data
+
+    } catch (error) {
+        return {
+            success: false,
+            message: (error as Error).message,
+        }
+    }
+
+
+}

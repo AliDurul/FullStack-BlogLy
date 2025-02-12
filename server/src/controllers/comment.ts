@@ -1,7 +1,7 @@
 import { CustomError } from "../helpers/utils";
 import { Request, Response } from 'express-serve-static-core';
 import Comment from "../models/comment";
-import blog from "../models/blog";
+import Blog from "../models/blog";
 import Notification from "../models/notification";
 
 const populateChildren = (path = 'children') => {
@@ -50,7 +50,37 @@ const populateChildren = (path = 'children') => {
     };
 };
 
-export const list = async (req: Request, res: Response) => {
+const deleteComments = async (commentId: string) => {
+
+    const comment = await Comment.findById(commentId);
+
+    if (!comment) throw new CustomError('Comment does not exist.', 404);
+
+    if (comment.parent) {
+        const updatedComment = await Comment.findOneAndUpdate({ _id: comment.parent }, { $pull: { children: commentId } });
+        if (!updatedComment) throw new CustomError('Parent comment could not be updated.', 400);
+        console.log('comment deleted from parent');
+    }
+
+    const notifComment = await Notification.findOneAndDelete({ comment: commentId, type: 'comment' });
+
+    const notifReply = await Notification.findOneAndDelete({ comment: commentId, type: 'reply' });
+    
+    const blog = await Blog.findOneAndUpdate({ _id: comment.blog_id }, { $pull: { 'activity.comments': commentId }, $inc: { 'activity.total_comments': -1 }, 'activity.total_parent_comments': comment.parent ? 0 : -1 });
+    
+    if (!blog) throw new CustomError('Blog activity could not be updated.', 400);
+
+    if (comment.children && comment.children.length > 0) {
+        for (let child of comment.children) {
+            console.log('child', child);
+            deleteComments(child);
+        }
+    }
+
+    await Comment.findByIdAndDelete(commentId);
+}
+
+export const listRelatedCommets = async (req: Request, res: Response) => {
     /*
         #swagger.tags = ["Comments"]
         #swagger.summary = "List Comments"
@@ -110,7 +140,7 @@ export const listReplies = async (req: Request, res: Response) => {
         .populate(populateChildren())
         .select('childeren')
         .then((doc: any) => { return doc.children })
-    
+
     res.status(200).send({
         success: true,
         result
@@ -118,8 +148,7 @@ export const listReplies = async (req: Request, res: Response) => {
 
 }
 
-
-export const create = async (req: Request, res: Response) => {
+export const createComment = async (req: Request, res: Response) => {
     /*
         #swagger.tags = ["Comments"]
         #swagger.summary = "Create Comment"
@@ -156,7 +185,7 @@ export const create = async (req: Request, res: Response) => {
 
     if (!commentedData) throw new CustomError('Comment could not be created.', 400);
 
-    await blog.findByIdAndUpdate(_id, { $push: { "activity.comments": commentedData._id }, $inc: { "activity.total_comments": 1, "activity.total_parent_comments": replying_to ? 0 : 1 } });
+    await Blog.findByIdAndUpdate(_id, { $push: { "activity.comments": commentedData._id }, $inc: { "activity.total_comments": 1, "activity.total_parent_comments": replying_to ? 0 : 1 } });
 
     interface INotification {
         type: string;
@@ -197,4 +226,41 @@ export const create = async (req: Request, res: Response) => {
         success: true,
         result: commentedData
     })
+}
+
+export const deleteComment = async (req: Request, res: Response) => {
+    /*
+        #swagger.tags = ["Comments"]
+        #swagger.summary = "Delete Comment"
+        #swagger.description = "Endpoint to delete a comment."
+        #swagger.parameters['obj'] = {
+            in: 'query',
+            description: 'Comment ID',
+            required: true,
+            schema: { $ref: "#/definitions/CommentId" }
+        }
+    */
+
+    const userId = req.user._id;
+    const commentId = req.params.blog_id;
+
+    const comment = await Comment.findById(commentId);
+
+    if (!comment) throw new CustomError('Comment does not exist.', 404);
+
+    if (comment.commented_by.toString() !== userId.toString() || userId.toString() !== comment.blog_author.toString()) throw new CustomError('You are not authorized to delete this comment.', 403);
+
+    deleteComments(commentId);
+
+    // if (comment.isReply) {
+    //     await Comment.findByIdAndUpdate(comment.parent, { $pull: { children: commentId } });
+    // }
+
+    // await Comment.findByIdAndDelete(commentId);
+
+    res.status(200).send({
+        success: true,
+        message: 'Comment deleted successfully.'
+    })
+
 }
