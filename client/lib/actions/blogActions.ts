@@ -347,7 +347,7 @@ export const fetchRepliesOfComment = async (commentId: string) => {
 
 export const deleteComment = async (_: unknown, commentId: string) => {
 
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     let url = `${API_URL}/comments/${commentId}`;
 

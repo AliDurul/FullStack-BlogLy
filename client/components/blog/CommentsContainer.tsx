@@ -28,6 +28,8 @@ interface CommentsContextProps {
   blog: ISingleBlog;
   replyingTo: string | null;
   setReplyingTo: React.Dispatch<React.SetStateAction<string | null>>;
+  setCustomizedCommentsArr: React.Dispatch<React.SetStateAction<any[]>>;
+  setOpen: (value: boolean) => void;
 }
 
 const CommentsContext = createContext<CommentsContextProps | undefined>(undefined);
@@ -120,7 +122,8 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
     blog,
     replyingTo,
     setReplyingTo,
-    setCustomizedCommentsArr
+    setCustomizedCommentsArr,
+    setOpen
   }
 
   return (

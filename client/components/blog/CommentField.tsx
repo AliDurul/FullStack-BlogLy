@@ -16,18 +16,18 @@ interface ICommentFieldProps {
 }
 
 // export default function CommentField({ actionType, blog, action, state, isPending }: ICommentFieldProps) {
-export default function CommentField({ actionType, index = undefined, replyingTo = undefined }: { actionType: string, index?: number, replyingTo?: string }) {
-    const { action, state, blog, isPending } = useCommentsContext()
+export default function CommentField({ actionType, index = undefined, replyingTo = undefined,  }: { actionType: string, index?: number, replyingTo?: string }) {
+    const { action, state, blog, isPending, setReplyingTo } = useCommentsContext()
 
     const [comment, setComment] = useState('')
 
     const handelAction = async (formData: FormData) => {
         action(formData)
-
         revalidateFn('Blog')
-        // revalidateFn('Comments')
         setComment('')
+
     }
+
 
     return (
         <form action={handelAction}>

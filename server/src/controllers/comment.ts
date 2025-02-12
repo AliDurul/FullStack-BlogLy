@@ -57,14 +57,13 @@ const deleteComments = async (commentId: string) => {
     if (!comment) throw new CustomError('Comment does not exist.', 404);
 
     if (comment.parent) {
-        const updatedComment = await Comment.findOneAndUpdate({ _id: comment.parent }, { $pull: { children: commentId } });
-        if (!updatedComment) throw new CustomError('Parent comment could not be updated.', 400);
-        console.log('comment deleted from parent');
+        await Comment.findOneAndUpdate({ _id: comment.parent }, { $pull: { children: commentId } });
+
     }
 
-    const notifComment = await Notification.findOneAndDelete({ comment: commentId, type: 'comment' });
+    await Notification.findOneAndDelete({ comment: commentId, type: 'comment' });
 
-    const notifReply = await Notification.findOneAndDelete({ comment: commentId, type: 'reply' });
+    await Notification.findOneAndDelete({ comment: commentId, type: 'reply' });
     
     const blog = await Blog.findOneAndUpdate({ _id: comment.blog_id }, { $pull: { 'activity.comments': commentId }, $inc: { 'activity.total_comments': -1 }, 'activity.total_parent_comments': comment.parent ? 0 : -1 });
     
@@ -72,12 +71,12 @@ const deleteComments = async (commentId: string) => {
 
     if (comment.children && comment.children.length > 0) {
         for (let child of comment.children) {
-            console.log('child', child);
             deleteComments(child);
         }
     }
 
     await Comment.findByIdAndDelete(commentId);
+    console.log('Comment deleted successfully.');
 }
 
 export const listRelatedCommets = async (req: Request, res: Response) => {
