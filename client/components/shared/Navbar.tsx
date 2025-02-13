@@ -10,7 +10,7 @@ export default async function Navbar() {
   const session = await getSession()
 
   return (
-    <nav className='navbar'>
+    <nav className='navbar z-50'>
       <Link href='/' className='flex-none w-10 ' >
         <Image className='w-full' src='/assets/images/logo.png' width={40} height={44} alt='logo' />
       </Link>
