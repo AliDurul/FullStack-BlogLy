@@ -22,7 +22,7 @@ interface ICommentsContainerProps {
 interface CommentsContextProps {
   newComments: any[];
   setNewComments: React.Dispatch<React.SetStateAction<any[]>>;
-  state: any;
+  createCommentState: any;
   action: any;
   isPending: boolean;
   blog: ISingleBlog;
@@ -47,13 +47,15 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
 
   const [newComments, setNewComments] = useState<any[]>([])
 
+  /* Create Comment - API */
   const [state, action, isPending] = useActionState(createComment, null)
-  
+
   const [customizedCommentsArr, setCustomizedCommentsArr] = useState<any[]>([])
 
   const [replyingTo, setReplyingTo] = useState<string | null>(null)
 
 
+  /* fetch comments with pagination API */
   const { data, error, status, fetchNextPage, isFetchingNextPage, hasNextPage, } = useInfiniteQuery({
     queryKey: ['comments', blog._id],
     queryFn: ({ pageParam }) => fetchCommentsOfBlog(blog._id, pageParam),
@@ -64,6 +66,7 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
     },
   });
 
+  /* Reply related comment */
   const findAndAddReply = (comments: IComment[], reply: IComment): boolean => {
     for (let comment of comments) {
       if (comment._id === reply.parent) {
@@ -116,7 +119,7 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
   const sharedValues = {
     newComments,
     setNewComments,
-    state,
+    createCommentState:state,
     action,
     isPending,
     blog,

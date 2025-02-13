@@ -17,8 +17,7 @@ interface ICommentCardProps {
 export default function CommentCard({ commentData, index }: ICommentCardProps) {
     const session = useSession()
 
-
-    const { replyingTo, setReplyingTo, blog, setCustomizedCommentsArr, setOpen } = useCommentsContext()
+    const { replyingTo, setReplyingTo, blog, setCustomizedCommentsArr, setOpen, createCommentState } = useCommentsContext()
     const [showReplies, setShowReplies] = useState(false)
     const [fetchReplies, setFetchReplies] = useState(false);
 
@@ -33,15 +32,15 @@ export default function CommentCard({ commentData, index }: ICommentCardProps) {
         }
     }
 
+    /* Delete Comment */
     const [state, action, isPending] = useActionState(deleteComment, null)
 
+    /* Fetch replies of comment */
     const { data: commentReplies, error, status: fetchingRepylStatus } = useQuery({
-        queryKey: ['commentReplies', _id],
+        queryKey: ['commentReplies', _id, createCommentState],
         queryFn: () => fetchRepliesOfComment(_id),
         enabled: fetchReplies
     });
-
-
 
     const handleDeleteComment = () => {
         startTransition(() => {

@@ -7,11 +7,13 @@ import Notification from "../models/notification";
 const populateChildren = (path = 'children') => {
     return {
         path,
+
         populate: {
             path: 'commented_by',
             select: 'personal_info.username personal_info.fullname personal_info.profile_img'
         },
         options: {
+            sort: { commentedAt: -1 },
             populate: {
                 path: 'children',
                 populate: {
@@ -19,6 +21,8 @@ const populateChildren = (path = 'children') => {
                     select: 'personal_info.username personal_info.fullname personal_info.profile_img'
                 },
                 options: {
+                    sort: { commentedAt: -1 },
+
                     populate: {
                         path: 'children',
                         populate: {
@@ -26,6 +30,8 @@ const populateChildren = (path = 'children') => {
                             select: 'personal_info.username personal_info.fullname personal_info.profile_img'
                         },
                         options: {
+                            sort: { commentedAt: -1 },
+
                             populate: {
                                 path: 'children',
                                 populate: {
@@ -33,6 +39,8 @@ const populateChildren = (path = 'children') => {
                                     select: 'personal_info.username personal_info.fullname personal_info.profile_img'
                                 },
                                 options: {
+                                    sort: { commentedAt: -1 },
+
                                     populate: {
                                         path: 'children',
                                         populate: {
@@ -64,9 +72,9 @@ const deleteComments = async (commentId: string) => {
     await Notification.findOneAndDelete({ comment: commentId, type: 'comment' });
 
     await Notification.findOneAndDelete({ comment: commentId, type: 'reply' });
-    
+
     const blog = await Blog.findOneAndUpdate({ _id: comment.blog_id }, { $pull: { 'activity.comments': commentId }, $inc: { 'activity.total_comments': -1 }, 'activity.total_parent_comments': comment.parent ? 0 : -1 });
-    
+
     if (!blog) throw new CustomError('Blog activity could not be updated.', 400);
 
     if (comment.children && comment.children.length > 0) {

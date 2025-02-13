@@ -7,3 +7,4 @@
 - likebtn - add loading 
 - change bg color
 - add subcription feature
+- comment motion and other things

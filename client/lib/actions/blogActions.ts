@@ -309,7 +309,7 @@ export const fetchCommentsOfBlog = async (blogId: string, pageParam: string | nu
 
 export const fetchRepliesOfComment = async (commentId: string) => {
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
 
     let url = `${API_URL}/comments/replies/${commentId}`;
 
