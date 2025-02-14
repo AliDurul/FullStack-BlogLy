@@ -58,8 +58,6 @@ export const createOupdateBlog = async (prevState: unknown, blog: TBlogPublishSc
         })
     }
 
-
-
     const data = await res.json();
 
     if (!res.ok && !data.success) {

@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { IApiArrRes, IApiObjRes, TError } from "@/types";
 import { ISearchUser, IUser } from "@/types/userTypes";
+import { changePasswordSchema } from "../zod";
 
 const API_URL = process.env.API_BASE_URL
 
@@ -86,5 +87,44 @@ export const fetchUser: TfetchUserFn = async (username) => {
             message: (error as Error).message,
         }
     }
+
+}
+
+export const changePassword = async (_: unknown, payload: FormData) => {
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    const { currentPassword, newPassword } = Object.fromEntries(payload.entries());
+
+    const rowData = { currentPassword, newPassword };
+
+    const result = changePasswordSchema.safeParse(rowData);
+
+    if (!result.success) {
+        return {
+            success: false,
+            message: 'Plesae fix errors in the form.',
+            errors: result.error.flatten().fieldErrors,
+            inputs: rowData
+        };
+    }
+
+    const headers = await authConfig();
+
+    const res = await fetch(`${API_URL}/users/change-password`, {
+        method: 'POST',
+        body: JSON.stringify(result.data),
+        headers
+    })
+
+    const data = await res.json();
+
+    if (!res.ok && !data.success) return { success: data.success, message: data.message, inputs: rowData }
+
+
+    return data
+
+
+
 
 }

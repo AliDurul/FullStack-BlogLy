@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { changePassword } from '../controllers/user';
 
 const router = Router();
 
@@ -14,6 +15,8 @@ router.route('/:username')
     .put(update)
     .patch(update)
     .delete(deletee)
+
+router.post('/change-password', changePassword)
 
 
 export default router;

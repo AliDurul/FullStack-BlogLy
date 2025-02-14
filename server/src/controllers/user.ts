@@ -2,6 +2,7 @@ import User from '../models/user';
 import { Request, Response } from 'express-serve-static-core';
 import 'express-async-errors';
 import { CustomError } from '../helpers/utils';
+import passwordEncrypt from '../helpers/passwordEncrypt';
 
 
 
@@ -98,6 +99,43 @@ export const deletee = async (req: Request, res: Response) => {
     res.status(data.deletedCount ? 204 : 404).send({
         error: !data.deletedCount,
         data
+    })
+
+}
+
+export const changePassword = async (req: Request, res: Response) => {
+    /*
+        #swagger.tags = ["Users"]
+        #swagger.summary = "Change Password"
+        #swagger.parameters['body'] = {
+            in: 'body',
+            required: true,
+            schema: {
+                "currentPassword": "1234",
+                "newPassword": "12345",
+            }
+        }
+    */
+
+    const { currentPassword, newPassword } = req.body
+    const userId = req.user._id
+
+    if ((!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/.test(currentPassword)) || (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/.test(newPassword))) throw new CustomError('Password must be between 6 to 20 characters and include at least one numeric digit, one uppercase and one lowercase letter.', 403)
+
+    const user = await User.findById(userId)
+
+    if (!user) throw new CustomError('User not found', 404)
+
+    if (user.OAuth) throw new CustomError('You are using OAuth, you can not change password', 403);
+
+    if (user.personal_info.password !== passwordEncrypt(currentPassword)) throw new CustomError('Current password is incorrect', 400)
+
+    user.personal_info.password = passwordEncrypt(newPassword)
+    await user.save()
+
+    res.status(202).send({
+        success: true,
+        message: 'Password changed successfully'
     })
 
 }

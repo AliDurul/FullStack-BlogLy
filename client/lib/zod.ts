@@ -29,12 +29,13 @@ export const blogPublishSchema = z.object({
   }))
 });
 
+export type TBlogPublishSchema = z.infer<typeof blogPublishSchema>;
+
+
 export const blogDraftSchema = z.object({
   title: z.string().min(1, "Title is required."),
   draft: z.boolean().optional(),
 })
-
-export type TBlogPublishSchema = z.infer<typeof blogPublishSchema>; 
 
 export const commentSchema = z.object({
   comment: z.string().min(1, "Comment is required."),
@@ -42,3 +43,17 @@ export const commentSchema = z.object({
   blog_author: z.string().min(1, "Blog author id is not captured."),
   replying_to: z.string().nullable().optional(),
 })
+
+export const changePasswordSchema = z.object({
+  currentPassword: z.string()
+    .min(6, "Old password must be at least 6 characters long")
+    .max(20, "Old password must be no more than 20 characters long"),
+  newPassword: z.string()
+    .min(6, "New password must be at least 6 characters long")
+    .max(20, "New password must be no more than 20 characters long")
+    .refine((val) => /[A-Z]/.test(val), "New password must include at least one uppercase letter")
+    .refine((val) => /[a-z]/.test(val), "New password must include at least one lowercase letter")
+    .refine((val) => /\d/.test(val), "New password must include at least one number")
+});
+
+export type TChangePassword = z.infer<typeof changePasswordSchema>;

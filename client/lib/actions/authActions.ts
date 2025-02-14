@@ -1,7 +1,7 @@
 'use server';
 
 import { signIn } from "@/auth";
-import { credentialsSchema } from "../zod";
+import { changePasswordSchema, credentialsSchema } from "../zod";
 import { revalidatePath } from "next/cache";
 import { DEFAULT_LOGIN_REDIRECT } from "../routes";
 import { AuthError } from "next-auth";
@@ -62,9 +62,8 @@ export const authCredential = async (initialState: TInitialAuthState, payload: F
         } as TInitialAuthState;
     }
 
-
-
 }
+
 
 export const socialCredential = async (payload: FormData) => {
     await signIn("google", {

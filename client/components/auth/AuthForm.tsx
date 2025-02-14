@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useActionState } from 'react'
+import React, { useActionState, useEffect } from 'react'
 import InputBox from '@/components/auth/InputBox';
 import { authCredential } from '@/lib/actions/authActions';
 import toast from 'react-hot-toast';
@@ -16,9 +16,13 @@ export default function AuthForm({ slug }: { slug: string }) {
 
   const [state, action, isPending] = useActionState(authCredential, initialState);
 
-  if (state.message !== '') {
-    toast[state.success ? 'success' : 'error'](state.message);
-  }
+  useEffect(() => {
+
+    if (state?.message !== '') {
+        toast[state?.success ? 'success' : 'error'](state?.message);
+    }
+    
+}, [state])
 
 
 
