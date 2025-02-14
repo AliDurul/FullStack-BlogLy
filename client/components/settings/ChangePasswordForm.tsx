@@ -1,6 +1,6 @@
 'use client';
 import React, { useActionState, useEffect } from 'react'
-import InputBox from '../auth/InputBox';
+import InputBox from '../shared/InputBox';
 import toast from 'react-hot-toast';
 import { changePassword } from '@/lib/actions/userActions';
 

@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 import { blogDraftSchema, blogPublishSchema, commentSchema, TBlogPublishSchema } from "../zod";
 import { IApiArrRes, IApiObjRes, TError } from "@/types";
 import { ISingleBlog, ITrendingBlog } from "@/types/blogTypes";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 const API_URL = process.env.API_BASE_URL
 
@@ -20,6 +20,10 @@ const authConfig = async () => {
 
 export async function revalidateFn(tag: string) {
     revalidateTag(tag);
+}
+
+export async function revalidatePathFn(path: string) {
+    revalidatePath(path);
 }
 
 export const createOupdateBlog = async (prevState: unknown, blog: TBlogPublishSchema) => {

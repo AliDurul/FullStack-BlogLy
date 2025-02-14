@@ -1,22 +1,20 @@
 import { Router } from 'express';
-import { changePassword } from '../controllers/user';
+import { changePassword, updateProfileImg, userDelete, userList, userRead } from '../controllers/user';
 
 const router = Router();
 
-const { list, read, update, deletee } = require('../controllers/user');
 
 // URL: /users
 
 router.route('/')
-    .get(list)
+    .get(userList)
 
 router.route('/:username')
-    .get(read)
-    .put(update)
-    .patch(update)
-    .delete(deletee)
+    .get(userRead)
+    .delete(userDelete)
 
 router.post('/change-password', changePassword)
+router.put('/update-profile-img', updateProfileImg)
 
 
 export default router;

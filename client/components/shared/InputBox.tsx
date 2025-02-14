@@ -8,11 +8,12 @@ type TInputField = {
   placeholder: string;
   id?: string;
   value?: string;
-  icon: string;
+  icon?: string;
   errors?: any;
+  disabled?: boolean;
 };
 
-export default function InputBox({ name, type, id, value, placeholder, icon, errors }: TInputField) {
+export default function InputBox({ name, type, id, value, placeholder, icon, errors, disabled = false }: TInputField) {
   const [isPassVisible, setIsPassVisible] = useState(false)
   return (
     <div className='mb-4'>
@@ -23,6 +24,7 @@ export default function InputBox({ name, type, id, value, placeholder, icon, err
           placeholder={placeholder}
           defaultValue={value}
           id={id}
+          disabled={disabled}
           className={`input-box ${errors ? 'border-red' : ''}`}
         />
         <i className={`fi input-icon ${icon}`} />

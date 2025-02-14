@@ -56,7 +56,7 @@ export const fetchUsers: TfetchUsersFn = async (username) => {
 
 }
 
-type TfetchUserFn = (username?: string) => Promise<IApiObjRes<IUser> | TError>
+type TfetchUserFn = (username: string) => Promise<IApiObjRes<IUser> | TError>
 
 export const fetchUser: TfetchUserFn = async (username) => {
 
@@ -92,8 +92,6 @@ export const fetchUser: TfetchUserFn = async (username) => {
 
 export const changePassword = async (_: unknown, payload: FormData) => {
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
     const { currentPassword, newPassword } = Object.fromEntries(payload.entries());
 
     const rowData = { currentPassword, newPassword };
@@ -124,7 +122,21 @@ export const changePassword = async (_: unknown, payload: FormData) => {
 
     return data
 
+}
+
+export const putProfileImg = async (url: string) => {
+
+    const headers = await authConfig();
+
+    const res = await fetch(`${API_URL}/users/update-profile-img`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({ url })
+    });
 
 
+    const data = await res.json();
+
+    return data
 
 }

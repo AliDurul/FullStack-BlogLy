@@ -6,7 +6,7 @@ import passwordEncrypt from '../helpers/passwordEncrypt';
 
 
 
-export const list = async (req: Request, res: Response) => {
+export const userList = async (req: Request, res: Response) => {
     /*
         #swagger.tags = ["Users"]
         #swagger.summary = "List Users"
@@ -39,7 +39,7 @@ export const list = async (req: Request, res: Response) => {
     })
 }
 
-export const read = async (req: Request, res: Response) => {
+export const userRead = async (req: Request, res: Response) => {
     /*
         #swagger.tags = ["Users"]
         #swagger.summary = "Get Single User"
@@ -57,7 +57,7 @@ export const read = async (req: Request, res: Response) => {
 
 }
 
-export const update = async (req: Request, res: Response) => {
+export const updateProfileImg = async (req: Request, res: Response) => {
     /*
         #swagger.tags = ["Users"]
         #swagger.summary = "Update User"
@@ -74,21 +74,19 @@ export const update = async (req: Request, res: Response) => {
         }
     */
 
-    // Admin olmayan başkasınıın kaydına erişemez:
-    req.params.id = req.user.isAdmin ? req.params.id : req.user._id
+    const { url } = req.body
+    const userId = req.user._id
 
-    // const data = await User.updateOne({ _id: req.params.id }, req.body, { runValidators: true })
-    const data = await User.updateOne({ _id: req.params.id }, req.body, { runValidators: true })
+    const result = await User.findOneAndUpdate({ _id: userId }, { "personal_info.profile_img": url })
 
     res.status(202).send({
-        error: false,
-        data,
-        new: await User.findOne({ _id: req.params.id })
+        success: true,
+        profile_img: url
     })
 
 }
 
-export const deletee = async (req: Request, res: Response) => {
+export const userDelete = async (req: Request, res: Response) => {
     /*
         #swagger.tags = ["Users"]
         #swagger.summary = "Delete User"

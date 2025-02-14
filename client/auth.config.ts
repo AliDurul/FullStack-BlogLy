@@ -1,7 +1,7 @@
 import GitHub from 'next-auth/providers/github';
 import Google from 'next-auth/providers/google';
 import { CredentialsSignin, Profile, User } from "next-auth"
-import type { NextAuthConfig } from 'next-auth';
+import type { NextAuthConfig, Session } from 'next-auth';
 import { JWT } from "next-auth/jwt"
 import { jwtDecode } from "jwt-decode"
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -78,7 +78,7 @@ export default {
     ],
     callbacks: {
 
-        async signIn({ user, account, profile}) {
+        async signIn({ user, account, profile }) {
             if (!user) return false
 
             try {
@@ -127,13 +127,17 @@ export default {
             return true
         },
 
-        async jwt({ token, user }: { token: JWT, user: User }) {
+        async jwt({ token, user, trigger, session }: { token: JWT, user: User, trigger?: "signIn" | "signUp" | "update", session?: Session }) {
+
+
+            if (trigger === 'update' && session?.user.profile_img) { /* Updating Session */
+                token.userInfo.profile_img = session.user.profile_img;
+            }
 
             if (user) {
                 token.access = user?.access
                 token.refresh = user?.refresh
                 token.userInfo = jwtDecode<userInfo>(user?.access);
-                // console.log('jwt token==>', token);
 
                 return token
 
@@ -163,6 +167,8 @@ export default {
                     return { ...token, error: "RefreshAccessTokenError" as const };
                 }
             }
+
+
         },
 
         async session({ session, token }) {

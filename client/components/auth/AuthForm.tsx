@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useActionState, useEffect } from 'react'
-import InputBox from '@/components/auth/InputBox';
+import InputBox from '@/components/shared/InputBox';
 import { authCredential } from '@/lib/actions/authActions';
 import toast from 'react-hot-toast';
 import { TInitialAuthState } from '@/types/index';

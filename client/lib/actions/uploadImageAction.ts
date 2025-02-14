@@ -14,8 +14,6 @@ export const uploadImage = async (img: File) => {
     
     const { uploadURL } = await res.json();
 
-    // console.log('imgUrl', uploadURL);
-
     await fetch(uploadURL, {
         method: 'PUT',
         headers: { 'Content-Type': 'multipart/form-data' },
