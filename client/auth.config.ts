@@ -127,27 +127,29 @@ export default {
             return true
         },
 
-        async jwt({ token, user, trigger, session }: { token: JWT, user: User, trigger?: "signIn" | "signUp" | "update", session?: Session }) {
+        async jwt({ token, user, trigger, session }) {
+            // console.log('JWT callback triggered');
+            // console.log('session', session);
 
 
             if (trigger === 'update' && session?.user.profile_img) { /* Updating Session */
-                token.userInfo.profile_img = session.user.profile_img;
+                token.userInfo.profile_img = session?.user.profile_img;
+                console.log('update working');
             }
 
             if (user) {
                 token.access = user?.access
                 token.refresh = user?.refresh
                 token.userInfo = jwtDecode<userInfo>(user?.access);
-
                 return token
 
             } else if (Date.now() < token.userInfo.exp * 1000) {
-
+                // console.log('token not expired', token);
                 return token
 
             } else {
                 try {
-
+                    console.log("Refreshing token...");
                     const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -159,11 +161,13 @@ export default {
                     if (!res.ok) throw tokens
 
                     token.access = tokens.access
+                    token.userInfo = jwtDecode<userInfo>(tokens.access); // Ensure userInfo is updated with new token
 
+                    console.log("Token refreshed successfully");
                     return token
 
                 } catch (error) {
-                    console.error("Error refreshing ==>", error);
+                    console.error("Error refreshing token ==>", error);
                     return { ...token, error: "RefreshAccessTokenError" as const };
                 }
             }
@@ -172,7 +176,8 @@ export default {
         },
 
         async session({ session, token }) {
-
+            // console.log('Session callback triggered');
+            // console.log('Token:', token);
             if (token.access) {
                 const { access, refresh, userInfo, error } = token as JWT
                 session.user = userInfo as any

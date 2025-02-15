@@ -1,4 +1,5 @@
-'use client'
+'use client';
+
 import InputBox from '@/components/shared/InputBox'
 import { revalidatePathFn } from '@/lib/actions/blogActions'
 import { uploadImage } from '@/lib/actions/uploadImageAction'
@@ -6,7 +7,7 @@ import { putProfileImg } from '@/lib/actions/userActions'
 import { ISocialLinks, IUser } from '@/types/userTypes'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 
 const bioLimit = 150
@@ -29,48 +30,46 @@ export default function EditProfileForm({ user }: { user: IUser }) {
         }
     }
 
-
     const handleImageUpload = async (e: React.MouseEvent<HTMLButtonElement>) => {
-
         if (!updatedProfileImg) return;
 
-        let loadingToast = toast.loading('Uploading Image...');
-
+        const loadingToast = toast.loading('Uploading Image...');
         const button = e.currentTarget;
         button.disabled = true;
 
-        uploadImage(updatedProfileImg)
-            .then(imgUrl => {
-                if (!imgUrl) throw new Error('Image not uploaded');
+        try {
+            const imgUrl = await uploadImage(updatedProfileImg);
+            if (!imgUrl) throw new Error('Image not uploaded');
 
-                putProfileImg(imgUrl)
-                    .then(res => {
-                        console.log(res);
-                        // update({ profile_img: res.profile_img });
+            const res = await putProfileImg(imgUrl);
+            console.log('res from putProfileImg', res);
 
-                        setProfileImgSrc(imgUrl);
-                        toast.success('Image uploaded successfully');
+            await update({
+                user: {
+                    ...sessions?.user,
+                    profile_img: res.profile_img
+                }
+            });
 
-                    }).catch(err => {
-                        toast.error('Failed to upload image');
-                        console.log(err);
-                    })
-
-            }).catch(err => {
-                toast.error('Failed to upload image');
-                console.log(err);
-            }).finally(() => {
-                setUpdatedProfileImg(null);
-                toast.dismiss(loadingToast);
-                button.disabled = false;
-            })
-
-        // const formData = new FormData();
-        // formData.append('profile_img', updatedProfileImg);
-
-        // Upload image to server
-        // dispatch(updateProfileImage(formData));
+            setProfileImgSrc(imgUrl);
+            toast.success('Image uploaded successfully');
+        } catch (err) {
+            toast.error('Failed to upload image');
+            console.error(err);
+        } finally {
+            setUpdatedProfileImg(null);
+            toast.dismiss(loadingToast);
+            button.disabled = false;
+        }
     }
+
+    useEffect(() => {
+        const visibilityHandler = () =>
+            document.visibilityState === "visible" && update()
+        window.addEventListener("visibilitychange", visibilityHandler, false)
+        return () =>
+            window.removeEventListener("visibilitychange", visibilityHandler, false)
+    }, [update])
 
     return (
         <div className='flex flex-col lg:flex-row items-start py-10 gap-8 lg:gap-10 '>
