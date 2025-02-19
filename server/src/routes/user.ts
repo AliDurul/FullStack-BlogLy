@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { changePassword, updateProfileImg, userDelete, userList, userRead } from '../controllers/user';
+import { changePassword, updateProfileImg, updateUserProfile, userDelete, userList, userRead } from '../controllers/user';
 
 const router = Router();
 
@@ -12,6 +12,8 @@ router.route('/')
 router.route('/:username')
     .get(userRead)
     .delete(userDelete)
+
+router.post('/:userId/update', updateUserProfile)
 
 router.post('/change-password', changePassword)
 router.put('/update-profile-img', updateProfileImg)

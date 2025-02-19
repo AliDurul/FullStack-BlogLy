@@ -57,3 +57,19 @@ export const changePasswordSchema = z.object({
 });
 
 export type TChangePassword = z.infer<typeof changePasswordSchema>;
+
+
+export const userProfileSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  bio: z.string().max(150, "Bio must be less than 150 characters").optional(),
+  social_links: z.object({
+    youtube: z.string().url("Invalid URL").or(z.literal("")),
+    facebook: z.string().url("Invalid URL").or(z.literal("")),
+    twitter: z.string().url("Invalid URL").or(z.literal("")),
+    github: z.string().url("Invalid URL").or(z.literal("")),
+    instagram: z.string().url("Invalid URL").or(z.literal("")),
+    website: z.string().url("Invalid URL").or(z.literal(""))
+  })
+});
+
+export type TUserProfile = z.infer<typeof userProfileSchema>;

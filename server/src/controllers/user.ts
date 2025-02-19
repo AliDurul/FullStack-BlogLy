@@ -86,6 +86,60 @@ export const updateProfileImg = async (req: Request, res: Response) => {
 
 }
 
+export const updateUserProfile = async (req: Request, res: Response) => {
+    /*
+        #swagger.tags = ["Users"]
+        #swagger.summary = "Update User"
+        #swagger.parameters['body'] = {
+            in: 'body',
+            required: true,
+            schema: {
+                "username": "test",
+                "password": "1234",
+                "email": "
+                "firstName": "test",
+                "lastName": "test",
+    */
+
+    const { username, bio, social_links } = req.body
+    const { userId } = req.params
+
+    if (!username) throw new CustomError('Username is required', 400);
+    if (username.length < 3) throw new CustomError('Username must be at least 3 characters', 400);
+    if (bio.length > 150) throw new CustomError('Bio must be less than 150 characters', 400);
+
+    const socaialLinksArr = Object.keys(social_links)
+
+    for (let i = 0; i < socaialLinksArr.length; i++) {
+        if (social_links[socaialLinksArr[i]].length) {
+            let url = new URL(social_links[socaialLinksArr[i]]);
+            let hostname = url.hostname;
+            let href = url.href;
+            if (!hostname.includes(`${socaialLinksArr[i]}.com`) && socaialLinksArr[i] !== 'website') {
+                throw new CustomError(`${socaialLinksArr[i]} link is invalid. You must enter a full link.`, 400);
+            }
+        }
+    }
+
+    const upadateObj = {
+        "personal_info.username": username,
+        "personal_info.bio": bio,
+        social_links
+    }
+
+    User.findOneAndUpdate({ _id: userId }, upadateObj, { runValidators: true })
+        .then(result => {
+            res.status(202).send({
+                success: true,
+                result: { username }
+            })
+        }).catch(err => {
+            if (err.code === 11000) {
+                throw new CustomError('Username already exists', 400)
+            }
+        })
+};
+
 export const userDelete = async (req: Request, res: Response) => {
     /*
         #swagger.tags = ["Users"]
@@ -98,8 +152,7 @@ export const userDelete = async (req: Request, res: Response) => {
         error: !data.deletedCount,
         data
     })
-
-}
+};
 
 export const changePassword = async (req: Request, res: Response) => {
     /*
@@ -136,4 +189,4 @@ export const changePassword = async (req: Request, res: Response) => {
         message: 'Password changed successfully'
     })
 
-}
+};

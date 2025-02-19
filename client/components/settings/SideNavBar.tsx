@@ -41,7 +41,6 @@ export default function SideNavBar() {
     const pathname = usePathname()
 
 
-
     const [page, setPage] = useState<string>(pathname.split('/')[2].replace('-', ' '))
     const [showSideNav, setShowSideNav] = useState(false)
 
