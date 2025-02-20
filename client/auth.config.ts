@@ -132,8 +132,10 @@ export default {
             // console.log('session', session);
 
 
-            if (trigger === 'update' && session?.user.profile_img) { /* Updating Session */
-                token.userInfo.profile_img = session?.user.profile_img;
+            if (trigger === 'update' && session?.user) { /* Updating Session */
+                Object.keys(session.user).forEach(key => {
+                    token.userInfo[key] = session.user[key];
+                });
                 console.log('update working');
             }
 

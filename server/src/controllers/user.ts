@@ -102,7 +102,7 @@ export const updateUserProfile = async (req: Request, res: Response) => {
     */
 
     const { username, bio, social_links } = req.body
-    const { userId } = req.params
+    const userId = req.user._id
 
     if (!username) throw new CustomError('Username is required', 400);
     if (username.length < 3) throw new CustomError('Username must be at least 3 characters', 400);
@@ -127,11 +127,12 @@ export const updateUserProfile = async (req: Request, res: Response) => {
         social_links
     }
 
-    User.findOneAndUpdate({ _id: userId }, upadateObj, { runValidators: true })
+    User.findOneAndUpdate({ _id: userId }, upadateObj, { new: true, runValidators: true })
         .then(result => {
             res.status(202).send({
                 success: true,
-                result: { username }
+                message: 'User updated successfully',
+                result: { username: result?.personal_info.username, bio: result?.personal_info.bio, social_links: result?.social_links }
             })
         }).catch(err => {
             if (err.code === 11000) {

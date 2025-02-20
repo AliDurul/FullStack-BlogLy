@@ -8,12 +8,11 @@ const router = Router();
 
 router.route('/')
     .get(userList)
+    .put(updateUserProfile)
 
 router.route('/:username')
     .get(userRead)
     .delete(userDelete)
-
-router.post('/:userId/update', updateUserProfile)
 
 router.post('/change-password', changePassword)
 router.put('/update-profile-img', updateProfileImg)

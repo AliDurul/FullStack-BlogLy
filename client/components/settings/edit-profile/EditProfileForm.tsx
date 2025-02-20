@@ -20,8 +20,25 @@ export default function EditProfileForm({ user }: { user: IUser }) {
     const [profileImgSrc, setProfileImgSrc] = useState<string>(profile_img)
     const [updatedProfileImg, setUpdatedProfileImg] = useState<File | null>(null)
 
+    const [formData, setFormData] = useState({
+        username: profile_username,
+        bio,
+        social_links
+    })
+
+    // user profile update action
     const [state, action, isPending] = useActionState(putUserProfile, null)
-    console.log(state);
+
+    // update session-fn
+    const updateSession = async (updates: { [key: string]: any }) => {
+        await update({
+            user: {
+                ...sessions?.user,
+                ...updates
+            }
+        });
+    };
+
     // Update profile image states
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const img = e.target.files && e.target.files[0];
@@ -30,7 +47,8 @@ export default function EditProfileForm({ user }: { user: IUser }) {
             setProfileImgSrc(imgUrl);
             setUpdatedProfileImg(img)
         }
-    }
+    };
+
     // upload img to AWS & update session
     const handleImageUpload = async (e: React.MouseEvent<HTMLButtonElement>) => {
         if (!updatedProfileImg) return;
@@ -42,17 +60,8 @@ export default function EditProfileForm({ user }: { user: IUser }) {
         try {
             const imgUrl = await uploadImage(updatedProfileImg);
             if (!imgUrl) throw new Error('Image not uploaded');
-
             const res = await putProfileImg(imgUrl);
-            console.log('res from putProfileImg', res);
-
-            await update({
-                user: {
-                    ...sessions?.user,
-                    profile_img: res.profile_img
-                }
-            });
-
+            updateSession({ profile_img: res.profile_img });
             setProfileImgSrc(imgUrl);
             toast.success('Image uploaded successfully');
         } catch (err) {
@@ -63,24 +72,21 @@ export default function EditProfileForm({ user }: { user: IUser }) {
             toast.dismiss(loadingToast);
             button.disabled = false;
         }
-    }
+    };
 
     useEffect(() => {
-        // if (state?.errors) {
-        //     Object.entries(state?.errors).forEach(([key, value]) => {
-        //         if (Array.isArray(value)) {
-        //             value.forEach((error) => {
-        //                 toast.error(`${key}: ${error}`);
-        //             });
-        //         } else {
-        //             toast.error(`${key}: ${value}`);
-        //         }
-        //     });
-        // }
-        if(state?.message){
+ 
+        if (state?.message) {
             toast[state?.success ? 'success' : 'error'](state?.message);
         }
-    }, [state?.message])
+
+        if (state?.success && state.result.username) {
+            updateSession({ username: state.result.username });
+            setFormData(state.result);
+        }
+
+    }, [state])
+
 
     return (
         <div className='flex flex-col lg:flex-row items-start py-10 gap-8 lg:gap-10 '>
@@ -100,40 +106,31 @@ export default function EditProfileForm({ user }: { user: IUser }) {
                 <button className='btn-light mt-5 max-lg:center lg:w-full px-10' onClick={handleImageUpload}>Upload</button>
             </div>
 
-            <form onSubmit={async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.currentTarget);
-                await action({ payload: formData, userId: user._id });
-            }} className='w-full'>
+            <form action={action} className='w-full'>
                 <div className="grid grid-cols-1 md:grid-cols-2 md:gap-5">
-                    <div>
-                        <InputBox
-                            name='fullname'
-                            type='text'
-                            value={fullname}
-                            placeholder='Full Name'
-                            disabled={true}
-                            icon='fi-rr-user'
-                        />
-                    </div>
-                    <div>
-                        <InputBox
-                            name='email'
-                            type='email'
-                            value={email}
-                            placeholder='Email'
-                            disabled={true}
-                            icon='fi-rr-envelope' />
-                    </div>
+                    <InputBox
+                        name='fullname'
+                        type='text'
+                        value={fullname}
+                        placeholder='Full Name'
+                        disabled={true}
+                        icon='fi-rr-user'
+                    />
+                    <InputBox
+                        name='email'
+                        type='email'
+                        value={email}
+                        placeholder='Email'
+                        disabled={true}
+                        icon='fi-rr-envelope' />
                 </div>
 
                 <InputBox
                     name='username'
                     type='text'
-                    value={state?.inputs?.username as string || profile_username}
+                    value={formData?.username}
                     placeholder='Username'
                     icon='fi-rr-at'
-                    errors={state?.errors?.username}
                 />
 
                 <p className='text-dark-grey -mt-3'>Username will use to search and will be visible to all users.</p>
@@ -141,7 +138,7 @@ export default function EditProfileForm({ user }: { user: IUser }) {
                 <textarea
                     name="bio"
                     id="bio"
-                    defaultValue={state?.inputs?.username as string || bio}
+                    defaultValue={formData?.bio}
                     maxLength={bioLimit}
                     className='input-box h-64 lg:h-40 resize-none left-7 mt-5 pl-5'
                     placeholder='Tell us about yourself..'
@@ -155,8 +152,8 @@ export default function EditProfileForm({ user }: { user: IUser }) {
 
                 <div className="md:grid md:grid-cols-2 gap-x-6">
                     {
-                        Object.keys(social_links).map((key, i) => {
-                            let link = social_links[key as keyof ISocialLinks];
+                        Object.keys(formData?.social_links).map((key, i) => {
+                            let link = formData?.social_links[key as keyof ISocialLinks];
                             return (
                                 <InputBox
                                     key={i}

@@ -126,6 +126,8 @@ export const changePassword = async (_: unknown, payload: FormData) => {
 
 export const putProfileImg = async (url: string) => {
 
+    const session = await auth();
+    
     const headers = await authConfig();
 
     const res = await fetch(`${API_URL}/users/update-profile-img`, {
@@ -140,12 +142,11 @@ export const putProfileImg = async (url: string) => {
     return data
 
 }
-export const putUserProfile = async (_: unknown, { payload, userId }: { payload: FormData, userId: string }) => {
+export const putUserProfile = async (_: unknown, payload: FormData,) => {
 
     const { username, bio, youtube, facebook, twitter, github, instagram, website } = Object.fromEntries(payload.entries());
 
     const rowData = { username, bio, social_links: { youtube, facebook, twitter, github, instagram, website } };
-    console.log(rowData);
     const result = userProfileSchema.safeParse(rowData);
 
     if (!result.success) {
@@ -159,8 +160,8 @@ export const putUserProfile = async (_: unknown, { payload, userId }: { payload:
 
     const headers = await authConfig();
 
-    const res = await fetch(`${API_URL}/users/${userId}/update`, {
-        method: 'POST',
+    const res = await fetch(`${API_URL}/users`, {
+        method: 'PUT',
         body: JSON.stringify(result.data),
         headers
     })
