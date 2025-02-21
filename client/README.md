@@ -9,3 +9,5 @@
 - add subcription feature
 - comment motion and other things
 - update user session
+- add notification when like click
+- improve notification red banner

@@ -12,7 +12,6 @@ export default function CategoryBtn() {
     const searchParams = useSearchParams();
     const category = searchParams.get('category');
     const [query, setQuery] = useState(category);
-    // const query = searchParams.get('category'); 
     const router = useRouter();
 
     const handleCategoryFilter = (category: string) => {

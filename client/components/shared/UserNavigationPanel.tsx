@@ -9,8 +9,8 @@ export default function UserNavigationPanel({ username }: { username: string }) 
   const links = [
     { href: '/editor', label: 'Write', iconClass: 'fi fi-rr-file-edit', hiddenOnMd: true },
     { href: `/user/${username}`, label: 'Profile' },
-    { href: '/dashboard/blogs', label: 'Dashboard' },
-    { href: '/settings/edit-profile', label: 'Settings' }
+    { href: '/blogs', label: 'Dashboard' },
+    { href: '/edit-profile', label: 'Settings' }
   ];
 
   return (

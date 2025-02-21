@@ -4,6 +4,9 @@ import { use, useEffect, useRef, useState } from 'react';
 import SideNavBarLinks from './SideNavBarLinks'
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
+import { CheckNoti } from '@/lib/actions/notiActions';
+import { useSession } from 'next-auth/react';
 
 
 const DashboardLinks = [
@@ -28,20 +31,19 @@ const SettingsLinks = [
     {
         name: 'Edit Profile',
         icon: 'fi fi-rr-user',
-        href: '/settings/edit-profile',
+        href: '/edit-profile',
     },
     {
         name: 'Change Password',
         icon: 'fi fi-rr-lock',
-        href: '/settings/change-password',
+        href: '/change-password',
     }
 ];
 
 export default function SideNavBar() {
     const pathname = usePathname()
-
-
-    const [page, setPage] = useState<string>(pathname.split('/')[2].replace('-', ' '))
+    const { data: session } = useSession()
+    const [page, setPage] = useState<string>(pathname.split('/')[1].replace('-', ' '))
     const [showSideNav, setShowSideNav] = useState(false)
 
     const activeTabLine = useRef<HTMLHRElement>(null);
@@ -63,6 +65,13 @@ export default function SideNavBar() {
             setShowSideNav(false)
         }
     }
+
+
+    const { isPending, isError, data } = useQuery({
+        queryKey: ['notification'],
+        queryFn: CheckNoti,
+        enabled: !!session,
+    });
 
     useEffect(() => {
         setShowSideNav(false)
@@ -92,7 +101,14 @@ export default function SideNavBar() {
                 {
                     DashboardLinks.map((link, index) => (
                         <Link key={index} href={link.href} onClick={() => { setPage(link.name) }} className={`sidebar-link ${pathname === link.href ? 'active' : ''}`}>
-                            <i className={`${link.icon} `} />
+                            <div className="relative">
+
+                                <i className={`${link.icon} `} />
+                                {
+                                    link.name === 'Notifications' && data && 'isNewNotification' in data && data.isNewNotification && <span className='bg-red size-2 rounded-full absolute z-10 top-0 right-0' />
+                                }
+
+                            </div>
                             <span>{link.name}</span>
                         </Link>
                     ))
