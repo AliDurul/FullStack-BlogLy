@@ -42,6 +42,7 @@ export const commentSchema = z.object({
   _id: z.string().min(1, "Blog id is not captured."),
   blog_author: z.string().min(1, "Blog author id is not captured."),
   replying_to: z.string().nullable().optional(),
+  notification_id: z.string().nullable().optional()
 })
 
 export const changePasswordSchema = z.object({

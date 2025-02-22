@@ -1,11 +1,21 @@
+import { formatDate, getFullDay } from '@/lib/utils'
 import { INoti } from '@/types/notiTypes'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+import React, { useActionState, useState } from 'react'
+import NotiCardCommentField from './noticard-comment-field'
+import { createComment } from '@/lib/actions/blogActions'
 
 export default function NotiCard({ notification, index }: { notification: INoti, index: number }) {
 
-    const { comment, replied_on_comment, type, user: { personal_info: { profile_img, fullname, username } }, blog: { blog_id, title } } = notification
+    const [isReplying, setIsReplying] = useState(false)
+
+    const { _id: notificationId, createdAt, comment, replied_on_comment, type, user, user: { personal_info: { profile_img, fullname, username } }, blog: { blog_id, title, _id: blogId } } = notification
+
+    const handleReplyCLik = () => {
+        setIsReplying(prev => !prev)
+    }
+
 
     return (
         <div className='p-6 border-b border-grey border-l-black '>
@@ -41,13 +51,34 @@ export default function NotiCard({ notification, index }: { notification: INoti,
             </div>
 
             {
-                type !== 'like' ?
-                    // <Link href={`/blog/${blog_id}`} className='flex gap-2 items-center text-dark-grey hover:underline'>
-                    //     <i className='fi fi-rr-arrow-right' />
-                    //     <p>View Blog</p>
-                    // </Link>
-                    <p className='ml-14 pl-5  font-gelasio text-xl my-5'>{comment.comment}</p>
-                    : null
+                type !== 'like' && <p className='ml-14 pl-5  font-gelasio text-xl my-5'>{comment.comment}</p>
+            }
+
+            <div className='ml-14 pl-5 mt-3 text-dark-grey flex gap-8'>
+                <p>{formatDate(createdAt)}</p>
+                {
+                    type !== 'like' && (
+                        <>
+                            <button onClick={handleReplyCLik} className='underline hover:text-black'>Reply</button>
+                            <button className='underline hover:text-black'>Delete</button>
+                        </>
+                    )
+                }
+            </div>
+
+            {
+                isReplying && (
+                    <div className='mt-8'>
+                        <NotiCardCommentField
+                            replyingTo={comment._id}
+                            setReplyingFalse={() => setIsReplying(false)}
+                            blogId={blogId}
+                            notificationId={notificationId}
+                            blog_author={user}
+                            index={index}
+                        />
+                    </div>
+                )
             }
         </div >
     )

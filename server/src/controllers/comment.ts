@@ -171,6 +171,7 @@ export const createComment = async (req: Request, res: Response) => {
     const user_id = req.user._id;
 
     const { _id, comment, blog_author, replying_to } = req.body;
+    console.log(req.body.notification_id);
 
     if (comment.length < 1) throw new CustomError('Comment cannot be empty.', 400);
 

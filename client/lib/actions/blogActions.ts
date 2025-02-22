@@ -238,9 +238,9 @@ export const likeBLog: TlikeBlogFn = async (_, blogId) => {
 export const createComment = async (_: unknown, payload: FormData) => {
 
 
-    const { _id, comment, blog_author, replying_to } = Object.fromEntries(payload.entries());
+    const { _id, comment, blog_author, replying_to, notification_id } = Object.fromEntries(payload.entries());
 
-    const commentObj = { _id, comment, blog_author, replying_to };
+    const commentObj = { _id, comment, blog_author, replying_to, notification_id };
 
     const result = commentSchema.safeParse(commentObj);
 

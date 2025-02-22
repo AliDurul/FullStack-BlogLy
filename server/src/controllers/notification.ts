@@ -46,7 +46,7 @@ export const listNotifications = async (req: Request, res: Response) => {
         .skip(skip)
         .limit(maxLimit)
         .populate('blog', 'title blog_id')
-        .populate('user', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
+        .populate('user', 'personal_info.profile_img personal_info.username personal_info.fullname')
         .populate('comment', 'comment')
         .populate('replied_on_comment', 'comment')
         .populate('reply', 'comment')

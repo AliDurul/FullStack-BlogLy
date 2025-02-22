@@ -2,7 +2,7 @@ export interface INoti {
     _id: string;
     type: string;
     blog: Blog;
-    user: User;
+    user: NotiUser;
     comment: Comment;
     seen: boolean;
     createdAt: Date;
@@ -20,8 +20,9 @@ export interface Comment {
     comment: string;
 }
 
-export interface User {
+export interface NotiUser {
     personal_info: PersonalInfo;
+    _id:string
 }
 
 export interface PersonalInfo {
