@@ -1,10 +1,11 @@
 import { Router } from 'express';
 
-import { listNotification } from '../controllers/notification';
+import { isExistNotification, listNotifications } from '../controllers/notification';
 
 const router = Router();
 
 // URL: /notifications
-router.get('/new', listNotification);
+router.get('/', listNotifications);
+router.get('/new', isExistNotification);
 
 export default router;

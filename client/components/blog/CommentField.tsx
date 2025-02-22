@@ -32,6 +32,7 @@ export default function CommentField({ actionType, index = undefined, replyingTo
             <input type="hidden" name="_id" value={blog._id} />
             <input type="hidden" name="blog_author" value={blog.author._id} />
             <textarea
+                disabled={isPending}
                 name="comment"
                 id="comment"
                 placeholder='Leave a comment...'

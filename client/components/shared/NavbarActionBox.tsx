@@ -23,7 +23,7 @@ export default function NavbarActionBox({ session }: { session: TSession }) {
         enabled: !!session,
     });
 
-    
+
 
     return (
         <>
@@ -52,7 +52,7 @@ export default function NavbarActionBox({ session }: { session: TSession }) {
                 {
                     session ?
                         <>
-                            <Link href={'dashboard/notification'}>
+                            <Link href={'/notifications'}>
                                 <button className='size-12 rounded-full bg-grey relative hover:bg-black/10'>
                                     <i className="fi fi-rr-bell text-2xl block mt-1" />
                                     {
