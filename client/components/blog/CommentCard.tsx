@@ -6,8 +6,9 @@ import React, { startTransition, useActionState, useEffect, useState } from 'rea
 import CommentField from './CommentField'
 import { useCommentsContext } from './CommentsContainer'
 import { useQuery } from '@tanstack/react-query'
-import { deleteComment, fetchRepliesOfComment, revalidateFn } from '@/lib/actions/blogActions'
+import { deleteComment, fetchRepliesOfComment } from '@/lib/actions/blogActions'
 import Loader from '../shared/Loader'
+import { revalidateTagFn } from '@/lib/actions/revalidateActions'
 
 interface ICommentCardProps {
     commentData: IComment & { childrenLevel: number, isReplyLoaded: boolean },
@@ -69,7 +70,7 @@ export default function CommentCard({ commentData, index }: ICommentCardProps) {
                 }));
                 return [...newCommentsArr];
             });
-            revalidateFn('Blog')
+            revalidateTagFn('Blog')
             setOpen(false)
             setReplyingTo(null);
         }

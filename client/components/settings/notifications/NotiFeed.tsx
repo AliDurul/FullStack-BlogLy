@@ -8,53 +8,57 @@ import { INoti } from "@/types/notiTypes";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import NotiCard from "./noti-card";
+import { useEffect } from "react";
+import { revalidateTagFn } from "@/lib/actions/revalidateActions";
 
 export default function NotiFeed() {
 
   const searchParams = useSearchParams();
   const type = searchParams.get('type') || 'all';
 
-  const { data, error, status, fetchNextPage, isFetchingNextPage, hasNextPage, } = useInfiniteQuery({
+  const { data, error, status, fetchNextPage, isFetchingNextPage, hasNextPage, refetch } = useInfiniteQuery({
     queryKey: ['posts', type],
     queryFn: ({ pageParam }) => fetchNotis({ type, pageParam }),
     initialPageParam: 1,
     getNextPageParam: (lastPage: any) => {
-      if (!lastPage?.details?.next) return null
-      return lastPage?.details?.next
+      if (!lastPage?.details?.next) return null;
+      return lastPage?.details?.next;
     },
   });
 
-  if (data && data.pages && data.pages.length && !data.pages[0].success) return <NoDataFound message='Something went wrong, please try again.' />
-  if (status === 'pending') return <Loader />
-  if (error) return <NoDataFound message='Failed to load notifications 😞' />
+
+  useEffect(() => {
+    if (status === 'success') {
+      console.log('revalidating');
+      revalidateTagFn('newNotif')
+    }
+  }, [data, status])
+
+  if (status === 'pending') return <Loader />;
+  if (error) return <NoDataFound message='Failed to load notifications 😞' />;
+  if (data && data.pages && data.pages.length && !data.pages[0].success) return <NoDataFound message='Something went wrong, please try again.' />;
+
 
   return (
     <>
       {
-        data?.pages.map((page: any, i: number) => {
-          return (
-            <div key={i}>
-              {
-                page.result.length ? (
-                  page?.result.map((notification: INoti, i: number) => {
-                    return (
-                      <AnimationWrapper transition={{ duration: 1, delay: i * .1 }} key={i}>
-                        {/* <NotiCard blog={blog} author={blog.author.personal_info} /> */}
-                        <NotiCard notification={notification} index={i}/>
-                      </AnimationWrapper>
-                    )
-                  })
-                ) : (<NoDataFound message='Dont have any notification ' />)
-              }
-            </div>
-          )
-        })
+        data?.pages.map((page: any, i: number) => (
+          <div key={i}>
+            {
+              page.result.length ? (
+                page?.result.map((notification: INoti, i: number) => (
+                  <AnimationWrapper transition={{ duration: 1, delay: i * .1 }} key={i}>
+                    <NotiCard notification={notification} index={i} refetchNotifications={refetch} />
+                  </AnimationWrapper>
+                ))
+              ) : (<NoDataFound message='Dont have any notification ' />)
+            }
+          </div>
+        ))
       }
-      {/* <div ref={ref} /> */}
       {
         isFetchingNextPage && <Loader />
       }
-
       {
         hasNextPage && (
           <button
@@ -67,5 +71,5 @@ export default function NotiFeed() {
         )
       }
     </>
-  )
+  );
 }

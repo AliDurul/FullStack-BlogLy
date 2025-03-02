@@ -1,15 +1,13 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { signOut } from "next-auth/react"
-import { TSession } from '@/types/index';
+import { TError, TSession } from '@/types/index';
 import UserNavigationPanel from './UserNavigationPanel'
 import Search from './Search'
 import { useQuery } from '@tanstack/react-query'
 import { CheckNoti } from '@/lib/actions/notiActions'
-
-
 
 
 export default function NavbarActionBox({ session }: { session: TSession }) {
@@ -17,11 +15,25 @@ export default function NavbarActionBox({ session }: { session: TSession }) {
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false)
     const [userNavPanel, setUserNavPanel] = useState(false)
 
-    const { isPending, isError, data } = useQuery({
-        queryKey: ['notification', session],
-        queryFn: CheckNoti,
-        enabled: !!session,
-    });
+    // const { isPending, isError, data } = useQuery({
+    //     queryKey: ['notification', session],
+    //     queryFn: CheckNoti,
+    //     enabled: !!session,
+    // });
+
+    const [data, setData] = useState<{ success: boolean, isNewNotification: boolean } | TError>({
+        success: false,
+        isNewNotification: false,
+    })
+
+    const CheckIfNewNotiFn = async () => {
+        const res = await CheckNoti()
+        setData(res)
+    }
+
+    useEffect(() => {
+        CheckIfNewNotiFn()
+    }, [session])
 
 
 
@@ -56,7 +68,7 @@ export default function NavbarActionBox({ session }: { session: TSession }) {
                                 <button className='size-12 rounded-full bg-grey relative hover:bg-black/10'>
                                     <i className="fi fi-rr-bell text-2xl block mt-1" />
                                     {
-                                        data && 'isNewNotification' in data && data.isNewNotification &&<span className='bg-red size-3 rounded-full absolute z-10 top-2 right-2' />
+                                        data && 'isNewNotification' in data && data.isNewNotification && <span className='bg-red size-3 rounded-full absolute z-10 top-2 right-2' />
                                     }
                                 </button>
                             </Link>

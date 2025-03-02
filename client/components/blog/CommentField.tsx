@@ -1,8 +1,8 @@
 'use client';
 
-import { revalidateFn } from '@/lib/actions/blogActions';
 import React, { useState } from 'react'
 import { useCommentsContext } from './CommentsContainer';
+import { revalidateTagFn } from '@/lib/actions/revalidateActions';
 
 
 interface ICommentFieldProps {
@@ -18,7 +18,7 @@ export default function CommentField({ actionType, index = undefined, replyingTo
 
     const handelAction = async (formData: FormData) => {
         action(formData)
-        revalidateFn('Blog')
+        revalidateTagFn('Blog')
         setComment('')
 
     }

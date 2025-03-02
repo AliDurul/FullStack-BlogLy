@@ -2,26 +2,41 @@ import { formatDate, getFullDay } from '@/lib/utils'
 import { INoti } from '@/types/notiTypes'
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useActionState, useState } from 'react'
+import React, { startTransition, useActionState, useState, useTransition } from 'react'
 import NotiCardCommentField from './noticard-comment-field'
-import { createComment } from '@/lib/actions/blogActions'
+import { createComment, deleteComment } from '@/lib/actions/blogActions'
+import { useSession } from 'next-auth/react'
 
-export default function NotiCard({ notification, index }: { notification: INoti, index: number }) {
+export default function NotiCard({ notification, index, refetchNotifications }: { notification: INoti, index: number, refetchNotifications: () => void }) {
 
     const [isReplying, setIsReplying] = useState(false)
 
-    const { _id: notificationId, createdAt, comment, replied_on_comment, type, user, user: { personal_info: { profile_img, fullname, username } }, blog: { blog_id, title, _id: blogId } } = notification
+    const { _id: notificationId,seen, reply, createdAt, comment, replied_on_comment, type, user, user: { personal_info: { profile_img, fullname, username } }, blog: { blog_id, title, _id: blogId } } = notification
+    const { data: session } = useSession()
 
-    const handleReplyCLik = () => {
+
+    const handleReplyClick = () => {
         setIsReplying(prev => !prev)
     }
 
 
+    // delete comment or reply
+    const [state, action, isPending] = useActionState(deleteComment, null)
+
+    const handleDeleteClick = (comment_id: string, type: string, e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+
+        startTransition(() => {
+            action(comment_id)
+        });
+
+        refetchNotifications()
+    }
+
     return (
-        <div className='p-6 border-b border-grey border-l-black '>
+        <div className={`p-6 border-b border-grey border-l-black ${!seen && 'border-l-2'} `}>
             <div className='flex gap-5 mb-3'>
                 <Image
-                    src={profile_img}
+                    src={profile_img || '/assets/images/404.png'}
                     alt={fullname}
                     width={40} height={40}
                     className='rounded-full flex-none size-14'
@@ -59,8 +74,10 @@ export default function NotiCard({ notification, index }: { notification: INoti,
                 {
                     type !== 'like' && (
                         <>
-                            <button onClick={handleReplyCLik} className='underline hover:text-black'>Reply</button>
-                            <button className='underline hover:text-black'>Delete</button>
+                            {
+                                !reply && <button onClick={handleReplyClick} className='underline hover:text-black'>Reply</button>
+                            }
+                            <button disabled={isPending} onClick={(e) => handleDeleteClick(comment._id, 'comment', e)} className='underline hover:text-black'>Delete</button>
                         </>
                     )
                 }
@@ -70,6 +87,7 @@ export default function NotiCard({ notification, index }: { notification: INoti,
                 isReplying && (
                     <div className='mt-8'>
                         <NotiCardCommentField
+                            refetchNotifications={refetchNotifications}
                             replyingTo={comment._id}
                             setReplyingFalse={() => setIsReplying(false)}
                             blogId={blogId}
@@ -80,6 +98,31 @@ export default function NotiCard({ notification, index }: { notification: INoti,
                     </div>
                 )
             }
+            {
+                (reply && !isPending) && (
+                    <div className='ml-20 p-5 bg-grey mt-5 rounded-md'>
+                        <div className="flex gap-3 mb-3">
+                            <Image src={session?.user.profile_img || '/assets/images/404.png'} alt={session?.user.fullname || 'author profile'} width={40} height={40} className='rounded-full flex-none size-8' />
+                            <div className='font-medium text-xl text-dark-grey'>
+                                <Link className=' mx-1 text-black underline' href={`/user/${session?.user.username}`}>
+                                    @{session?.user.username}
+                                </Link>
+                                <span className='font-normal'>replied to</span>
+                                <Link className='mx-1 text-black underline' href={`/user/${username}}`}>
+                                    @{username}
+                                </Link>
+                            </div>
+                        </div>
+                        <p className='ml-14 font-gelasio text-xl my-2'>{reply.comment}</p>
+                        <button disabled={isPending} onClick={(e) => handleDeleteClick(reply._id, 'reply', e)} className='underline hover:text-black ml-14 mt-2'>Delete</button>
+                    </div>
+                )
+            }
+            {
+                isPending && <div className='ml-20 p-5 bg-grey mt-5 rounded-md'>Deleting...</div>
+            }
+
+
         </div >
     )
 }

@@ -54,6 +54,11 @@ export const listNotifications = async (req: Request, res: Response) => {
         .select('createdAt type seen reply');
 
 
+    Notification.updateMany(filter, { seen: true })
+    .skip(skip)
+        .limit(maxLimit)
+    .then(()=>console.log('notification seen'))
+
 
     res.status(200).send({
         success: true,

@@ -69,9 +69,11 @@ const deleteComments = async (commentId: string) => {
 
     }
 
-    await Notification.findOneAndDelete({ comment: commentId, type: 'comment' });
+    // Notification.findOneAndDelete({ comment: commentId, type: 'comment' }).then(() => console.log('comment notification deleted'));
+    // Notification.findOneAndDelete({ comment: commentId, type: 'reply' }).then(() => console.log('reply notification deleted'));
+    Notification.findOneAndDelete({ comment: commentId }).then(() => console.log('comment notification deleted'));
+    Notification.findOneAndUpdate({ reply: commentId }, { $unset: { reply: 1 } }).then(() => console.log('reply notification deleted'));
 
-    await Notification.findOneAndDelete({ comment: commentId, type: 'reply' });
 
     const blog = await Blog.findOneAndUpdate({ _id: comment.blog_id }, { $pull: { 'activity.comments': commentId }, $inc: { 'activity.total_comments': -1 }, 'activity.total_parent_comments': comment.parent ? 0 : -1 });
 
@@ -170,8 +172,8 @@ export const createComment = async (req: Request, res: Response) => {
 
     const user_id = req.user._id;
 
-    const { _id, comment, blog_author, replying_to } = req.body;
-    console.log(req.body.notification_id);
+    const { _id, comment, blog_author, replying_to, notification_id } = req.body;
+
 
     if (comment.length < 1) throw new CustomError('Comment cannot be empty.', 400);
 
@@ -188,6 +190,7 @@ export const createComment = async (req: Request, res: Response) => {
         commentObj.parent = parentComment?._id
         commentObj.isReply = true;
     }
+
 
     let commentedData = await Comment.create(commentObj).then((data: any) => data.populate('commented_by', 'personal_info.username personal_info.fullname personal_info.profile_img'));
 
@@ -211,7 +214,7 @@ export const createComment = async (req: Request, res: Response) => {
         user: user_id,
         comment: commentedData._id
 
-    }
+    };
 
     if (replying_to) {
         notificationObj.replied_on_comment = replying_to;
@@ -225,7 +228,13 @@ export const createComment = async (req: Request, res: Response) => {
             // data.populate('commented_by', 'personal_info.username personal_info.fullname personal_info.profile_img')
         });
 
-    }
+
+        if (notification_id) {
+            Notification.findOneAndUpdate({ _id: notification_id }, { reply: commentedData._id }).then(() => console.log('notification updated'));
+
+        }
+
+    };
 
     await Notification.create(notificationObj);
 
@@ -256,7 +265,7 @@ export const deleteComment = async (req: Request, res: Response) => {
 
     if (!comment) throw new CustomError('Comment does not exist.', 404);
 
-    if (comment.commented_by.toString() !== userId.toString() || userId.toString() !== comment.blog_author.toString()) throw new CustomError('You are not authorized to delete this comment.', 403);
+    if ((comment.commented_by.toString() !== userId.toString()) && (userId.toString() !== comment.blog_author.toString())) throw new CustomError('You are not authorized to delete this comment.', 403);
 
     deleteComments(commentId);
 

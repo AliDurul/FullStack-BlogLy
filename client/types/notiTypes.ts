@@ -6,6 +6,7 @@ export interface INoti {
     comment: Comment;
     seen: boolean;
     createdAt: Date;
+    reply?: { comment: string, _id: string };
     replied_on_comment?: Comment
 }
 
@@ -22,7 +23,7 @@ export interface Comment {
 
 export interface NotiUser {
     personal_info: PersonalInfo;
-    _id:string
+    _id: string
 }
 
 export interface PersonalInfo {
