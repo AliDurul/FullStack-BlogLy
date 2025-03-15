@@ -1,7 +1,6 @@
 'use client';
 
 import InputBox from '@/components/shared/InputBox'
-import { revalidatePathFn } from '@/lib/actions/blogActions'
 import { uploadImage } from '@/lib/actions/uploadImageAction'
 import { putProfileImg, putUserProfile } from '@/lib/actions/userActions'
 import { ISocialLinks, IUser } from '@/types/userTypes'

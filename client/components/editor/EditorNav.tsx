@@ -66,7 +66,7 @@ export default function EditorNav() {
         if (state?.success) {
             toast.success(state.message);
             setTimeout(() => {
-                router.push('/');
+                router.push('/blog-management/?draft=true');
             }, 500);
         } else {
             // console.log(state);

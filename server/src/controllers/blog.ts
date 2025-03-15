@@ -1,11 +1,12 @@
 import { Request, Response } from 'express-serve-static-core';
-import { findOneAndUpdate, IBlog } from '../types/blog';
+import { IBlogfindOneAndUpdateFn, IBlog } from '../types/blog';
 import { CustomError } from '../helpers/utils';
 import { nanoid } from 'nanoid';
 import User from '../models/user';
 import Blog from '../models/blog';
 import 'express-async-errors';
 import Notification from '../models/notification';
+import Comment from '../models/comment';
 
 
 export const list = async (req: Request, res: Response) => {
@@ -25,9 +26,9 @@ export const list = async (req: Request, res: Response) => {
 
 
     // Queries
-    const { search, category, author, limit, excludedId } = req.query;
+    const { search, category, author, limit, excludedId, draft } = req.query;
 
-    const maxLimit = Number(limit) || Number(process.env.PAGE_SIZE) || 3;
+    const maxLimit = Number(limit) || Number(process.env.PAGE_SIZE) || 10;
 
 
     // pagination
@@ -38,8 +39,15 @@ export const list = async (req: Request, res: Response) => {
     let filter: any = { draft: false };
 
     if (category) filter = { ...filter, tags: { $in: [category] }, blog_id: { $ne: excludedId } }
-    else if (search) filter = { ...filter, title: new RegExp(search as string, 'i') }
-    else if (author) filter = { ...filter, author }
+    if (search) filter = { ...filter, title: new RegExp(search as string, 'i') }
+    if (author) {
+        if (draft == 'true') {
+            filter = { ...filter, draft: true, author }
+        } else {
+            filter = { ...filter, author }
+        }
+    }
+    console.log(filter)
 
     // db request
     const result = await Blog.find(filter)
@@ -129,7 +137,7 @@ export const read = async (req: Request, res: Response) => {
 
     const incrementVal = mode !== 'edit' ? 1 : 0;
 
-    const result: findOneAndUpdate = await Blog
+    const result: IBlogfindOneAndUpdateFn = await Blog
         .findOneAndUpdate({ blog_id: id }, { $inc: { "activity.total_reads": incrementVal } })
         .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname')
         .select('title des content banner activity publishedAt blog_id tags');
@@ -177,14 +185,31 @@ export const deletee = async (req: Request, res: Response) => {
         #swagger.summary = "Delete Blog"
     */
 
-    const data = await Blog.deleteOne({ _id: req.params.id })
+    const blog_id = req.params.id;
 
-    res.status(data.deletedCount ? 204 : 404).send({
-        error: !data.deletedCount,
-        data
-    })
+    const blog = await Blog.findOneAndDelete({ blog_id }) as unknown as IBlog | null;
 
-}
+    if (!blog) {
+        throw new CustomError('Blog not found', 404);
+    }
+
+    console.log('blog', blog);
+
+    await Notification.deleteMany({ blog: blog._id });
+    console.log('Notifications deleted');
+
+    await Comment.deleteMany({ blog_id: blog._id });
+    console.log('Comments deleted');
+
+    await User.findOneAndUpdate(
+        { _id: req.user._id },
+        { $pull: { blogs: blog._id }, $inc: { 'account_info.total_posts': -1 } }
+    );
+    console.log('Blog Deleted');
+
+    res.sendStatus(204);
+
+};
 
 export const trendingBlog = async (req: Request, res: Response) => {
     /*
@@ -295,3 +320,4 @@ export const Like = async (req: Request, res: Response) => {
         },
     });
 };
+

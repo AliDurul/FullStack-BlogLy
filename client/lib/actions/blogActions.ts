@@ -72,19 +72,20 @@ export const createOupdateBlog = async (prevState: unknown, blog: TBlogPublishSc
 }
 
 interface TFetchBlogsProps {
-    category: string,
-    search: string,
-    pageParam: string | number
-    author?: string,
-    limit?: string
-    excludedId?: string
+    category?: string;
+    search?: string;
+    pageParam: string | number;
+    author?: string;
+    limit?: string;
+    excludedId?: string;
+    draft?: string
 }
 
-type TfetchBlogsFn = ({ category, search, pageParam, author, limit, excludedId }: TFetchBlogsProps) => Promise<IApiArrRes<ISingleBlog> | TError>
+type TfetchBlogsFn = ({ category, search, pageParam, author, limit, excludedId, draft }: TFetchBlogsProps) => Promise<IApiArrRes<ISingleBlog> | TError>
 
-export const fetchBlogs: TfetchBlogsFn = async ({ category, search, pageParam, author, limit, excludedId }) => {
+export const fetchBlogs: TfetchBlogsFn = async ({ category, search, pageParam, author, limit, excludedId, draft }) => {
 
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
 
     let url = `${API_URL}/blogs`;
 
@@ -93,9 +94,12 @@ export const fetchBlogs: TfetchBlogsFn = async ({ category, search, pageParam, a
     if (search) params.append("search", search);
     if (pageParam) params.append("page", pageParam as string)
     if (author) params.append("author", author);
+    if (draft) params.append("draft", draft);
     if (limit) params.append("limit", limit);
     if (excludedId) params.append("excludedId", excludedId);
     if (params.toString()) url += `?${params.toString()}`;
+
+    console.log('url--', url);
 
     try {
         const res = await fetch(url, {
@@ -127,7 +131,6 @@ type TfetchBlogFn = (blogId: string, mode?: string) => Promise<IApiObjRes<ISingl
 
 export const fetchBlog: TfetchBlogFn = async (blogId, mode) => {
 
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
 
     let url = `${API_URL}/blogs/${blogId}`;
 
@@ -159,7 +162,54 @@ export const fetchBlog: TfetchBlogFn = async (blogId, mode) => {
     }
 
 
-}
+};
+
+type TdeleteBlogFn = (_: unknown, blogId: string) => Promise<TError>
+
+export const deleteBlog: TdeleteBlogFn = async (_, blogId) => {
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    let url = `${API_URL}/blogs/${blogId}`;
+
+    const headers = await authConfig();
+
+    try {
+        const res = await fetch(url, {
+            method: 'DELETE',
+            headers,
+            next: { tags: ['DeleteBlog'] }
+        })
+
+
+        if (res.status === 204) {
+            return {
+                success: true,
+                message: 'Blog deleted successfully',
+            };
+        }
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            return {
+                success: data.success,
+                message: data.message,
+            };
+        }
+
+
+        return {
+            success: true,
+            message: 'Blog deleted successfully',
+        }
+    } catch (error) {
+        return {
+            success: false,
+            message: (error as Error).message,
+        }
+    }
+};
 
 type TfetchTrendingBlogsFn = () => Promise<IApiArrRes<ITrendingBlog> | TError>
 

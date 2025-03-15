@@ -11,9 +11,9 @@ import { useSession } from 'next-auth/react';
 
 const DashboardLinks = [
     {
-        name: 'Blogs',
+        name: 'Manage Your Blogs',
         icon: 'fi fi-rr-document',
-        href: '/blogs',
+        href: '/blog-management/?draft=false',
     },
     {
         name: 'Notifications',

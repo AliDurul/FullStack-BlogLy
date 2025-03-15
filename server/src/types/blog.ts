@@ -1,6 +1,7 @@
 import { Document } from 'mongoose';
 
 export interface IBlog extends Document {
+    _id: string;
     blog_id: string;
     title: string;
     banner: string;
@@ -13,7 +14,7 @@ export interface IBlog extends Document {
     draft: boolean;
 }
 
-export interface findOneAndUpdate {
+export interface IBlogfindOneAndUpdateFn {
     activity: Activity;
     _id: string;
     blog_id: string;

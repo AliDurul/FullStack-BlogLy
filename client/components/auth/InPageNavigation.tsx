@@ -10,7 +10,8 @@ export default function InPageNavigation({ routes, defaultHidden = [], defaultAc
     activeTabLineRef = React.useRef<HTMLHRElement>(null);
     activeTabeRef = React.useRef<HTMLButtonElement>(null);
 
-    const [navIndex, setNavIndex] = useState(defaultActiveIndex)
+    const [navIndex, setNavIndex] = useState(defaultActiveIndex);
+    const [width, setWidth] = useState(window.innerWidth);
 
     const changePageState = (btn: HTMLButtonElement, i: number) => {
         // const btn = e.currentTarget;
@@ -25,11 +26,23 @@ export default function InPageNavigation({ routes, defaultHidden = [], defaultAc
     }
 
     useEffect(() => {
+        window.addEventListener('resize', () => {
+            setWidth(window.innerWidth);
+        });
+
+        return () => {
+            window.removeEventListener('resize', () => {
+                setWidth(window.innerWidth);
+            });
+        }
+    }, []);
+
+    useEffect(() => {
         if (activeTabeRef.current) {
             changePageState(activeTabeRef.current, defaultActiveIndex);
         }
 
-    }, [defaultActiveIndex])
+    }, [defaultActiveIndex, width]);
 
 
 

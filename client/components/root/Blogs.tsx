@@ -18,7 +18,7 @@ export default function Blogs({ author }: { author?: string }) {
 
     const { ref, inView } = useInView();
 
-    const { data, error, status, fetchNextPage, isFetchingNextPage, hasNextPage, } = useInfiniteQuery({
+    const { data, error, status, fetchNextPage, isFetchingNextPage, hasNextPage } = useInfiniteQuery({
         queryKey: ['posts', category, search],
         queryFn: ({ pageParam }) => fetchBlogs({ category, search, pageParam, author }),
         initialPageParam: 1,
@@ -64,7 +64,6 @@ export default function Blogs({ author }: { author?: string }) {
             {
                 isFetchingNextPage && <Loader />
             }
-
             {
                 hasNextPage && (
                     <button

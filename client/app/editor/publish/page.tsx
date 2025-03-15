@@ -63,7 +63,7 @@ export default function EditorPublishPage() {
     if (state?.success) {
       toast.success(state.message);
       setTimeout(() => {
-        router.push('/');
+        router.push('/blog-management/?draft=false');
       }, 500);
     } else {
       // console.log(state);

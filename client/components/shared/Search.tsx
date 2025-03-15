@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { activeTabeRef } from '../auth/InPageNavigation';
 
-export default function Search() {
+export default function Search({ placeHolder }: { placeHolder?: string }) {
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -33,7 +33,7 @@ export default function Search() {
             }
 
             router.push(newUrl, { scroll: false });
-        }, 500)
+        }, 500);
 
         // ! getting error on this line
         // if (activeTabeRef.current) {
@@ -50,7 +50,7 @@ export default function Search() {
         <input
             onChange={(e) => setQuery(e.target.value)}
             type="text"
-            placeholder='Search'
+            placeholder={placeHolder || 'Search'}
             className='w-full md:w-auto bg-grey p-4 pl-6 pr-[12%] md:pr-6 rounded-full placeholder:text-dark-grey md:pl-12' />
     )
 }
