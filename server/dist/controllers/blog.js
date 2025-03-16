@@ -16,7 +16,7 @@ exports.Like = exports.likeBlog = exports.trendingBlog = exports.deletee = expor
 const utils_1 = require("../helpers/utils");
 const nanoid_1 = require("nanoid");
 const user_1 = __importDefault(require("../models/user"));
-const blog_1 = __importDefault(require("../models/Blog"));
+const blog_1 = __importDefault(require("../models/blog"));
 require("express-async-errors");
 const notification_1 = __importDefault(require("../models/notification"));
 const comment_1 = __importDefault(require("../models/comment"));
