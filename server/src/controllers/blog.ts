@@ -47,7 +47,6 @@ export const list = async (req: Request, res: Response) => {
             filter = { ...filter, author }
         }
     }
-    console.log(filter)
 
     // db request
     const result = await Blog.find(filter)
@@ -192,8 +191,6 @@ export const deletee = async (req: Request, res: Response) => {
     if (!blog) {
         throw new CustomError('Blog not found', 404);
     }
-
-    console.log('blog', blog);
 
     await Notification.deleteMany({ blog: blog._id });
     console.log('Notifications deleted');

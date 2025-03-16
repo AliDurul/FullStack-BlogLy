@@ -29,7 +29,7 @@ export default async function RootLayout({ children, }: Readonly<{ children: Rea
 
 
   return (
-    <html lang="en">
+    <html lang="en" >
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SessionProvider session={session} refetchInterval={60 * 30}>
           <RootProviders>

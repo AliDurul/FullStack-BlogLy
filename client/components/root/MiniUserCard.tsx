@@ -13,7 +13,7 @@ export default function MiniUserCard({ user }: MiniUserCardProps) {
 
     return (
         <Link href={`/user/${username}`} className='flex gap-5 items-center mb-5' >
-            <Image src={profile_img} alt={fullname} width={40} height={40} className='rounded-full size-4' />
+            <Image src={profile_img} alt={fullname} width={40} height={40} className='rounded-full size-8' />
 
             <div>
                 <h1 className='font-medium text-xl line-clamp-3'>{fullname}</h1>

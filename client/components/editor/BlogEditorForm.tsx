@@ -2,18 +2,20 @@
 
 import Image from 'next/image'
 import React, { useEffect, useRef, useState } from 'react'
-import defaultBanner from "@/public/assets/images/blog-banner.png";
+import darkDefaultBanner from "@/public/assets/images/blog banner dark.png";
+import lightDefaultBanner from "@/public/assets/images/blog banner light.png";
 import { uploadImage } from '@/lib/actions/uploadImageAction';
 import toast, { Toaster } from 'react-hot-toast';
 import { useEditorContext } from '@/contexts/EditorContext';
 import EditorJS from '@editorjs/editorjs'
 import { EditorTools } from './EditorTools';
+import { useThemeContext } from '@/contexts/ThemeContext';
 
 
 export default function BlogEditorForm({ editableBlog }: { editableBlog?: any }) {
 
   const { blog: { banner, title, content, tags, des, author }, blog, setTextEditor, setBlog, textEditor } = useEditorContext();
-
+  const { theme } = useThemeContext()
 
   useEffect(() => {
     if (editableBlog) {
@@ -83,7 +85,7 @@ export default function BlogEditorForm({ editableBlog }: { editableBlog?: any })
       <div className='mx-auto  max-w-[900px] w-full '>
         <div className="realative aspect-video hover:opacity-80 bg-white border-4 border-grey">
           <label htmlFor="uploadBanner">
-            <Image src={banner || defaultBanner} alt='defaultBanner' className='z-20 cursor-pointer' width={300} height={300} />
+            <Image src={banner || theme == 'light' ? lightDefaultBanner : darkDefaultBanner} alt='defaultBanner' className='z-20 cursor-pointer' width={300} height={300} />
             <input
               type="file"
               id='uploadBanner'
@@ -97,7 +99,7 @@ export default function BlogEditorForm({ editableBlog }: { editableBlog?: any })
         <textarea
           defaultValue={title}
           placeholder='Blog Title here...'
-          className='text-4xl w-full h-24 font-medium outline-none resize-none mt-10 leading-tight placeholder:opacity-50 '
+          className='text-4xl w-full h-24 font-medium outline-none resize-none mt-10 leading-tight placeholder:opacity-50 bg-white'
           onKeyDown={handleTitleKeyDown}
           onChange={handleTitleChange}
         />

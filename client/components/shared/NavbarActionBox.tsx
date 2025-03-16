@@ -2,18 +2,21 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
-import { signOut } from "next-auth/react"
+// import { signOut } from "next-auth/react"
 import { TError, TSession } from '@/types/index';
 import UserNavigationPanel from './UserNavigationPanel'
 import Search from './Search'
-import { useQuery } from '@tanstack/react-query'
+// import { useQuery } from '@tanstack/react-query'
 import { CheckNoti } from '@/lib/actions/notiActions'
-
+import { useThemeContext } from '@/contexts/ThemeContext';
+import darkLogo from '@/public/assets/images/logo-dark.png';
+import lightLogo from '@/public/assets/images/logo-light.png';
 
 export default function NavbarActionBox({ session }: { session: TSession }) {
 
-    const [searchBoxVisibility, setSearchBoxVisibility] = useState(false)
-    const [userNavPanel, setUserNavPanel] = useState(false)
+    const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
+    const [userNavPanel, setUserNavPanel] = useState(false);
+    const { theme, setTheme } = useThemeContext()
 
     // const { isPending, isError, data } = useQuery({
     //     queryKey: ['notification', session],
@@ -35,10 +38,25 @@ export default function NavbarActionBox({ session }: { session: TSession }) {
         CheckIfNewNotiFn()
     }, [session])
 
+    const changeTheme = () => {
+
+        const newTheme = theme === 'light' ? 'dark' : 'light'
+
+        setTheme(newTheme)
+
+        localStorage.setItem('theme', newTheme);
+
+        document.body.setAttribute('data-theme', newTheme);
+    }
+
 
 
     return (
         <>
+            <Link href='/' className='flex-none w-10 ' >
+                <Image className='w-full' src={theme == 'light' ? darkLogo : lightLogo} width={40} height={44} alt='logo' />
+            </Link>
+
             <div className={`absolute bg-white w-full left-0 top-full mt-0.5 border-b border-grey py-4 px-[5vw] md:border-0 md:block md:relative md:inset-0 md:p-0 md:w-auto md:show ${searchBoxVisibility ? 'show' : 'hide'}`}>
                 <Search />
                 <Image
@@ -61,16 +79,18 @@ export default function NavbarActionBox({ session }: { session: TSession }) {
                     <p>Write</p>
                 </Link>
 
+                <button className='size-12 rounded-full bg-grey relative flex items-center justify-center hover:bg-black/10' onClick={changeTheme}>
+                    <i className={`fi fi-rr-${theme == 'light' ? 'moon' : 'sun'} text-2xl`} />
+                </button>
+
                 {
                     session ?
                         <>
-                            <Link href={'/notifications'}>
-                                <button className='size-12 rounded-full bg-grey relative hover:bg-black/10'>
-                                    <i className="fi fi-rr-bell text-2xl block mt-1" />
-                                    {
-                                        data && 'isNewNotification' in data && data.isNewNotification && <span className='bg-red size-3 rounded-full absolute z-10 top-2 right-2' />
-                                    }
-                                </button>
+                            <Link href={'/notifications'} className='size-12 rounded-full bg-grey relative flex items-center justify-center hover:bg-black/10'>
+                                <i className="fi fi-rr-bell text-2xl" />
+                                {
+                                    data && 'isNewNotification' in data && data.isNewNotification && <span className='bg-red size-3 rounded-full absolute z-10 top-2 right-2' />
+                                }
                             </Link>
                             <div className='relative' onBlur={() => setTimeout(() => { setUserNavPanel(false) }, 200)} tabIndex={0}>
                                 <button className='size-11 mt-1' onClick={() => setUserNavPanel(prev => !prev)}>

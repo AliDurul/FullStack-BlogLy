@@ -1,17 +1,20 @@
 'use client'
 
 import { useEditorContext } from '@/contexts/EditorContext'
+import { useThemeContext } from '@/contexts/ThemeContext'
 import { createOupdateBlog } from '@/lib/actions/blogActions'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { startTransition, useActionState, useEffect } from 'react'
 import toast from 'react-hot-toast'
-import { set } from 'zod'
+import darkLogo from '@/public/assets/images/logo-dark.png'
+import lightLogo from '@/public/assets/images/logo-light.png'
 
 export default function EditorNav() {
 
     const { blog: { title, banner }, blog, setBlog, textEditor } = useEditorContext()
+    const { theme } = useThemeContext()
 
     const router = useRouter()
 
@@ -80,7 +83,7 @@ export default function EditorNav() {
     return (
         <nav className='navbar'>
             <Link href='/' className='flex-none w-10 ' >
-                <Image className='w-full' src='/assets/images/logo.png' width={40} height={44} alt='logo' />
+                <Image className='w-full' src={theme == 'light' ? darkLogo : lightLogo } width={40} height={44} alt='logo' />
             </Link>
             <p className='max-md:hidden text-black line-clamp-1 w-full'>
                 {title ? title : 'New Blog'}

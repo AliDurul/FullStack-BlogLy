@@ -99,8 +99,6 @@ export const fetchBlogs: TfetchBlogsFn = async ({ category, search, pageParam, a
     if (excludedId) params.append("excludedId", excludedId);
     if (params.toString()) url += `?${params.toString()}`;
 
-    console.log('url--', url);
-
     try {
         const res = await fetch(url, {
             method: 'GET',
