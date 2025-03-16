@@ -9,7 +9,7 @@ const uuid_1 = require("uuid");
 let profile_imgs_name_list = ["Garfield", "Tinkerbell", "Annie", "Loki", "Cleo", "Angel", "Bob", "Mia", "Coco", "Gracie", "Bear", "Bella", "Abby", "Harley", "Cali", "Leo", "Luna", "Jack", "Felix", "Kiki"];
 let profile_imgs_collections_list = ["notionists-neutral", "adventurer-neutral", "fun-emoji"];
 const UserSchema = new dbConnection_1.mongoose.Schema({
-    _id: {
+    user_id: {
         type: String,
         default: uuid_1.v4,
     },
@@ -95,7 +95,7 @@ const UserSchema = new dbConnection_1.mongoose.Schema({
     },
     blogs: {
         type: [dbConnection_1.mongoose.Schema.Types.ObjectId],
-        ref: 'blogs',
+        ref: 'Blog',
         default: [],
     }
 }, {
@@ -114,4 +114,4 @@ UserSchema.set("toJSON", {
 UserSchema.plugin(mongoose_unique_validator_1.default, {
     message: "This {PATH} is exist",
 });
-exports.default = dbConnection_1.mongoose.model('users', UserSchema);
+exports.default = dbConnection_1.mongoose.model('User', UserSchema);

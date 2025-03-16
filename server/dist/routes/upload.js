@@ -8,18 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const awsUpload_1 = require("../helpers/awsUpload");
-const customError_1 = __importDefault(require("../helpers/customError"));
+const utils_1 = require("../helpers/utils");
 const router = (0, express_1.Router)();
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const url = yield (0, awsUpload_1.generateUploadUrl)();
     if (!url)
-        throw new customError_1.default('Error while generating upload URL.', 500);
+        throw new utils_1.CustomError('Error while generating upload URL.', 500);
     res.status(200).json({ uploadURL: url });
 }));
 exports.default = router;

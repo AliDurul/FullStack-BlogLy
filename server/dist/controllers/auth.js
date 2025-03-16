@@ -14,10 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.logout = exports.refresh = exports.register = exports.login = void 0;
 const user_1 = __importDefault(require("../models/user"));
-const customError_1 = __importDefault(require("../helpers/customError"));
-const passwordEncrypt_1 = __importDefault(require("../helpers/passwordEncrypt"));
 const utils_1 = require("../helpers/utils");
+const passwordEncrypt_1 = __importDefault(require("../helpers/passwordEncrypt"));
+const utils_2 = require("../helpers/utils");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+require("express-async-errors");
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     /*
         #swagger.tags = ["Authentication"]
@@ -34,13 +35,13 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     */
     const { email, password } = req.body;
     if (!(email && password))
-        throw new customError_1.default('Please enter username/email and password.', 401);
+        throw new utils_1.CustomError('Please enter username/email and password.', 401);
     const user = yield user_1.default.findOne({ 'personal_info.email': email }).lean();
     if (!user)
-        throw new customError_1.default('User not found.', 404);
+        throw new utils_1.CustomError('User not found.', 404);
     if ((user === null || user === void 0 ? void 0 : user.personal_info.password) !== (0, passwordEncrypt_1.default)(password))
-        throw new customError_1.default('Wrong username/email or password.', 401);
-    res.status(200).send((0, utils_1.SetToken)(user));
+        throw new utils_1.CustomError('Wrong username/email or password.', 401);
+    res.status(200).send((0, utils_2.SetToken)(user));
 });
 exports.login = login;
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -66,20 +67,20 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let user;
     if (req.body.sub) {
         const { sub, fullname, email, picture, } = req.body;
-        user = yield user_1.default.findOne({ _id: sub });
+        user = yield user_1.default.findOne({ user_id: sub });
         if (user)
             return;
-        user = yield user_1.default.create({ _id: sub, OAuth: true, personal_info: { fullname, email, profile_img: picture, username: yield (0, utils_1.generateUsername)(email) } });
+        user = yield user_1.default.create({ user_id: sub, OAuth: true, personal_info: { fullname, email, profile_img: picture, username: yield (0, utils_2.generateUsername)(email) } });
     }
     else {
         if (!(fullname && email && password))
-            throw new customError_1.default('Please fill all fields.', 400);
+            throw new utils_1.CustomError('Please fill all fields.', 400);
         if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/.test(password))
-            throw new customError_1.default('Password must be between 6 to 20 characters and include at least one numeric digit, one uppercase and one lowercase letter.', 400);
-        const username = yield (0, utils_1.generateUsername)(email);
+            throw new utils_1.CustomError('Password must be between 6 to 20 characters and include at least one numeric digit, one uppercase and one lowercase letter.', 400);
+        const username = yield (0, utils_2.generateUsername)(email);
         user = yield user_1.default.create({ personal_info: { fullname, email, password: (0, passwordEncrypt_1.default)(password), username } });
     }
-    res.status(201).send((0, utils_1.SetToken)(user));
+    res.status(201).send((0, utils_2.SetToken)(user));
 });
 exports.register = register;
 const refresh = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -97,34 +98,26 @@ const refresh = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
     */
-    var _a, _b;
-    const refreshToken = (_b = (_a = req.body) === null || _a === void 0 ? void 0 : _a.bearer) === null || _b === void 0 ? void 0 : _b.refreshToken;
+    var _a;
+    const refreshToken = (_a = req.body) === null || _a === void 0 ? void 0 : _a.refresh;
     if (!refreshToken)
-        throw new customError_1.default('Please enter token.refresh', 401);
+        throw new utils_1.CustomError('Please enter token.refresh', 401);
     const refreshKey = process.env.REFRESH_KEY;
     if (!refreshKey)
-        throw new customError_1.default('Refresh key is not defined.', 422);
+        throw new utils_1.CustomError('Refresh key is not defined.', 422);
     jsonwebtoken_1.default.verify(refreshToken, refreshKey, function (err, userData) {
         return __awaiter(this, void 0, void 0, function* () {
             if (err) {
-                res.errorStatusCode = 401;
                 throw err;
             }
             else {
-                const { _id } = userData;
-                if (!_id)
-                    throw new customError_1.default('In token _id  not found.', 404);
-                const user = yield user_1.default.findOne({ _id }).lean();
+                const { user_id } = userData;
+                if (!user_id)
+                    throw new utils_1.CustomError('In token user_id  not found.', 404);
+                const user = yield user_1.default.findOne({ user_id }).lean();
                 if (!user)
-                    throw new customError_1.default('User not found.', 404);
-                const accessKey = process.env.ACCESS_KEY;
-                if (!accessKey)
-                    throw new customError_1.default('Access key is not defined.', 422);
-                const accessToken = jsonwebtoken_1.default.sign(user.toJSON(), accessKey, { expiresIn: '30m' });
-                res.send({
-                    error: false,
-                    bearer: { accessToken }
-                });
+                    throw new utils_1.CustomError('User not found.', 404);
+                res.status(200).send((0, utils_2.SetToken)(user, true));
             }
         });
     });

@@ -21,7 +21,9 @@ exports.default = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         throw new Error('ACCESS_KEY is not defined in the environment variables');
     if (tokenKey) {
         if (tokenKey[0] == 'Bearer') {
-            jsonwebtoken_1.default.verify(tokenKey[1], process.env.ACCESS_KEY, (err, userData) => req.user = userData);
+            jsonwebtoken_1.default.verify(tokenKey[1], process.env.ACCESS_KEY, (err, userData) => {
+                req.user = userData;
+            });
         }
     }
     next();

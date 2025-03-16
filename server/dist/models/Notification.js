@@ -10,35 +10,35 @@ const notificationSchema = new dbConnection_1.mongoose.Schema({
     blog: {
         type: dbConnection_1.mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'blogs'
+        ref: 'Blog'
     },
     notification_for: {
         type: dbConnection_1.mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'users'
+        ref: 'User'
     },
     user: {
         type: dbConnection_1.mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'users'
+        ref: 'User'
     },
     comment: {
         type: dbConnection_1.mongoose.Schema.Types.ObjectId,
-        ref: 'comments'
+        ref: 'Comment'
     },
     reply: {
         type: dbConnection_1.mongoose.Schema.Types.ObjectId,
-        ref: 'comments'
+        ref: 'Comment'
     },
     replied_on_comment: {
         type: dbConnection_1.mongoose.Schema.Types.ObjectId,
-        ref: 'comments'
+        ref: 'Comment'
     },
     seen: {
         type: Boolean,
         default: false
     }
-}, {
+}, { collection: 'notifications',
     timestamps: true
 });
-exports.default = dbConnection_1.mongoose.model("notification", notificationSchema);
+exports.default = dbConnection_1.mongoose.model("Notification", notificationSchema);

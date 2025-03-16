@@ -31,9 +31,21 @@ const blogSchema = new dbConnection_1.mongoose.Schema({
     author: {
         type: dbConnection_1.mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'users'
+        ref: 'User'
     },
     activity: {
+        likes: [
+            {
+                type: dbConnection_1.mongoose.Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
+        comments: [
+            {
+                type: dbConnection_1.mongoose.Schema.Types.ObjectId,
+                ref: "Comment",
+            },
+        ],
         total_likes: {
             type: Number,
             default: 0
@@ -51,17 +63,14 @@ const blogSchema = new dbConnection_1.mongoose.Schema({
             default: 0
         },
     },
-    comments: {
-        type: [dbConnection_1.mongoose.Schema.Types.ObjectId],
-        ref: 'comments'
-    },
     draft: {
         type: Boolean,
         default: false
     }
 }, {
+    collection: 'blogs',
     timestamps: {
         createdAt: 'publishedAt'
     }
 });
-exports.default = dbConnection_1.mongoose.model("blogs", blogSchema);
+exports.default = dbConnection_1.mongoose.model("Blog", blogSchema);

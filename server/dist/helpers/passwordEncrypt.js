@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const node_crypto_1 = require("node:crypto");
+const dotenv_1 = require("dotenv");
+(0, dotenv_1.config)();
 const keyCode = process.env.SECRET_KEY, loopCount = 1000, charCount = 32, encType = 'sha512';
 const passwordEncrypt = (password) => {
     if (!keyCode) {

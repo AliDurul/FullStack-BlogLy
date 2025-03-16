@@ -12,7 +12,7 @@ const authentication_1 = __importDefault(require("./middlewares/authentication")
 // import logger from './middlewares/logger';
 const queryHandler_1 = __importDefault(require("./middlewares/queryHandler"));
 const routes_1 = __importDefault(require("./routes"));
-const errorHandler_1 = __importDefault(require("./middlewares/errorHandler"));
+const errorHandler_1 = require("./middlewares/errorHandler");
 /* ------------------------------------------------------- */
 //* Requireds:
 const app = (0, express_1.default)();
@@ -53,7 +53,7 @@ app.all('/', (req, res) => {
     });
 });
 // API Routes:
-app.use(routes_1.default);
+app.use('/api', routes_1.default);
 // Not Found:
 app.use('*', (req, res) => {
     res.status(404).send({
@@ -62,5 +62,5 @@ app.use('*', (req, res) => {
     });
 });
 // Error Handler:
-app.use(errorHandler_1.default);
+app.use(errorHandler_1.errorHandler);
 app.listen(PORT, () => console.log(`Server runing at: http://localhost:${PORT}`));

@@ -17,7 +17,7 @@ const { nanoid } = require('nanoid');
 const awsConnection_1 = __importDefault(require("../configs/awsConnection"));
 const client_s3_1 = require("@aws-sdk/client-s3");
 const s3_request_presigner_1 = require("@aws-sdk/s3-request-presigner");
-const customError_1 = __importDefault(require("./customError"));
+const utils_1 = require("./utils");
 const generateUploadUrl = () => __awaiter(void 0, void 0, void 0, function* () {
     const data = new Date();
     const imageName = `${nanoid(5)}-${data.getTime()}.jpg`;
@@ -28,7 +28,7 @@ const generateUploadUrl = () => __awaiter(void 0, void 0, void 0, function* () {
     });
     const signedUrl = yield (0, s3_request_presigner_1.getSignedUrl)(awsConnection_1.default, command, { expiresIn: 1000 });
     if (!signedUrl)
-        throw new customError_1.default('Error while generating signed URL', 500);
+        throw new utils_1.CustomError('Error while generating signed URL', 500);
     return signedUrl;
 });
 exports.generateUploadUrl = generateUploadUrl;
