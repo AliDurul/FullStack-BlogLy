@@ -7,10 +7,18 @@ const express_1 = require("express");
 const document_1 = __importDefault(require("./document"));
 const auth_1 = __importDefault(require("./auth"));
 const user_1 = __importDefault(require("./user"));
+const blog_1 = __importDefault(require("./blog"));
+const comment_1 = __importDefault(require("./comment"));
 const router = (0, express_1.Router)();
 /* ------------------------------------------------------- */
+// auth
 router.use('/auth', auth_1.default);
+// users
 router.use('/users', user_1.default);
+// blogs
+router.use('/blogs', blog_1.default);
+// comments
+router.use('/comments', comment_1.default);
 // document:
 router.use('/documents', document_1.default);
 /* ------------------------------------------------------- */
