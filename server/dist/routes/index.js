@@ -9,6 +9,8 @@ const auth_1 = __importDefault(require("./auth"));
 const user_1 = __importDefault(require("./user"));
 const blog_1 = __importDefault(require("./blog"));
 const comment_1 = __importDefault(require("./comment"));
+const notification_1 = __importDefault(require("./notification"));
+const upload_1 = __importDefault(require("./upload"));
 const router = (0, express_1.Router)();
 /* ------------------------------------------------------- */
 // auth
@@ -19,6 +21,10 @@ router.use('/users', user_1.default);
 router.use('/blogs', blog_1.default);
 // comments
 router.use('/comments', comment_1.default);
+// notifications
+router.use('/notifications', notification_1.default);
+// comments
+router.use('/upload-url', upload_1.default);
 // document:
 router.use('/documents', document_1.default);
 /* ------------------------------------------------------- */

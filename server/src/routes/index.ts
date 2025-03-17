@@ -5,6 +5,8 @@ import authRoutes from './auth';
 import userRoutes from './user';
 import blogRoutes from './blog';
 import commentRoutes from './comment';
+import notificationRoutes from './notification';
+import uploadRoutes from './upload';
 
 const router = Router();
 /* ------------------------------------------------------- */
@@ -17,10 +19,12 @@ router.use('/users', userRoutes);
 router.use('/blogs', blogRoutes);
 // comments
 router.use('/comments', commentRoutes);
-
+// notifications
+router.use('/notifications', notificationRoutes);
+// comments
+router.use('/upload-url', uploadRoutes);
 // document:
 router.use('/documents', documentRoutes);
-
 
 
 /* ------------------------------------------------------- */
