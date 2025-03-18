@@ -80,12 +80,19 @@ export default function BlogEditorForm({ editableBlog }: { editableBlog?: any })
     setBlog(prev => ({ ...prev, title: e.target.value }))
   }
 
+
   return (
     <section>
       <div className='mx-auto  max-w-[900px] w-full '>
         <div className="realative aspect-video hover:opacity-80 bg-white border-4 border-grey">
-          <label htmlFor="uploadBanner">
-            <Image src={banner || theme == 'light' ? lightDefaultBanner : darkDefaultBanner} alt='defaultBanner' className='z-20 cursor-pointer' width={300} height={300} />
+            <label htmlFor="uploadBanner">
+            <Image 
+              src={banner ? banner : (theme === 'light' ? lightDefaultBanner : darkDefaultBanner)} 
+              alt='defaultBanner' 
+              className='z-20 cursor-pointer' 
+              width={300} 
+              height={300} 
+            />
             <input
               type="file"
               id='uploadBanner'
@@ -93,7 +100,7 @@ export default function BlogEditorForm({ editableBlog }: { editableBlog?: any })
               hidden
               onChange={handleBannerChange}
             />
-          </label>
+            </label>
         </div>
 
         <textarea

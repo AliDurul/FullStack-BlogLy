@@ -17,7 +17,7 @@ export default function NotiFeed() {
   const type = searchParams.get('type') || 'all';
 
   const { data, error, status, fetchNextPage, isFetchingNextPage, hasNextPage, refetch } = useInfiniteQuery({
-    queryKey: ['posts', type],
+    queryKey: ['notis', type],
     queryFn: ({ pageParam }) => fetchNotis({ type, pageParam }),
     initialPageParam: 1,
     getNextPageParam: (lastPage: any) => {
@@ -27,12 +27,11 @@ export default function NotiFeed() {
   });
 
 
-  useEffect(() => {
-    if (status === 'success') {
-      console.log('revalidating');
-      revalidateTagFn('newNotif')
-    }
-  }, [data, status])
+  // useEffect(() => {
+  //   if (status === 'success') {
+  //     revalidateTagFn('newNotif')
+  //   }
+  // }, [data, status])
 
   if (status === 'pending') return <Loader />;
   if (error) return <NoDataFound message='Failed to load notifications 😞' />;

@@ -3,7 +3,7 @@ import BlogInteractions from '@/components/blog/BlogInteractions';
 import SimilarBlogs from '@/components/blog/SimilarBlogs';
 import AnimationWrapper from '@/components/shared/AnimationWrapper';
 import Loader from '@/components/shared/Loader';
-import { fetchBlog} from '@/lib/actions/blogActions';
+import { fetchBlog } from '@/lib/actions/blogActions';
 import { formatDate } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';

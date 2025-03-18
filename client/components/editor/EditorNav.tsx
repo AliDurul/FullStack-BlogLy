@@ -63,7 +63,7 @@ export default function EditorNav() {
 
             })
         }
-    }
+    };
 
     useEffect(() => {
         if (state?.success) {

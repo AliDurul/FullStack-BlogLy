@@ -1,7 +1,6 @@
 'use client';
 
 import { fetchBlogs } from '@/lib/actions/blogActions';
-import React, { useEffect, useState } from 'react'
 import BlogCard from './BlogCard';
 import AnimationWrapper from '../shared/AnimationWrapper';
 import NoDataFound from './NoDataFound';
@@ -9,16 +8,17 @@ import { useSearchParams } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Loader from '../shared/Loader';
 import { useInView } from 'react-intersection-observer'
+import { useEffect } from 'react';
 
 export default function Blogs({ author }: { author?: string }) {
 
-    const searParams = useSearchParams();
-    const category = searParams.get('category') || '';
-    const search = searParams.get('search') || '';
+    const searchParams = useSearchParams();
+    const category = searchParams.get('category') || '';
+    const search = searchParams.get('search') || '';
 
     const { ref, inView } = useInView();
 
-    const { data, error, status, fetchNextPage, isFetchingNextPage, hasNextPage } = useInfiniteQuery({
+    const { data, error, status, fetchNextPage, isFetchingNextPage, hasNextPage, refetch } = useInfiniteQuery({
         queryKey: ['posts', category, search],
         queryFn: ({ pageParam }) => fetchBlogs({ category, search, pageParam, author }),
         initialPageParam: 1,
@@ -26,7 +26,10 @@ export default function Blogs({ author }: { author?: string }) {
             if (!lastPage?.details?.next) return null
             return lastPage?.details?.next
         },
+        // enabled: true,
     });
+
+    // console.log(data, error, status);
 
     // infinity scroll data fetching
     // useEffect(() => {
@@ -35,6 +38,10 @@ export default function Blogs({ author }: { author?: string }) {
     //     }
     // }, [fetchNextPage, inView])
 
+
+    useEffect(() => {
+        refetch(); // Re-fetch when params change
+    }, [category, search, refetch]);
 
     if (status === 'pending') return <Loader />
     if (error) return <NoDataFound message='Failed to load blogs 😞' />
@@ -67,7 +74,7 @@ export default function Blogs({ author }: { author?: string }) {
             {
                 hasNextPage && (
                     <button
-                        disabled={!hasNextPage}
+                        disabled={!hasNextPage || isFetchingNextPage}
                         className='text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center gap-2'
                         onClick={() => fetchNextPage()}
                     >
