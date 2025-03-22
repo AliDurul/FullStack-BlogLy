@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "title": "BlogLy",
-"scripts": {
+  "scripts": {
     "start": "nodemon src/index.ts",
     "build": "rimraf dist && tsc",
     "ts.check": "tsc --project tsconfig.json",
@@ -25,7 +25,6 @@
     "mongoose-unique-validator": "^4.0.1",
     "morgan": "^1.10.0",
     "nanoid": "^5.0.9",
-    "pre-commit": "^1.2.2",
     "redoc-express": "^2.1.0",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1",
@@ -39,6 +38,8 @@
     "@types/mongoose-unique-validator": "^1.0.9",
     "@types/morgan": "^1.9.9",
     "@types/swagger-ui-express": "^4.1.7",
+    "pre-commit": "^1.2.2",
+    "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   },
@@ -46,5 +47,5 @@
     "ts.check",
     "build",
     "add-build"
-]
+  ]
 }
