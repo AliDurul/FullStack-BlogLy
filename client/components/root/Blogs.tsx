@@ -23,8 +23,8 @@ export default function Blogs({ author }: { author?: string }) {
         queryFn: ({ pageParam }) => fetchBlogs({ category, search, pageParam, author }),
         initialPageParam: 1,
         getNextPageParam: (lastPage: any) => {
-            if (!lastPage?.details?.next) return null
-            return lastPage?.details?.next
+            if (!lastPage?.details?.next) return null;
+            return lastPage?.details?.next;
         },
         // enabled: true,
     });
