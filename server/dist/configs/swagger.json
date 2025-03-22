@@ -1,0 +1,706 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "BlogLy",
+    "description": "BlogLy is a blog platform that allows you to create, read, update, and delete blogs.",
+    "contact": {
+      "name": "Ali Durul",
+      "email": "alidrl26@gmail.com"
+    },
+    "license": {
+      "name": "ISC"
+    }
+  },
+  "host": "127.0.0.1:8000",
+  "basePath": "/",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization",
+      "description": "JWT Authentication * Example: <b>Bearer ...accessToken...</b>"
+    }
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Login",
+        "description": "Login with username (or email) and password for get Token and JWT.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "test"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "1234"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create User",
+        "description": "\r  Password Format Type: It must has min.1 lowercase, min.1 uppercase, min.1 number and min.1 specialChars.\r  ",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "test"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "1234"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "test@site.com"
+                },
+                "firstName": {
+                  "type": "string",
+                  "example": "test"
+                },
+                "lastName": {
+                  "type": "string",
+                  "example": "test"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "JWT: Refresh",
+        "description": "Refresh access-token by refresh-token.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "bearer": {
+                  "type": "object",
+                  "properties": {
+                    "refresh": {
+                      "type": "string",
+                      "example": "___refreshToken___"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Token: Logout",
+        "description": "Delete token-key.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/users/": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "List Users",
+        "description": "\r  You can use <u>filter[] & search[] & sort[] & page & limit</u> queries with endpoint.\r  <ul> Examples:\r  <li>URL/?<b>filter[field1]=value1&filter[field2]=value2</b></li>\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=asc&sort[field2]=desc</b></li>\r  <li>URL/?<b>limit=10&page=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update User",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/users/{username}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get Single User",
+        "description": "",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete User",
+        "description": "",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/users/change-password": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Change Password",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "currentPassword": {
+                  "type": "string",
+                  "example": "1234"
+                },
+                "newPassword": {
+                  "type": "string",
+                  "example": "12345"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          }
+        }
+      }
+    },
+    "/api/users/update-profile-img": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update User",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "test"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "1234"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "test@site.com"
+                },
+                "firstName": {
+                  "type": "string",
+                  "example": "test"
+                },
+                "lastName": {
+                  "type": "string",
+                  "example": "test"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          }
+        }
+      }
+    },
+    "/api/blogs/": {
+      "get": {
+        "tags": [
+          "Blogs"
+        ],
+        "summary": "List Blogs",
+        "description": "\r  You can use <u>filter[] & search[] & sort[] & page & limit</u> queries with endpoint.\r  <ul> Examples:\r  <li>URL/?<b>filter[field1]=value1&filter[field2]=value2</b></li>\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=asc&sort[field2]=desc</b></li>\r  <li>URL/?<b>limit=10&page=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "author",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "excludedId",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "draft",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Blogs"
+        ],
+        "summary": "Update Blog",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/api/blogs/trending": {
+      "get": {
+        "tags": [
+          "Blogs"
+        ],
+        "summary": "Get Trending Blog",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/blogs/{id}": {
+      "get": {
+        "tags": [
+          "Blogs"
+        ],
+        "summary": "Get Single Blog",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Blogs"
+        ],
+        "summary": "Update Blog",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Blogs"
+        ],
+        "summary": "Delete Blog",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/blogs/{id}/like": {
+      "get": {
+        "tags": [
+          "Blogs"
+        ],
+        "summary": "Add or Remove Like from a Blog",
+        "description": "This endpoint allows a user to add or remove their like from a specific blog post.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the blog post"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/comments/": {
+      "post": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "Create Comment",
+        "description": "Endpoint to create a comment.",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "Comment data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateComment"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/api/comments/{blog_id}": {
+      "get": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "List Comments",
+        "description": "Endpoint to list all comments.",
+        "parameters": [
+          {
+            "name": "blog_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "query",
+            "description": "Blog ID",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BlogId"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "in",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "required",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "schema",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "Delete Comment",
+        "description": "Endpoint to delete a comment.",
+        "parameters": [
+          {
+            "name": "blog_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "query",
+            "description": "Comment ID",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CommentId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/comments/replies/{parentId}/": {
+      "get": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "List Replies",
+        "description": "Endpoint to list all replies.",
+        "parameters": [
+          {
+            "name": "parentId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "obj",
+            "in": "query",
+            "description": "Parent Comment ID",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ParentCommentId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/notifications/": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/notifications/new": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/upload-url/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": []
+    }
+  ]
+}
