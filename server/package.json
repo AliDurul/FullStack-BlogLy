@@ -1,8 +1,8 @@
 {
-  "name": "server",
+  "name": "ts-node",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
-  "title": "BlogLy",
   "scripts": {
     "start": "nodemon src/index.ts",
     "build": "rimraf dist && tsc",
@@ -10,9 +10,8 @@
     "add-build": "git add dist"
   },
   "keywords": [],
-  "author": "Ali Durul",
+  "author": "",
   "license": "ISC",
-  "description": "BlogLy is a blog platform that allows you to create, read, update, and delete blogs.",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.721.0",
     "@aws-sdk/s3-request-presigner": "^3.721.0",
@@ -24,7 +23,7 @@
     "mongoose": "^7.8.3",
     "mongoose-unique-validator": "^4.0.1",
     "morgan": "^1.10.0",
-    "nanoid": "^5.0.9",
+    "nanoid": "2.1.11",
     "redoc-express": "^2.1.0",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1",
@@ -37,15 +36,11 @@
     "@types/mongoose": "^5.11.96",
     "@types/mongoose-unique-validator": "^1.0.9",
     "@types/morgan": "^1.9.9",
+    "@types/nanoid": "^3.0.0",
     "@types/swagger-ui-express": "^4.1.7",
     "pre-commit": "^1.2.2",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
-  },
-  "pre-commit": [
-    "ts.check",
-    "build",
-    "add-build"
-  ]
+  }
 }
