@@ -26,22 +26,18 @@ export default function Blogs({ author }: { author?: string }) {
             if (!lastPage?.details?.next) return null;
             return lastPage?.details?.next;
         },
-        // enabled: true,
+        // enabled: false,
     });
 
     // console.log(data, error, status);
 
     // infinity scroll data fetching
-    // useEffect(() => {
-    //     if (inView) {
-    //         fetchNextPage()
-    //     }
-    // }, [fetchNextPage, inView])
-
-
     useEffect(() => {
-        refetch(); // Re-fetch when params change
-    }, [category, search, refetch]);
+        if (inView && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+        }
+    }, [fetchNextPage, inView, hasNextPage, isFetchingNextPage]);
+
 
     if (status === 'pending') return <Loader />
     if (error) return <NoDataFound message='Failed to load blogs 😞' />

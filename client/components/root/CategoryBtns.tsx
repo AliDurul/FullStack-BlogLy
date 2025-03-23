@@ -7,7 +7,7 @@ import React, { use, useEffect, useState } from 'react'
 import { activeTabeRef } from '../auth/InPageNavigation';
 
 export default function CategoryBtn() {
-    const categories = ['Tech', 'Science', 'Health', 'Business', 'Entertainment', 'Sports', 'Travel', 'Fashion', 'Food', 'Lifestyle']
+    const categories = ['All','Tech', 'Science', 'Health', 'Business', 'Entertainment', 'Sports', 'Travel', 'Fashion', 'Food', 'Lifestyle']
 
     const searchParams = useSearchParams();
     const category = searchParams.get('category');
@@ -41,6 +41,23 @@ export default function CategoryBtn() {
         }
     
     }, [category])
+
+    // for timeout problem
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (!category) {
+                const newUrl = formUrlQuery({
+                    params: searchParams.toString(),
+                    key: 'category',
+                    value: 'All'
+                });
+                setQuery('all');
+                router.push(newUrl, { scroll: false });
+            }
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [ ]);
     
 
     return (

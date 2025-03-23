@@ -11,7 +11,7 @@ export default function InPageNavigation({ routes, defaultHidden = [], defaultAc
     activeTabeRef = React.useRef<HTMLButtonElement>(null);
 
     const [navIndex, setNavIndex] = useState(defaultActiveIndex);
-    const [width, setWidth] = useState(window.innerWidth);
+    const [width, setWidth] = useState(0); // Initialize with a default value
 
     const changePageState = (btn: HTMLButtonElement, i: number) => {
         // const btn = e.currentTarget;
@@ -26,15 +26,14 @@ export default function InPageNavigation({ routes, defaultHidden = [], defaultAc
     }
 
     useEffect(() => {
-        window.addEventListener('resize', () => {
-            setWidth(window.innerWidth);
-        });
+        // Access window only on the client side
+        const handleResize = () => setWidth(window.innerWidth);
+        handleResize(); // Set initial width
+        window.addEventListener('resize', handleResize);
 
         return () => {
-            window.removeEventListener('resize', () => {
-                setWidth(window.innerWidth);
-            });
-        }
+            window.removeEventListener('resize', handleResize);
+        };
     }, []);
 
     useEffect(() => {
@@ -43,9 +42,6 @@ export default function InPageNavigation({ routes, defaultHidden = [], defaultAc
         }
 
     }, [defaultActiveIndex, width]);
-
-
-
 
     return (
         <>

@@ -35,7 +35,9 @@ export default function NavbarActionBox({ session }: { session: TSession }) {
     }
 
     useEffect(() => {
-        CheckIfNewNotiFn()
+        if (session?.user.username) {
+            CheckIfNewNotiFn()
+        }
     }, [session])
 
     const changeTheme = () => {
