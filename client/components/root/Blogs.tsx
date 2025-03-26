@@ -9,6 +9,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import Loader from '../shared/Loader';
 import { useInView } from 'react-intersection-observer'
 import { useEffect } from 'react';
+import BlogsSkeleton from './BlogsSkeleton';
 
 export default function Blogs({ author }: { author?: string }) {
 
@@ -39,7 +40,7 @@ export default function Blogs({ author }: { author?: string }) {
     }, [fetchNextPage, inView, hasNextPage, isFetchingNextPage]);
 
 
-    if (status === 'pending') return <Loader />
+    if (status === 'pending') return <BlogsSkeleton />
     if (error) return <NoDataFound message='Failed to load blogs 😞' />
 
     return (
@@ -63,6 +64,7 @@ export default function Blogs({ author }: { author?: string }) {
                     )
                 })
             }
+            
             <div ref={ref} />
             {
                 isFetchingNextPage && <Loader />

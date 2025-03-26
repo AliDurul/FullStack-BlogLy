@@ -11,7 +11,7 @@ export interface IPersonalInfo {
 export interface ISocialLinks {
     youtube: string;
     instagram: string;
-    facebook: string;
+    linkedIn: string;
     twitter: string;
     github: string;
     website: string;

@@ -2,6 +2,7 @@ import React from 'react'
 import AnimationWrapper from './AnimationWrapper'
 import Link from 'next/link'
 import { signOut } from 'next-auth/react'
+import { usePathname } from 'next/navigation';
 
 
 export default function UserNavigationPanel({ username }: { username: string }) {
@@ -9,20 +10,31 @@ export default function UserNavigationPanel({ username }: { username: string }) 
   const links = [
     { href: '/editor', label: 'Write', iconClass: 'fi fi-rr-file-edit', hiddenOnMd: true },
     { href: `/user/${username}`, label: 'Profile' },
-    { href: '/blogs', label: 'Dashboard' },
+    { href: '/', label: 'Dashboard' },
     { href: '/edit-profile', label: 'Settings' }
   ];
+
+  const pathName = usePathname();
+  console.log('pathName', pathName);
 
   return (
     <AnimationWrapper transition={{ duration: 0.5 }} className="absolute right-0 top-[64px]  z-50">
       <div className='bg-white absolute right-0 border border-grey w-60 duration-200'>
 
-        {links.map((link, index) => (
-          <Link key={index} href={link.href} className={`flex gap-2 link ${link.hiddenOnMd ? 'md:hidden' : ''} pl-8 py-4`}>
-            {link.iconClass && <i className={link.iconClass}></i>}
-            <p>{link.label}</p>
-          </Link>
-        ))}
+        {links.map((l, i) => {
+
+          // check if the pathname and link href are same
+          let link = pathName !== l.href ? l : null;
+
+          if (!link) return null;
+
+          return (
+            <Link key={i} href={link.href} className={`flex gap-2 link ${link.hiddenOnMd ? 'md:hidden' : ''} pl-8 py-4`}>
+              {link.iconClass && <i className={link.iconClass}></i>}
+              <p>{link.label}</p>
+            </Link>
+          )
+        })}
 
         <span className='absolute border-t border-grey  w-[100%]' />
 

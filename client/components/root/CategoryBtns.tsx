@@ -43,21 +43,21 @@ export default function CategoryBtn() {
     }, [category])
 
     // for timeout problem
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            if (!category) {
-                const newUrl = formUrlQuery({
-                    params: searchParams.toString(),
-                    key: 'category',
-                    value: 'All'
-                });
-                setQuery('all');
-                router.push(newUrl, { scroll: false });
-            }
-        }, 500);
+    // useEffect(() => {
+    //     const timer = setTimeout(() => {
+    //         if (!category) {
+    //             const newUrl = formUrlQuery({
+    //                 params: searchParams.toString(),
+    //                 key: 'category',
+    //                 value: 'All'
+    //             });
+    //             setQuery('all');
+    //             router.push(newUrl, { scroll: false });
+    //         }
+    //     }, 500);
 
-        return () => clearTimeout(timer);
-    }, [ ]);
+    //     return () => clearTimeout(timer);
+    // }, [ ]);
     
 
     return (

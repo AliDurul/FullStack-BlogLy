@@ -14,7 +14,7 @@ export default function BlogCard({ blog, author }: { blog: ISingleBlog, author: 
         <Link href={`/blog/${id}`} className='flex items-center border-b-2 border-grey pb-5 mb-4 gap-8'>
             <div className='w-full '>
                 <div className="flex gap-2 items-center mb-7">
-                    <Image src={profile_img} alt={fullname} width={40} height={40} className='rounded-full size-6' />
+                    <Image src={profile_img} alt={fullname} width={40} height={40} className='rounded-full size-9' />
                     <p className='line-clamp-1'>{fullname} @{username}</p>
                     <div className="min-w-fit"> {formatDate(publishedAt)} </div>
                 </div>

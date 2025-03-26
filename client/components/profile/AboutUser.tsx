@@ -13,7 +13,7 @@ type TAboutUserProps = {
 
 export default function AboutUser({ bio, social_links, joinedAt, className }: TAboutUserProps) {
     return (
-        <div className={`md:w-[95%] md:mt-7 ${className} `}>
+        <div className={`md:w-[95%] ${className} `}>
             <p className='text-xl leading-7'> {bio.length ? bio : 'Nothing to show here'} </p>
             <div className="flex gap-x-7 gap-y-2 flex-wrap my-7 items-center text-dark-grey">
                 {
@@ -25,8 +25,7 @@ export default function AboutUser({ bio, social_links, joinedAt, className }: TA
 
                         return (
                             <Link key={i} href={social_links[key as keyof ISocialLinks]} target='_blank' className='flex items-center gap-1'>
-                                <i className={`text-2xl hover:text-black fi ${key !== 'website' ? 'fi-brands-' + key : 'fi-rr-globe'} text-2xl`} />
-                                {/* <p className='capitalize'>{key}</p> */}
+                                <i className={`text-2xl hover:text-black fi ${key !== 'website' ? 'fi-brands-' + key : 'fi-rr-globe'}`} />
                             </Link>
                         )
                     })

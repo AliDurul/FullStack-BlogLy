@@ -144,9 +144,9 @@ export const putProfileImg = async (url: string) => {
 }
 export const putUserProfile = async (_: unknown, payload: FormData,) => {
 
-    const { username, bio, youtube, facebook, twitter, github, instagram, website } = Object.fromEntries(payload.entries());
+    const { username, bio, youtube, linkedin, twitter, github, instagram, website } = Object.fromEntries(payload.entries());
 
-    const rowData = { username, bio, social_links: { youtube, facebook, twitter, github, instagram, website } };
+    const rowData = { username, bio, social_links: { youtube, linkedin, twitter, github, instagram, website } };
     const result = userProfileSchema.safeParse(rowData);
 
     if (!result.success) {
