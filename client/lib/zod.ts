@@ -64,12 +64,12 @@ export const userProfileSchema = z.object({
   username: z.string().min(1, "Username is required"),
   bio: z.string().max(150, "Bio must be less than 150 characters").optional(),
   social_links: z.object({
-    youtube: z.string().url("Invalid URL").or(z.literal("")),
-    facebook: z.string().url("Invalid URL").or(z.literal("")),
-    twitter: z.string().url("Invalid URL").or(z.literal("")),
-    github: z.string().url("Invalid URL").or(z.literal("")),
-    instagram: z.string().url("Invalid URL").or(z.literal("")),
-    website: z.string().url("Invalid URL").or(z.literal(""))
+    youtube: z.string().url("Invalid Youtube URL").or(z.literal("")),
+    linkedin: z.string().url("Invalid LinkedIn URL").or(z.literal("")),
+    twitter: z.string().url("Invalid Twitter URL").or(z.literal("")),
+    github: z.string().url("Invalid Github URL").or(z.literal("")),
+    instagram: z.string().url("Invalid Instagram URL").or(z.literal("")),
+    website: z.string().url("Invalid Website URL").or(z.literal(""))
   })
 });
 

@@ -160,7 +160,7 @@ export default function EditProfileForm({ user }: { user: IUser }) {
                                     type='text'
                                     value={link}
                                     placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-                                    icon={`${key !== 'website' ? 'fi-brands-' + key : 'fi-rr-globe'}`}
+                                    icon={`${key === 'website' ? 'fi-rr-globe' : 'fi-brands-' + key}`}
                                 />
                             )
 

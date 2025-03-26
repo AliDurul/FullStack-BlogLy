@@ -23,6 +23,7 @@ export default async function EditProfilePage() {
       <h1 className='max-md:hidden'>Edit Profile</h1>
 
       <EditProfileForm user={user.result} />
+      
     </div>
   )
 }

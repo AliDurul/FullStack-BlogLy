@@ -40,7 +40,7 @@ export default async function UserProfilePage({ params, }: { params: Promise<{ s
           <div className="flex gap-4 mt-2">
             {
               session?.user?.username === username && (
-                <Link className='btn-primary rounded-md' href={'/settings/edit-profile'}>Edit Profile</Link>
+                <Link className='btn-dark px-3 py-2  rounded-md' href={'/edit-profile'}>Edit Profile</Link>
               )
             }
           </div>

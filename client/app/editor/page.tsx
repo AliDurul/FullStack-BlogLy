@@ -15,7 +15,6 @@ export default async function EditorPage() {
       <AnimationWrapper>
         <BlogEditorForm />
       </AnimationWrapper>
-
     </>
 
   )

@@ -4,7 +4,7 @@ export default function Loading() {
   return (
     <div className="max-w-[900px] center py-10 max-lg:px-[5vw] relative animate-pulse">
       {/* Banner Placeholder */}
-      <div className="w-full h-[500px] bg-gray-300 rounded-lg aspect-video"></div>
+      <div className="w-full h-[200px] md:h-[500px] bg-gray-300 rounded-lg aspect-video"></div>
 
       {/* Blog Info */}
       <div className="mt-12">

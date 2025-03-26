@@ -38,11 +38,7 @@ export const list = async (req: Request, res: Response) => {
     // Custom Filter
     let filter: any = { draft: false };
 
-    if (category) {
-        if (category !== "All") { // this is for timout error
-            filter = { ...filter, tags: { $in: [category] }, blog_id: { $ne: excludedId } } 
-        }
-    }
+    if (category) filter = { ...filter, tags: { $in: [category] }, blog_id: { $ne: excludedId } }
     if (search) filter = { ...filter, title: new RegExp(search as string, 'i') }
     if (author) {
         if (draft == 'true') {
@@ -51,7 +47,6 @@ export const list = async (req: Request, res: Response) => {
             filter = { ...filter, author }
         }
     }
-    console.log('blog filtering--', filter);
 
     // db request
     const result = await Blog.find(filter)

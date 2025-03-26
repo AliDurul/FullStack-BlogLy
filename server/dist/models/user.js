@@ -62,7 +62,7 @@ const UserSchema = new dbConnection_1.mongoose.Schema({
             type: String,
             default: "",
         },
-        facebook: {
+        linkedin: {
             type: String,
             default: "",
         },

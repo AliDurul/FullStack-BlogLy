@@ -12,7 +12,7 @@ export interface PersonalInfo {
 export interface SocialLinks {
     youtube?: string;
     instagram?: string;
-    facebook?: string;
+    linkedin?: string;
     twitter?: string;
     github?: string;
     website?: string;

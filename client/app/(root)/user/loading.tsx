@@ -3,6 +3,9 @@ import React from 'react'
 
 export default function Loading() {
     return (
-        <Loader />
+        <div className='flex justify-center  items-center h-screen w-full'>
+
+            <Loader />
+        </div>
     )
 }
