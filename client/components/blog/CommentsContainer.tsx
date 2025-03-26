@@ -77,7 +77,7 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
         }
         return true;
       }
-      if (comment.children.length > 0) {
+      if (comment.children?.length > 0) {
         const found = findAndAddReply(comment.children, reply);
         if (found) return true;
       }
@@ -175,7 +175,7 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
                         return (
                           <div key={i}>
                             {
-                              page.result.length ? (
+                              page.result?.length ? (
                                 page?.result.map((comment: any, i: number) => {
                                   return (
                                     <AnimationWrapper transition={{ duration: 1, delay: i * .1 }} key={i}>

@@ -65,7 +65,7 @@ const LikeBtn = ({ blog, session }: ILikeCommentBtnProps) => {
                     )
                 }
             </button>
-            <p className='text-xl text-dark-grey'>{blog.activity.likes.length}</p>
+            <p className='text-xl text-dark-grey'>{blog.activity.likes?.length}</p>
         </>
     )
 }

@@ -313,7 +313,7 @@ export const Like = async (req: Request, res: Response) => {
         success: true,
         // message: likeIndex === -1 ? "Like added" : "Like removed",
         result: {
-            likesCount: blog.activity.likes.length,
+            likesCount: blog.activity.likes?.length,
         },
     });
 };

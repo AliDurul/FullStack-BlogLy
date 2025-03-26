@@ -29,7 +29,7 @@ export default function EditorNav() {
         // save the content
         if (textEditor?.isReady) {
             textEditor.save().then((data: any) => {
-                if (data.blocks.length) {
+                if (data.blocks?.length) {
                     setBlog({ ...blog, content: data.blocks })
                     router.push('/editor/publish')
                 } else {
