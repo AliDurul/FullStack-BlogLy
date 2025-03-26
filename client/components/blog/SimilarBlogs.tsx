@@ -11,7 +11,7 @@ export default async function SimilarBlogs({ blog_id, tags }: { blog_id: string,
     return (
         <>
             {
-                similarBlogs.result.length > 0 && (
+                similarBlogs.result?.length > 0 && (
                     <>
                         <h1 className='text-3xl mt-14  font-medium text-center'> Similar Blogs</h1>
                         <hr className='border-grey border mb-10 w-6/12 mx-auto' />

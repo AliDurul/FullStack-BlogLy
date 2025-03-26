@@ -110,8 +110,8 @@ export const updateUserProfile = async (req: Request, res: Response) => {
 
     const socaialLinksArr = Object.keys(social_links)
 
-    for (let i = 0; i < socaialLinksArr.length; i++) {
-        if (social_links[socaialLinksArr[i]].length) {
+    for (let i = 0; i < socaialLinksArr?.length; i++) {
+        if (social_links[socaialLinksArr[i]]?.length) {
             let url = new URL(social_links[socaialLinksArr[i]]);
             let hostname = url.hostname;
             let href = url.href;

@@ -35,7 +35,7 @@ export default function NotiFeed() {
 
   if (status === 'pending') return <Loader />;
   if (error) return <NoDataFound message='Failed to load notifications 😞' />;
-  if (data && data.pages && data.pages.length && !data.pages[0].success) return <NoDataFound message='Something went wrong, please try again.' />;
+  if (data && data.pages && data.pages?.length && !data.pages[0].success) return <NoDataFound message='Something went wrong, please try again.' />;
 
 
   return (
@@ -44,7 +44,7 @@ export default function NotiFeed() {
         data?.pages.map((page: any, i: number) => (
           <div key={i}>
             {
-              page.result.length ? (
+              page.result?.length ? (
                 page?.result.map((notification: INoti, i: number) => (
                   <AnimationWrapper transition={{ duration: 1, delay: i * .1 }} key={i}>
                     <NotiCard notification={notification} index={i} refetchNotifications={refetch} />

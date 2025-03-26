@@ -50,7 +50,7 @@ export default function Blogs({ author }: { author?: string }) {
                     return (
                         <div key={i}>
                             {
-                                page.result.length ? (
+                                page.result?.length ? (
                                     page?.result.map((blog: any, i: number) => {
                                         return (
                                             <AnimationWrapper transition={{ duration: 1, delay: i * .1 }} key={i}>

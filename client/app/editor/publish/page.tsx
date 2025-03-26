@@ -39,7 +39,7 @@ export default function EditorPublishPage() {
       let value = e.currentTarget.value.trim();
       if (!value) {
         toast.error('Topic cannot be empty');
-      } else if (tags.length >= tagLimit) {
+      } else if (tags?.length >= tagLimit) {
         toast.error(`You can only add up to ${tagLimit} topics`);
       } else if (tags.includes(value)) {
         toast.error('Topic already exists');
@@ -101,7 +101,7 @@ export default function EditorPublishPage() {
             onKeyDown={handleDesKeyDown}
             defaultValue={des} className='h-40 resize-none leading-7 input-box pl-4' name="des" />
 
-          <p className='text-dark-grey mt-1 text-sm text-right'> {charLimit - des.length} characters left</p>
+          <p className='text-dark-grey mt-1 text-sm text-right'> {charLimit - des?.length} characters left</p>
 
           <p className='text-dark-grey mb-2 mt-9'>Topics - (Helps is searching and ranking your blog post)</p>
 
@@ -116,7 +116,7 @@ export default function EditorPublishPage() {
             {tags.map((tag, i) => <Tag key={i} tagIndex={i} tag={tag} />)}
           </div>
 
-          <p className='mt-1 mb-4 text-dark-grey text-right'> {tagLimit - tags.length} tags left </p>
+          <p className='mt-1 mb-4 text-dark-grey text-right'> {tagLimit - tags?.length} tags left </p>
 
           <button
             disabled={isPending}

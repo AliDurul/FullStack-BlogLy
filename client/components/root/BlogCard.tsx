@@ -24,7 +24,7 @@ export default function BlogCard({ blog, author }: { blog: ISingleBlog, author: 
                     <span className='btn-light py-1 px-4'>{tags[0]}</span>
                     <span className='ml-3 flex items-center gap-2 text-dark-grey cursor-pointer'>
                         <i className='fi fi-rr-heart text-xl' />
-                        {likes.length}
+                        {likes?.length}
                     </span>
                 </div>
             </div >

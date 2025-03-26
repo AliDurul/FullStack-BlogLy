@@ -79,7 +79,7 @@ const deleteComments = async (commentId: string) => {
 
     if (!blog) throw new CustomError('Blog activity could not be updated.', 400);
 
-    if (comment.children && comment.children.length > 0) {
+    if (comment.children && comment.children?.length > 0) {
         for (let child of comment.children) {
             deleteComments(child);
         }
@@ -175,7 +175,7 @@ export const createComment = async (req: Request, res: Response) => {
     const { _id, comment, blog_author, replying_to, notification_id } = req.body;
 
 
-    if (comment.length < 1) throw new CustomError('Comment cannot be empty.', 400);
+    if (comment?.length < 1) throw new CustomError('Comment cannot be empty.', 400);
 
     let commentObj: { blog_id: string; comment: string; commented_by: string; blog_author: string; parent?: string, isReply?: boolean } = {
         blog_id: _id,

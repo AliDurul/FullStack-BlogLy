@@ -141,7 +141,7 @@ export default function EditProfileForm({ user }: { user: IUser }) {
                     maxLength={bioLimit}
                     className='input-box h-64 lg:h-40 resize-none left-7 mt-5 pl-5'
                     placeholder='Tell us about yourself..'
-                    onChange={(e) => setCharacterLeft(bioLimit - e.target.value.length)}
+                    onChange={(e) => setCharacterLeft(bioLimit - e.target.value?.length)}
                 ></textarea>
 
                 <p className='mt-1 text-dark-grey'>{characterLeft} characters left</p>

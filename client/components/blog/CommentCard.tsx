@@ -54,7 +54,7 @@ export default function CommentCard({ commentData, index }: ICommentCardProps) {
             if (comment._id === commentId) {
                 return false;
             }
-            if (comment.children.length > 0) {
+            if (comment.children?.length > 0) {
                 comment.children = removeComment(comment.children, commentId);
             }
             return true;
