@@ -1306,13 +1306,6 @@
   resolved "https://registry.npmjs.org/@types/ms/-/ms-2.1.0.tgz"
   integrity sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==
 
-"@types/nanoid@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.npmjs.org/@types/nanoid/-/nanoid-3.0.0.tgz"
-  integrity sha512-UXitWSmXCwhDmAKe7D3hNQtQaHeHt5L8LO1CB8GF8jlYVzOv5cBWDNqiJ+oPEWrWei3i3dkZtHY/bUtd0R/uOQ==
-  dependencies:
-    nanoid "*"
-
 "@types/node@*":
   version "22.13.11"
   resolved "https://registry.npmjs.org/@types/node/-/node-22.13.11.tgz"
@@ -1486,6 +1479,11 @@ bson@^4.7.2:
   integrity sha512-Ry9wCtIZ5kGqkJoi6aD8KjxFZEx78guTQDnpXWiNthsxzrxAK/i8E6pCHAIZTbaEFWcOCvbecMukfK7XUvyLpQ==
   dependencies:
     buffer "^5.6.0"
+
+bson@^5.0.0-alpha.0:
+  version "5.0.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/bson/-/bson-5.0.0-alpha.0.tgz#fac0dbf9882803117a8e54fc3084ec73d0d5e35f"
+  integrity sha512-xHsQpp8VfELLLD0V0h8iDM6dFbmNgbRrP724FMm6ocQg//g0vzo2kSkLyUMHXS6eBVOH5l8U3fTnRkVJf3ZwRQ==
 
 bson@^5.5.0:
   version "5.5.1"
@@ -2236,11 +2234,6 @@ ms@2.1.3, ms@^2.1.1, ms@^2.1.3:
   version "2.1.3"
   resolved "https://registry.npmjs.org/ms/-/ms-2.1.3.tgz"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
-
-nanoid@*, nanoid@2.1.11:
-  version "2.1.11"
-  resolved "https://registry.npmjs.org/nanoid/-/nanoid-2.1.11.tgz"
-  integrity sha512-s/snB+WGm6uwi0WjsZdaVcuf3KJXlfGl2LcxgwkEwJF0D/BWzVWAZW/XY4bFaiR7s0Jk3FPvlnepg1H1b1UwlA==
 
 negotiator@0.6.3:
   version "0.6.3"

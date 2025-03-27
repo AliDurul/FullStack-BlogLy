@@ -10,7 +10,14 @@ export interface userInfo {
     fullname: string,
     iat: number,
     exp: number
-}
+};
+
+export type TCredentials = {
+    email: string;
+    password: string;
+    fullname: string;
+    callbackUrl: string;
+};
 
 declare module "next-auth" {
 

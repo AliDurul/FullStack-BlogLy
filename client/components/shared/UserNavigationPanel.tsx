@@ -15,7 +15,6 @@ export default function UserNavigationPanel({ username }: { username: string }) 
   ];
 
   const pathName = usePathname();
-  console.log('pathName', pathName);
 
   return (
     <AnimationWrapper transition={{ duration: 0.5 }} className="absolute right-0 top-[64px]  z-50">

@@ -51,7 +51,8 @@ export default function BlogEditorForm({ editableBlog }: { editableBlog?: any })
     let loadingToast = toast.loading('Uploading image...')
 
     try {
-      const url = await uploadImage(img)
+      const url = await uploadImage(img);
+      console.log('this is the url', url);
 
       if (url) {
         toast.dismiss(loadingToast);
@@ -61,7 +62,7 @@ export default function BlogEditorForm({ editableBlog }: { editableBlog?: any })
 
     } catch (error) {
       toast.dismiss(loadingToast);
-      return toast.error(error || 'Failed to upload image 😞')
+      return toast.error(error || 'Failed to upload image 😞');
     }
 
 

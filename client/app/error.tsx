@@ -2,10 +2,7 @@
 
 import { useEffect } from 'react'
 
-export default function Error({
-    error,
-    reset,
-}: {
+export default function Error({ error, reset, }: {
     error: Error & { digest?: string }
     reset: () => void
 }) {
@@ -17,6 +14,7 @@ export default function Error({
     return (
         <div>
             <h2>Something went wrong! global</h2>
+            <p>{error.message}</p>
             <button
                 onClick={
                     // Attempt to recover by trying to re-render the segment

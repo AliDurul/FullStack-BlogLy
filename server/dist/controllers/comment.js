@@ -67,6 +67,7 @@ const populateChildren = (path = 'children') => {
     };
 };
 const deleteComments = (commentId) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const comment = yield comment_1.default.findById(commentId);
     if (!comment)
         throw new utils_1.CustomError('Comment does not exist.', 404);
@@ -80,7 +81,7 @@ const deleteComments = (commentId) => __awaiter(void 0, void 0, void 0, function
     const blog = yield blog_1.default.findOneAndUpdate({ _id: comment.blog_id }, { $pull: { 'activity.comments': commentId }, $inc: { 'activity.total_comments': -1 }, 'activity.total_parent_comments': comment.parent ? 0 : -1 });
     if (!blog)
         throw new utils_1.CustomError('Blog activity could not be updated.', 400);
-    if (comment.children && comment.children.length > 0) {
+    if (comment.children && ((_a = comment.children) === null || _a === void 0 ? void 0 : _a.length) > 0) {
         for (let child of comment.children) {
             deleteComments(child);
         }
@@ -157,7 +158,7 @@ const createComment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     */
     const user_id = req.user._id;
     const { _id, comment, blog_author, replying_to, notification_id } = req.body;
-    if (comment.length < 1)
+    if ((comment === null || comment === void 0 ? void 0 : comment.length) < 1)
         throw new utils_1.CustomError('Comment cannot be empty.', 400);
     let commentObj = {
         blog_id: _id,

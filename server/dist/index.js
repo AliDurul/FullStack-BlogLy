@@ -13,6 +13,8 @@ const authentication_1 = __importDefault(require("./middlewares/authentication")
 const queryHandler_1 = __importDefault(require("./middlewares/queryHandler"));
 const routes_1 = __importDefault(require("./routes"));
 const errorHandler_1 = require("./middlewares/errorHandler");
+// Catch async errors:
+require("express-async-errors");
 /* ------------------------------------------------------- */
 //* Requireds:
 const app = (0, express_1.default)();
@@ -22,10 +24,6 @@ const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 const HOST = ((_a = process.env) === null || _a === void 0 ? void 0 : _a.HOST) || '127.0.0.1';
 const PORT = ((_b = process.env) === null || _b === void 0 ? void 0 : _b.PORT) || 8000;
-// Catch async errors:
-require("express-async-errors");
-// Database Connection:
-(0, dbConnection_1.dbConnection)();
 /* ------------------------------------------------------- */
 //* Middlewares:
 // Parse JSON bodies:
@@ -63,5 +61,9 @@ app.use('*', (req, res) => {
 });
 // Error Handler:
 app.use(errorHandler_1.errorHandler);
-app.listen(PORT, () => console.log(`Server runing at: http://localhost:${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Server running at: http://localhost:${PORT}`);
+    // Database Connection:
+    (0, dbConnection_1.dbConnection)();
+});
 //# sourceMappingURL=index.js.map

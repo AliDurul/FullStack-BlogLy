@@ -1,13 +1,14 @@
-const { nanoid } = require('nanoid');
 import s3Client from '../configs/awsConnection';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { CustomError } from './utils';
+import { randomUUID } from 'crypto';
+
 
 
 export const generateUploadUrl = async (): Promise<string | Error> => {
     const data = new Date();
-    const imageName = `${nanoid(5)}-${data.getTime()}.jpg`;
+    const imageName = `${randomUUID().slice(0,8)}-${data.getTime()}.jpg`;
 
     const command = new PutObjectCommand({
         Bucket: 'fullstack-blogly',

@@ -7,7 +7,7 @@ import React, { use, useEffect, useState } from 'react'
 import { activeTabeRef } from '../auth/InPageNavigation';
 
 export default function CategoryBtn() {
-    const categories = ['All','Tech', 'Science', 'Health', 'Business', 'Entertainment', 'Sports', 'Travel', 'Fashion', 'Food', 'Lifestyle']
+    const categories = ['Tech', 'Science', 'Health', 'Business', 'Entertainment', 'Sports', 'Travel', 'Fashion', 'Food', 'Lifestyle']
 
     const searchParams = useSearchParams();
     const category = searchParams.get('category');
