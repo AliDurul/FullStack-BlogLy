@@ -6,6 +6,8 @@ import Blog from '../models/blog';
 import 'express-async-errors';
 import Notification from '../models/notification';
 import Comment from '../models/comment';
+import { randomUUID } from 'crypto';
+
 
 
 export const list = async (req: Request, res: Response) => {
@@ -99,7 +101,7 @@ export const create = async (req: Request, res: Response) => {
 
     tags = tags?.map((tag: string) => tag.toLowerCase());
 
-    const blog_id = title.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, '-').trim() + crypto.randomUUID().slice(0,2);
+    const blog_id = title.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, '-').trim() + randomUUID().slice(0,2);
 
     const blog = await Blog.create({ blog_id, title, banner, des, content, tags, author, draft: !!draft });
 
