@@ -6,6 +6,8 @@ import TrendingBlogs from "@/components/root/TrendingBlogs";
 import { TrendingIcon } from "@/components/icons";
 import CategoryBtns from "@/components/root/CategoryBtns";
 import Blogs from "@/components/root/Blogs";
+import getSession from "@/lib/utils";
+import { signIn } from "@/auth";
 
 
 
@@ -14,6 +16,7 @@ type SearchParams = Promise<{ [key: string]: string | undefined }>
 
 export default async function Home(props: { searchParams: SearchParams }) {
 
+  const session = await getSession();
   const searchParams = await props.searchParams
   const category = searchParams.category || ''
   const search = searchParams.search || ''
@@ -23,6 +26,9 @@ export default async function Home(props: { searchParams: SearchParams }) {
   const searchRoutes = [`Search Results from "${search}"`, "Accounts Matched"]
   const searchHidden = ['Accounts Matched']
 
+  if (session?.error === "RefreshTokenError") {
+    await signIn("google") // Force sign in to obtain a new set of access and refresh tokens
+  }
   return (
     <AnimationWrapper >
       <section className="h-cover flex justify-center gap-10">

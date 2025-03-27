@@ -2,10 +2,10 @@
   "swagger": "2.0",
   "info": {
     "version": "1.0.0",
-    "title": "BlogLy",
-    "description": "BlogLy is a blog platform that allows you to create, read, update, and delete blogs.",
+    "title": "REST API",
+    "description": "",
     "contact": {
-      "name": "Ali Durul",
+      "name": "",
       "email": "alidrl26@gmail.com"
     },
     "license": {

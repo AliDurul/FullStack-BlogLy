@@ -44,10 +44,10 @@ const queryHandler = (req, res, next) => {
                 previous: (page > 0 ? page : false),
                 current: page + 1,
                 next: page + 2,
-                total: Math.ceil(data.length / limit),
-                totalRecords: data.length,
+                total: Math.ceil((data === null || data === void 0 ? void 0 : data.length) / limit),
+                totalRecords: data === null || data === void 0 ? void 0 : data.length,
             },
-            totalRecords: data.length,
+            totalRecords: data === null || data === void 0 ? void 0 : data.length,
         };
         details.pages.next = (typeof details.pages.next === 'number' && details.pages.next > details.pages.total ? false : details.pages.next);
         if (details.totalRecords <= limit) {

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "start": "node dist/index.js",
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && tsc && node swaggerAutogen && copy src\\configs\\swagger.json dist\\configs\\swagger.json",
     "ts.check": "tsc --project tsconfig.json",
     "add-build": "git add dist"
   },

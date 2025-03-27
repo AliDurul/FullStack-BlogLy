@@ -99,6 +99,7 @@ const updateUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 "firstName": "test",
                 "lastName": "test",
     */
+    var _a;
     const { username, bio, social_links } = req.body;
     const userId = req.user._id;
     if (!username)
@@ -108,8 +109,8 @@ const updateUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, functi
     if (bio.length > 150)
         throw new utils_1.CustomError('Bio must be less than 150 characters', 400);
     const socaialLinksArr = Object.keys(social_links);
-    for (let i = 0; i < socaialLinksArr.length; i++) {
-        if (social_links[socaialLinksArr[i]].length) {
+    for (let i = 0; i < (socaialLinksArr === null || socaialLinksArr === void 0 ? void 0 : socaialLinksArr.length); i++) {
+        if ((_a = social_links[socaialLinksArr[i]]) === null || _a === void 0 ? void 0 : _a.length) {
             let url = new URL(social_links[socaialLinksArr[i]]);
             let hostname = url.hostname;
             let href = url.href;

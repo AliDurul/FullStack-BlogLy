@@ -12,5 +12,4 @@
 - add notification when like click
 - improve notification red banner
 - improve session with newnotificationavailable 
-- login google button light thme 
-- write/ resim secilfiginde gozukmuyor
+- update error pages

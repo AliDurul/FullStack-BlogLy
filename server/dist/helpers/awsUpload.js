@@ -13,14 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateUploadUrl = void 0;
-const { nanoid } = require('nanoid');
 const awsConnection_1 = __importDefault(require("../configs/awsConnection"));
 const client_s3_1 = require("@aws-sdk/client-s3");
 const s3_request_presigner_1 = require("@aws-sdk/s3-request-presigner");
 const utils_1 = require("./utils");
 const generateUploadUrl = () => __awaiter(void 0, void 0, void 0, function* () {
     const data = new Date();
-    const imageName = `${nanoid(5)}-${data.getTime()}.jpg`;
+    const imageName = `${crypto.randomUUID().slice(0, 8)}-${data.getTime()}.jpg`;
     const command = new client_s3_1.PutObjectCommand({
         Bucket: 'fullstack-blogly',
         Key: imageName,

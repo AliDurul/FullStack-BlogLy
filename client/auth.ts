@@ -6,9 +6,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     pages: {
         signIn: '/auth/sign-in',
         signOut: '/',
-        // error: '/auth-error',
+        error: '/auth-error',
     },
     secret: process.env.AUTH_SECRET,
-    session: { strategy: 'jwt', maxAge: 24 * 60 * 60 }, // 1 day in seconds
+    session: { strategy: 'jwt', maxAge:  3 * 24 * 60 * 60 }, // 3 days in seconds
     ...authConfig,
 })

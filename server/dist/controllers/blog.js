@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Like = exports.likeBlog = exports.trendingBlog = exports.deletee = exports.update = exports.read = exports.create = exports.list = void 0;
 const utils_1 = require("../helpers/utils");
-const nanoid_1 = require("nanoid");
 const user_1 = __importDefault(require("../models/user"));
 const blog_1 = __importDefault(require("../models/blog"));
 require("express-async-errors");
@@ -99,7 +98,7 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
     tags = tags === null || tags === void 0 ? void 0 : tags.map((tag) => tag.toLowerCase());
-    const blog_id = title.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, '-').trim() + (0, nanoid_1.nanoid)(2);
+    const blog_id = title.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, '-').trim() + crypto.randomUUID().slice(0, 2);
     const blog = yield blog_1.default.create({ blog_id, title, banner, des, content, tags, author, draft: !!draft });
     if (!blog)
         throw new utils_1.CustomError('Blog could not be created', 400);
@@ -229,6 +228,7 @@ const likeBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.likeBlog = likeBlog;
 const Like = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     /*
         #swagger.tags = ["Blogs"]
         #swagger.summary = "Add or Remove Like from a Blog"
@@ -260,7 +260,7 @@ const Like = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         success: true,
         // message: likeIndex === -1 ? "Like added" : "Like removed",
         result: {
-            likesCount: blog.activity.likes.length,
+            likesCount: (_a = blog.activity.likes) === null || _a === void 0 ? void 0 : _a.length,
         },
     });
 });
