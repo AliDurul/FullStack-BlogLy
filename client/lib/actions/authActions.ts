@@ -4,7 +4,7 @@ import { signIn } from "@/auth";
 import { changePasswordSchema, credentialsSchema } from "../zod";
 import { revalidatePath } from "next/cache";
 import { DEFAULT_LOGIN_REDIRECT } from "../routes";
-import { AuthError } from "next-auth";
+import { AuthError, CredentialsSignin } from "next-auth";
 import { redirect } from "next/navigation";
 import { TInitialAuthState } from "@/types/index";
 
@@ -62,8 +62,7 @@ export const authCredential = async (initialState: TInitialAuthState, payload: F
         } as TInitialAuthState;
     }
 
-}
-
+};
 
 export const socialCredential = async (payload: FormData) => {
     await signIn("google", {
@@ -72,4 +71,4 @@ export const socialCredential = async (payload: FormData) => {
     console.log(payload);
 
     revalidatePath('/');
-}
+};

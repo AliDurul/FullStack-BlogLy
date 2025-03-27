@@ -5,7 +5,10 @@ import type { NextAuthConfig, Session } from 'next-auth';
 import { JWT } from "next-auth/jwt"
 import { jwtDecode } from "jwt-decode"
 import CredentialsProvider from "next-auth/providers/credentials";
-import { userInfo } from './types/next-auth';
+import { TCredentials, userInfo } from './types/next-auth';
+
+
+const API_BASE_URL = process.env.API_BASE_URL;
 
 class CustomError extends CredentialsSignin {
     constructor(message: string) {
@@ -13,18 +16,9 @@ class CustomError extends CredentialsSignin {
         this.message = message || "Custom Message: Authentication failed"
     }
     code = "custom_error"
-}
-
-type TCredentials = {
-    email: string;
-    password: string;
-    fullname: string;
-    callbackUrl: string;
 };
 
-const API_BASE_URL = process.env.API_BASE_URL;
-
-const authenticateUser = async (url: string, body: object) => {
+export const authenticateUser = async (url: string, body: object) => {
 
     const res = await fetch(url, {
         method: 'POST',
@@ -36,13 +30,12 @@ const authenticateUser = async (url: string, body: object) => {
 
     if (!res.ok) {
         const errorBody = await res.json();
-        throw new CustomError('Response not ok. Status code: ' + res.status + '. Message: ' + errorBody.message);
+        throw new CustomError(errorBody.message);
     }
 
     const user = await res.json();
 
     // console.log('line 46-->', user);
-
 
     if (user.error) throw new CustomError(user.message || 'Custom Message: Authentication failed');
 

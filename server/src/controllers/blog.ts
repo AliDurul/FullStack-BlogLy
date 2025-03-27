@@ -1,7 +1,6 @@
 import { Request, Response } from 'express-serve-static-core';
 import { IBlogfindOneAndUpdateFn, IBlog } from '../types/blog';
 import { CustomError } from '../helpers/utils';
-import { nanoid } from 'nanoid';
 import User from '../models/user';
 import Blog from '../models/blog';
 import 'express-async-errors';
@@ -100,7 +99,7 @@ export const create = async (req: Request, res: Response) => {
 
     tags = tags?.map((tag: string) => tag.toLowerCase());
 
-    const blog_id = title.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, '-').trim() + nanoid(2);
+    const blog_id = title.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, '-').trim() + crypto.randomUUID().slice(0,2);
 
     const blog = await Blog.create({ blog_id, title, banner, des, content, tags, author, draft: !!draft });
 

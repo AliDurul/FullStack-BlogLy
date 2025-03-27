@@ -7,8 +7,9 @@ import authentication from './middlewares/authentication';
 // import logger from './middlewares/logger';
 import queryHandler from './middlewares/queryHandler';
 import routes from './routes';
-import {errorHandler} from './middlewares/errorHandler';
-
+import { errorHandler } from './middlewares/errorHandler';
+// Catch async errors:
+import 'express-async-errors';
 
 /* ------------------------------------------------------- */
 //* Requireds:
@@ -22,11 +23,6 @@ app.use(cors());
 const HOST = process.env?.HOST || '127.0.0.1'
 const PORT = process.env?.PORT || 8000
 
-// Catch async errors:
-import 'express-async-errors';
-
-// Database Connection:
-dbConnection();
 /* ------------------------------------------------------- */
 //* Middlewares:
 
@@ -59,7 +55,7 @@ app.all('/', (req, res) => {
             json: '/documents/json',
         }
     })
-})
+});
 
 // API Routes:
 app.use('/api', routes);
@@ -76,4 +72,9 @@ app.use('*', (req, res) => {
 app.use(errorHandler);
 
 
-app.listen(PORT, () => console.log(`Server runing at: http://localhost:${PORT}`))
+app.listen(PORT, () => {
+    console.log(`Server runing at: http://localhost:${PORT}`)
+    
+    // Database Connection:
+    dbConnection();
+})
