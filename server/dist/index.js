@@ -62,7 +62,7 @@ app.use('*', (req, res) => {
 // Error Handler:
 app.use(errorHandler_1.errorHandler);
 app.listen(PORT, () => {
-    console.log(`Server runing at: http://localhost:${PORT}`);
+    console.log(`Server running at: http://localhost:${PORT}`);
     // Database Connection:
     (0, dbConnection_1.dbConnection)();
 });

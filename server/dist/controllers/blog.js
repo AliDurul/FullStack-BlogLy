@@ -19,6 +19,7 @@ const blog_1 = __importDefault(require("../models/blog"));
 require("express-async-errors");
 const notification_1 = __importDefault(require("../models/notification"));
 const comment_1 = __importDefault(require("../models/comment"));
+const crypto_1 = require("crypto");
 const list = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     /*
         #swagger.tags = ["Blogs"]
@@ -98,7 +99,7 @@ const create = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
     tags = tags === null || tags === void 0 ? void 0 : tags.map((tag) => tag.toLowerCase());
-    const blog_id = title.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, '-').trim() + crypto.randomUUID().slice(0, 2);
+    const blog_id = title.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, '-').trim() + (0, crypto_1.randomUUID)().slice(0, 2);
     const blog = yield blog_1.default.create({ blog_id, title, banner, des, content, tags, author, draft: !!draft });
     if (!blog)
         throw new utils_1.CustomError('Blog could not be created', 400);

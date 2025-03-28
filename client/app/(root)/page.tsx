@@ -26,9 +26,9 @@ export default async function Home(props: { searchParams: SearchParams }) {
   const searchRoutes = [`Search Results from "${search}"`, "Accounts Matched"]
   const searchHidden = ['Accounts Matched']
 
-  if (session?.error === "RefreshTokenError") {
-    await signIn("google") // Force sign in to obtain a new set of access and refresh tokens
-  }
+  // if (session?.error === "RefreshTokenError") {
+  //   await signIn("google") // Force sign in to obtain a new set of access and refresh tokens
+  // }
   return (
     <AnimationWrapper >
       <section className="h-cover flex justify-center gap-10">

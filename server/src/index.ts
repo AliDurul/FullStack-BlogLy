@@ -73,7 +73,7 @@ app.use(errorHandler);
 
 
 app.listen(PORT, () => {
-    console.log(`Server runing at: http://localhost:${PORT}`)
+    console.log(`Server running at: http://localhost:${PORT}`)
     
     // Database Connection:
     dbConnection();

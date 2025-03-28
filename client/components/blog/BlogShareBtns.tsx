@@ -8,9 +8,10 @@ export default function BlogShareBtns({ title, tags }: { title: string, tags: st
     const [url, setUrl] = useState('');
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            setUrl(window.location.href);
-        }
+        // if (typeof window !== 'undefined') {
+        //     setUrl(window.location.href);
+        // }
+        setUrl(window.location.href);
     }, []);
 
     return (
