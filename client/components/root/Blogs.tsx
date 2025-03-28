@@ -1,84 +1,37 @@
-'use client';
-
 import { fetchBlogs } from '@/lib/actions/blogActions';
 import BlogCard from './BlogCard';
 import AnimationWrapper from '../shared/AnimationWrapper';
 import NoDataFound from './NoDataFound';
-import { useSearchParams } from 'next/navigation';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import Loader from '../shared/Loader';
-import { useInView } from 'react-intersection-observer'
-import { useEffect } from 'react';
-import BlogsSkeleton from './BlogsSkeleton';
 
-export default function Blogs({ author }: { author?: string }) {
+interface IBlogsParams {
+    category?: string,
+    search?: string,
+    pageParam?: number,
+    author?: string
+}
 
-    const searchParams = useSearchParams();
-    const category = searchParams.get('category') || '';
-    const search = searchParams.get('search') || '';
-
-    const { ref, inView } = useInView();
-
-    const { data, error, status, fetchNextPage, isFetchingNextPage, hasNextPage, refetch } = useInfiniteQuery({
-        queryKey: ['posts', category, search],
-        queryFn: ({ pageParam }) => fetchBlogs({ category, search, pageParam, author }),
-        initialPageParam: 1,
-        getNextPageParam: (lastPage: any) => {
-            if (!lastPage?.details?.next) return null;
-            return lastPage?.details?.next;
-        },
-        // enabled: false,
-    });
-
-    // console.log(data, error, status);
-
-    // infinity scroll data fetching
-    useEffect(() => {
-        if (inView && hasNextPage && !isFetchingNextPage) {
-            fetchNextPage();
-        }
-    }, [fetchNextPage, inView, hasNextPage, isFetchingNextPage]);
+export default async function Blogs({ author, category, search, pageParam = 1 }: IBlogsParams) {
 
 
-    if (status === 'pending') return <BlogsSkeleton />
-    if (error) return <NoDataFound message='Failed to load blogs 😞' />
+    const blogs = await fetchBlogs({ category, search, pageParam, author });
+
+    if ('message' in blogs) {
+        return <NoDataFound message={blogs.message + '⛑️'} />
+    }
+
 
     return (
         <>
             {
-                data?.pages.map((page: any, i: number) => {
-                    return (
-                        <div key={i}>
-                            {
-                                page.result?.length ? (
-                                    page?.result.map((blog: any, i: number) => {
-                                        return (
-                                            <AnimationWrapper transition={{ duration: 1, delay: i * .1 }} key={i}>
-                                                <BlogCard blog={blog} author={blog.author.personal_info} />
-                                            </AnimationWrapper>
-                                        )
-                                    })
-                                ) : (<NoDataFound message='No Blogs Published 😱' />)
-                            }
-                        </div>
-                    )
-                })
-            }
-            
-            <div ref={ref} />
-            {
-                isFetchingNextPage && <Loader />
-            }
-            {
-                hasNextPage && (
-                    <button
-                        disabled={!hasNextPage || isFetchingNextPage}
-                        className='text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center gap-2'
-                        onClick={() => fetchNextPage()}
-                    >
-                        Load More
-                    </button>
-                )
+                blogs.result?.length ? (
+                    blogs?.result.map((blog: any, i: number) => {
+                        return (
+                            <AnimationWrapper transition={{ duration: 1, delay: i * .1 }} key={i}>
+                                <BlogCard blog={blog} author={blog.author.personal_info} />
+                            </AnimationWrapper>
+                        )
+                    })
+                ) : (<NoDataFound message='No Blogs Published 😱' />)
             }
         </>
     )
