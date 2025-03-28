@@ -23,6 +23,9 @@ app.use(cors());
 const HOST = process.env?.HOST || '127.0.0.1'
 const PORT = process.env?.PORT || 8000
 
+// Database Connection:
+dbConnection();
+
 /* ------------------------------------------------------- */
 //* Middlewares:
 
@@ -74,7 +77,4 @@ app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`Server running at: http://localhost:${PORT}`)
-    
-    // Database Connection:
-    dbConnection();
 })
