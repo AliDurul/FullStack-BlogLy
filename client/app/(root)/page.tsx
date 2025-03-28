@@ -8,6 +8,7 @@ import CategoryBtns from "@/components/root/CategoryBtns";
 import Blogs from "@/components/root/Blogs";
 import getSession from "@/lib/utils";
 import { signIn } from "@/auth";
+import BlogsSkeleton from "@/components/root/BlogsSkeleton";
 
 
 
@@ -20,6 +21,7 @@ export default async function Home(props: { searchParams: SearchParams }) {
   const searchParams = await props.searchParams
   const category = searchParams.category || ''
   const search = searchParams.search || ''
+  const pageParam = (searchParams.pageParam || 1) as number
 
   const defaultRoutes = [category === '' ? 'Home' : category, 'trending blogs']
   const defaultHidden = ['trending blogs']
@@ -38,7 +40,9 @@ export default async function Home(props: { searchParams: SearchParams }) {
 
           <InPageNavigation routes={search ? searchRoutes : defaultRoutes} defaultHidden={search ? searchHidden : defaultHidden} >
 
-            <Blogs />
+            <Suspense fallback={<BlogsSkeleton />}>
+              <Blogs category={category} search={search} pageParam={pageParam} />
+            </Suspense>
 
             <Suspense fallback={<Loader />}>
               <TrendingBlogs search={search} />
