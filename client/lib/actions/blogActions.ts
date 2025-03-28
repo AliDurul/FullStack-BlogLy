@@ -85,7 +85,7 @@ type TfetchBlogsFn = ({ category, search, pageParam, author, limit, excludedId, 
 
 export const fetchBlogs: TfetchBlogsFn = async ({ category, search, pageParam, author, limit, excludedId, draft }) => {
 
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
 
     let url = `${API_URL}/blogs`;
 

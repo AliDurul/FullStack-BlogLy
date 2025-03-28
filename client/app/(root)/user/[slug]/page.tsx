@@ -3,16 +3,29 @@ import { fetchUser } from '@/lib/actions/userActions'
 import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import React from 'react'
+import React, { Suspense } from 'react'
 import getSession from '@/lib/utils'
 import AboutUser from '@/components/profile/AboutUser'
 import InPageNavigation from '@/components/auth/InPageNavigation'
 import Blogs from '@/components/root/Blogs'
+import BlogsSkeleton from '@/components/root/BlogsSkeleton'
 
-export default async function UserProfilePage({ params, }: { params: Promise<{ slug: string }> }) {
 
-  const { slug } = await params
+interface IUserProfilePageParams {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>
+
+}
+
+export default async function UserProfilePage({ params, searchParams }: IUserProfilePageParams) {
+
+  const { slug } = await params;
+  const queries = await searchParams;
   const session = await getSession()
+  
+  const category = queries.category || '';
+  const search = queries.search || '';
+  const pageParam = (queries.pageParam || 1) as number;
 
   const user = await fetchUser(slug)
 
@@ -53,7 +66,10 @@ export default async function UserProfilePage({ params, }: { params: Promise<{ s
         <div className='max-md:mt-12 w-full'>
           <InPageNavigation routes={['Blogs Published', 'About']} defaultHidden={['About']} >
 
-            <Blogs author={_id} />
+
+            <Suspense fallback={<BlogsSkeleton />}>
+              <Blogs author={_id} category={category} search={search} pageParam={pageParam} />
+            </Suspense>
 
             <AboutUser social_links={social_links} bio={bio} joinedAt={joinedAt} />
 
