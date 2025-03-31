@@ -62,7 +62,8 @@ export default function BlogEditorForm({ editableBlog }: { editableBlog?: any })
 
     } catch (error) {
       toast.dismiss(loadingToast);
-      return toast.error(error || 'Failed to upload image 😞');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to upload image 😞';
+      return toast.error(errorMessage);
     }
 
 
