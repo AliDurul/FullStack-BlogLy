@@ -61,7 +61,7 @@ export default function EditorPublishPage() {
 
   useEffect(() => {
     if (state?.success) {
-      toast.success(state.message);
+      toast.success(state.message || 'Operation successful'); // Provide a default message
       setTimeout(() => {
         router.push('/blog-management/?draft=false');
       }, 500);
