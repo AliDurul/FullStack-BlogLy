@@ -25,7 +25,7 @@ export default async function BlogInteractions({ blog }: IBlogInteractionProps) 
 
                 <div className='flex gap-3 items-center'>
                     <LikeBtn blog={blog} session={session} />
-                    <CommentBtn blog={blog} />
+                    <CommentBtn blog={blog} session={session} />
                 </div>
 
                 <div className='flex gap-6 items-center'>

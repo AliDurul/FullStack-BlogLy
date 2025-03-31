@@ -19,7 +19,7 @@ const LikeBtn = ({ blog, session }: ILikeCommentBtnProps) => {
 
     const handleClick = () => {
         if (!session) {
-            toast.error('Please login to like the blog');
+            toast.error('Please login to leave a 💝');
             return;
         }
 

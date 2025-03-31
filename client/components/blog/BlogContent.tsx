@@ -45,7 +45,6 @@ export default function BlogContent({ block }: { block: any }) {
 
     if (type === 'quote') return <Quote quoto={data.text} caption={data.caption} />
 
-
     if (type === 'list') return <List style={data.style} items={data.items} />
 
 

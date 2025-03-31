@@ -16,6 +16,7 @@ interface ICommentsContainerProps {
   open: boolean
   setOpen: (value: boolean) => void
   blog: ISingleBlog
+  session: any
 }
 
 /* Context */
@@ -30,6 +31,7 @@ interface CommentsContextProps {
   setReplyingTo: React.Dispatch<React.SetStateAction<string | null>>;
   setCustomizedCommentsArr: React.Dispatch<React.SetStateAction<any[]>>;
   setOpen: (value: boolean) => void;
+  session: any
 }
 
 const CommentsContext = createContext<CommentsContextProps | undefined>(undefined);
@@ -43,7 +45,7 @@ export const useCommentsContext = () => {
 };
 
 
-export default function CommentsContainer({ open, setOpen, blog }: ICommentsContainerProps) {
+export default function CommentsContainer({ open, setOpen, blog, session }: ICommentsContainerProps) {
 
   const [newComments, setNewComments] = useState<any[]>([])
 
@@ -119,14 +121,15 @@ export default function CommentsContainer({ open, setOpen, blog }: ICommentsCont
   const sharedValues = {
     newComments,
     setNewComments,
-    createCommentState:state,
+    createCommentState: state,
     action,
     isPending,
     blog,
     replyingTo,
     setReplyingTo,
     setCustomizedCommentsArr,
-    setOpen
+    setOpen,
+    session
   }
 
   return (

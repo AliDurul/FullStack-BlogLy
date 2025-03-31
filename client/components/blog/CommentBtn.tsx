@@ -8,7 +8,7 @@ const CommentsContainer = dynamic(() => import('./CommentsContainer'), {
     ssr: false
 })
 
-export default function CommentBtn({ blog }: { blog: ISingleBlog }) {
+export default function CommentBtn({ blog, session }: { blog: ISingleBlog, session: any }) {
     const [open, setOpen] = useState(false)
 
     return (
@@ -21,7 +21,7 @@ export default function CommentBtn({ blog }: { blog: ISingleBlog }) {
 
             {
 
-                open && <CommentsContainer setOpen={setOpen} open={open} blog={blog} />
+                open && <CommentsContainer setOpen={setOpen} open={open} blog={blog} session={session} />
             }
         </>
     )

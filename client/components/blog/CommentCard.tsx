@@ -98,7 +98,7 @@ export default function CommentCard({ commentData, index }: ICommentCardProps) {
                     <Loader />
                     : (
                         <div className='my-5 p-6 rounded-md border border-grey'>
-                            <div className='flex gap-3 items-center mb-8'>
+                            <div className='flex gap-3 items-center mb-5'>
                                 <Image
                                     src={profile_img}
                                     alt={fullname}
@@ -106,14 +106,16 @@ export default function CommentCard({ commentData, index }: ICommentCardProps) {
                                     height={40}
                                     width={40}
                                 />
-                                <p className='line-clamp-1'>
-                                    <span className='text-dark-grey opacity-75'>{fullname}</span>
-                                    <span className='font-semibold text-black'> @{comment_author}</span>
-                                </p>
-                                <p className='min-w-fit'>{formatDate(commentedAt)}</p>
+                                <div className="flex w-full justify-between">
+                                    <p className='line-clamp-1'>
+                                        {/* <span className='text-dark-grey opacity-75'>{fullname}</span> */}
+                                        <span className='font-semibold text-black'> @{comment_author}</span>
+                                    </p>
+                                    <p className='min-w-fit'>{formatDate(commentedAt)}</p>
+                                </div>
                             </div>
                             <p className='font-gelasio text-xl ml-3'>{comment}</p>
-                            <div className='flex gap-5 items-center mt-5'>
+                            <div className='flex gap-5 items-center mt-4'>
                                 {
                                     children.length > 0 && (
                                         <button onClick={handleHideReply} className='text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center gap-2'>

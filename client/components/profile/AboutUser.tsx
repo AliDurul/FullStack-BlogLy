@@ -14,7 +14,17 @@ type TAboutUserProps = {
 export default function AboutUser({ bio, social_links, joinedAt, className }: TAboutUserProps) {
     return (
         <div className={`md:w-[95%] ${className} `}>
-            <p className='text-xl leading-7'> {bio?.length ? bio : 'Nothing to show here'} </p>
+            <div className='text-xl leading-7'>
+                {
+                    bio?.length
+                        ? bio.split('.').map((line, i) => (
+                            line.trim() && (
+                                <p key={i}>{line.trim()}.</p>
+                            )
+                        ))
+                        : 'No bio available.'
+                }
+            </div>
             <div className="flex gap-x-7 gap-y-2 flex-wrap my-7 items-center text-dark-grey">
                 {
                     Object.keys(social_links).map((key: string, i: number) => {

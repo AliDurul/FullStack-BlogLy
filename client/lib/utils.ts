@@ -11,22 +11,17 @@ export const handleError = (error: unknown) => {
   throw new Error(typeof error === 'string' ? error : JSON.stringify(error))
 }
 
-// Formating Date
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Fridat', 'Saturday']
-
-
+// Date formatting
 type TDateFn = (date: Date) => string
-
-export const formatDate: TDateFn = (date) => {
-  const d = new Date(date)
-  return `${d.getDate()} ${months[d.getMonth()]}`
-};
-
 export const getFullDay: TDateFn = (date) => {
   const d = new Date(date)
-  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`
+  return d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });  
 }
+
+export const formatDate: TDateFn = (date) => {
+  const d = new Date(date);
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+};
 
 // Query handler
 import qs from 'query-string'

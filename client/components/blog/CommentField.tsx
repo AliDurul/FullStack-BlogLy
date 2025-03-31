@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { useCommentsContext } from './CommentsContainer';
 import { revalidateTagFn } from '@/lib/actions/revalidateActions';
-
+import toast from 'react-hot-toast';
 
 interface ICommentFieldProps {
     actionType: string,
@@ -13,10 +13,17 @@ interface ICommentFieldProps {
 
 export default function CommentField({ actionType, index = undefined, replyingTo = undefined, }: ICommentFieldProps) {
 
-    const { action, createCommentState, blog, isPending, setReplyingTo } = useCommentsContext()
-    const [comment, setComment] = useState('')
+    const { action, createCommentState, blog, isPending, setReplyingTo, session } = useCommentsContext();
+    const [comment, setComment] = useState('');
+    // const { data: session } = useSession();
 
     const handelAction = async (formData: FormData) => {
+
+        if (!session) {
+            toast.error('Please login to leave a 💬');
+            return;
+        }
+
         action(formData)
         revalidateTagFn('Blog')
         setComment('')
