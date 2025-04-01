@@ -19,15 +19,12 @@ export default function BlogEditorForm({ editableBlog }: { editableBlog?: any })
 
   useEffect(() => {
     if (editableBlog) {
-      setBlog(editableBlog)
+      setBlog(editableBlog);
     }
-  }, [])
+  }, [editableBlog]);
 
   useEffect(() => {
-
-    // if (!textEditor) return
-
-    if (!textEditor?.isReady) {
+    if (!textEditor) {
       setTextEditor(new EditorJS({
         holder: 'textEditor',
         tools: EditorTools,
@@ -38,8 +35,7 @@ export default function BlogEditorForm({ editableBlog }: { editableBlog?: any })
         },
       }));
     }
-
-  }, []);
+  }, [textEditor, blog, editableBlog]);
 
 
   const handleBannerChange = async (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -17,6 +17,11 @@ export default function NavbarActionBox({ session }: { session: TSession }) {
     const [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
     const [userNavPanel, setUserNavPanel] = useState(false);
     const { theme, setTheme } = useThemeContext()
+    const [isClient, setIsClient] = useState(false); // New state to track client-side rendering
+
+    useEffect(() => {
+        setIsClient(true); // Set to true once the component is mounted on the client
+    }, []);
 
     // const { isPending, isError, data } = useQuery({
     //     queryKey: ['notification', session],
@@ -49,14 +54,22 @@ export default function NavbarActionBox({ session }: { session: TSession }) {
         localStorage.setItem('theme', newTheme);
 
         document.body.setAttribute('data-theme', newTheme);
-    }
+    };
 
 
 
     return (
         <>
             <Link href='/' className='flex-none w-10 ' >
-                <Image className='w-full' src={theme == 'light' ? darkLogo : lightLogo} width={40} height={44} alt='logo' />
+                {isClient && ( // Ensure the theme-dependent logo is only rendered on the client
+                    <Image
+                        className='w-full'
+                        src={theme === 'light' ? darkLogo : lightLogo}
+                        width={40}
+                        height={44}
+                        alt='logo'
+                    />
+                )}
             </Link>
 
             <div className={`absolute bg-white w-full left-0 top-full mt-0.5 border-b border-grey py-4 px-[5vw] md:border-0 md:block md:relative md:inset-0 md:p-0 md:w-auto md:show ${searchBoxVisibility ? 'show' : 'hide'}`}>

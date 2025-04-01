@@ -4,7 +4,7 @@ import SimilarBlogs from '@/components/blog/SimilarBlogs';
 import AnimationWrapper from '@/components/shared/AnimationWrapper';
 import Loader from '@/components/shared/Loader';
 import { fetchBlog } from '@/lib/actions/blogActions';
-import { getFullDay } from '@/lib/utils';
+import { formatDate, getFullDay } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { Suspense } from 'react'
@@ -25,21 +25,21 @@ export default async function DetailBlogPage({ params }: { params: Promise<{ blo
 
                 <Image src={banner} alt={title} width={900} height={500} className='rounded-lg aspect-video' />
 
-                <div className="mt-12">
+                <div className="mt-8 md:mt-12">
                     <h2>{title}</h2>
                     {/* Blog Tags */}
-                    <div className='flex gap-3 '>
+                    <div className='flex gap-3 mt-2 flex-wrap max-sm:justify-center max-sm:items-center'>
                         {
                             tags.map((tag, i) => {
                                 return (
-                                    <span key={i} className='btn-light py-1 px-4 text-base'>
+                                    <span key={i} className='btn-light py-1 px-4 text-sm md:text-base'>
                                         {tag}
                                     </span>
                                 )
                             })
                         }
                     </div>
-                    <div className="flex max-sm:flex-col justify-between my-6">
+                    <div className="flex max-sm:flex-col justify-between mb-6 mt-4">
                         <div className='flex gap-5 items-start'>
                             <Image src={profile_img} alt={fullname} width={50} height={50} className='rounded-full size-12' />
                             <p className='capitalize'>
@@ -48,7 +48,9 @@ export default async function DetailBlogPage({ params }: { params: Promise<{ blo
                                 <Link className='font-semibold underline' href={`/user/${author_username}`}>@{author_username}</Link>
                             </p>
                         </div>
-                        <p className='text-dark-grey opacity-75 max-sm:mt-6 max-sm:ml-12 max-sm:pl-5'>Published on {getFullDay(publishedAt)}</p>
+                        <p className='text-dark-grey opacity-75 max-sm:mt-6 max-sm:ml-12 max-sm:pl-5 text-sm md:text-base'>
+                            Published on {getFullDay(publishedAt)}
+                        </p>
                     </div>
                 </div>
 

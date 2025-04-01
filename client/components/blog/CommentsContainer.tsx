@@ -147,7 +147,7 @@ export default function CommentsContainer({ open, setOpen, blog, session }: ICom
                   <div className="px-4 py-6 sm:px-6">
                     <div className="flex items-start justify-between">
                       <div>
-                        <DialogTitle className="text-base font-semibold text-gray-900">Comments</DialogTitle>
+                        <DialogTitle className="text-base font-semibold text-dark-grey">Comments</DialogTitle>
                         <p className='text-2xl mt-2 w[70%] text-dark-grey line-clamp-1'> {blog.title} </p>
                       </div>
                       <div className="ml-3 flex h-7 items-center">

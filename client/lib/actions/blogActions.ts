@@ -131,7 +131,6 @@ type TfetchBlogFn = (blogId: string, mode?: string) => Promise<IApiObjRes<ISingl
 
 export const fetchBlog: TfetchBlogFn = async (blogId, mode) => {
 
-
     let url = `${API_URL}/blogs/${blogId}`;
 
     const params = new URLSearchParams();
