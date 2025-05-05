@@ -1,12 +1,12 @@
 {
-  "name": "ts-node",
+  "name": "blogly-server-v2",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
     "start": "node dist/index.js",
-    "build": "rimraf dist && tsc && node swaggerAutogen && copy src\\configs\\swagger.json dist\\configs\\swagger.json",
+    "build": "rimraf dist && tsc",
     "ts.check": "tsc --project tsconfig.json",
     "add-build": "git add dist"
   },
@@ -14,33 +14,32 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.721.0",
-    "@aws-sdk/s3-request-presigner": "^3.721.0",
-    "bson": "^5.0.0-alpha.0",
+    "@aws-sdk/client-s3": "^3.802.0",
+    "@aws-sdk/s3-request-presigner": "^3.802.0",
+    "compression": "^1.8.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "express-async-errors": "^3.1.1",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^7.8.3",
-    "mongoose-unique-validator": "^4.0.1",
+    "mongoose": "^8.14.1",
     "morgan": "^1.10.0",
-    "redoc-express": "^2.1.0",
-    "swagger-autogen": "^2.23.7",
-    "swagger-ui-express": "^5.0.1",
-    "uuid": "^11.0.3"
+    "nodemailer": "^7.0.2",
+    "redis": "^5.0.1",
+    "uuid": "^11.1.0",
+    "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@types/compression": "^1.7.5",
     "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.0",
-    "@types/jsonwebtoken": "^9.0.7",
-    "@types/mongoose": "^5.11.96",
-    "@types/mongoose-unique-validator": "^1.0.9",
-    "@types/morgan": "^1.9.9",
-    "@types/swagger-ui-express": "^4.1.7",
-    "pre-commit": "^1.2.2",
+    "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/mongoose": "^5.11.97",
+    "@types/node": "^22.15.3",
+    "nodemon": "^3.1.10",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.8.3"
   }
 }

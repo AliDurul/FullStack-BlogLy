@@ -1,4 +1,4 @@
-import { mongoose } from "../configs/dbConnection";
+import { Document, Types } from "mongoose";
 
 export interface PersonalInfo {
     fullname: string;
@@ -23,14 +23,19 @@ export interface AccountInfo {
     total_reads: number;
 }
 
-export interface IUser extends mongoose.Document {
+export interface IUser extends Document {
     _id: string;
     user_id: string;
     personal_info: PersonalInfo;
     social_links: SocialLinks;
     account_info: AccountInfo;
     OAuth: boolean;
-    blogs: mongoose.Types.ObjectId[];
+    blogs: Types.ObjectId[];
+    isVerified: boolean;
+    resetPassToken?: string;
+    resetPassExpiresAt?: Date;
+    verificationToken: string;
+    verificationTokenExpiresAt: Date;
 }
 
 export interface IUserPayload {

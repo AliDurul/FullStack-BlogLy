@@ -1,17 +1,40 @@
 {
   "compilerOptions": {
-      "module": "commonjs",
-      "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true,
-      "target": "es6",
-    //   "noImplicitAny": true,
-      "moduleResolution": "node",
-      "sourceMap": true,
-      "outDir": "dist",
-      "baseUrl": ".",
-      "paths": {
-          "*": ["node_modules/*", "src/types/*"]
-      }
+    /* Base Options: */
+    "esModuleInterop": true, // Enables compatibility with CommonJS and ES Modules.
+    "skipLibCheck": true, // Skips type checking of declaration files for faster compilation.
+    "allowJs": true, // Allows JavaScript files to be compiled.
+    "resolveJsonModule": true, // Allows importing JSON files as modules.
+    "moduleDetection": "force", // Forces module detection to avoid ambiguity.
+    "isolatedModules": true, // Ensures each file can be transpiled independently.
+    /* Strictness */
+    // "strict": true,                       // Enables all strict type-checking options (commented out).
+    // "noImplicitAny": true,                // Disallows variables with an implicit "any" type (commented out).
+    "noUncheckedIndexedAccess": true, // Ensures all indexed accesses are checked for undefined.
+    "noImplicitOverride": true, // Requires `override` keyword for overridden methods.
+    "allowSyntheticDefaultImports": true, // Allows default imports from modules without default exports.
+    /* If transpiling with TypeScript: */
+    "module": "CommonJS", // Specifies the module system to use (CommonJS for Node.js).
+    "target": "es2022", // Sets the JavaScript version output target.
+    "moduleResolution": "node", // Resolves modules in Node.js style.
+    "rootDir": "./src", // Specifies the root directory of input files.
+    "outDir": "./dist", // Specifies the output directory for compiled files.
+    "sourceMap": true, // Generates source map files for debugging.
+    /* Base Url & Paths */
+    "baseUrl": ".", // Sets the base directory for module resolution.
+    "paths": {
+      "*": [
+        "node_modules/*",
+        "src/types/*"
+      ]
+    },
+    "typeRoots": [
+      "./src/types",
+      "./node_modules/@types"
+    ] // Specifies folders for global type declarations.
   },
-  "include": ["./src/**/*"]
-  }
+  "include": [
+    "./src/**/*", // Includes all files in the src directory and its subdirectories.
+    "./src/types/**/*" // Includes all files in the src/types directory and its subdirectories.
+  ]
+}

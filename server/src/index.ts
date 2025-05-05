@@ -1,80 +1,82 @@
+import express, { Response, Request } from "express";
+import { ENV } from "./configs/env";
+import { errorHandler, logger, notFound, queryHandler } from "./middlewares/common";
+import { connectDB, disconnectDB } from "./configs/db";
+import { rateLimit } from 'express-rate-limit'
+import api from './routes/index.route'
+import helmet from "helmet";
+import cors from "cors";
+import compression from "compression";
+import { shouldCompress } from "./utils/common";
 
-import express from 'express';
-import { config } from 'dotenv';
-import cors from 'cors';
-import { dbConnection } from './configs/dbConnection';
-import authentication from './middlewares/authentication';
-// import logger from './middlewares/logger';
-import queryHandler from './middlewares/queryHandler';
-import routes from './routes';
-import { errorHandler } from './middlewares/errorHandler';
-// Catch async errors:
-import 'express-async-errors';
-
-/* ------------------------------------------------------- */
-//* Requireds:
+/* ------------------------------------- */
+//* Required packages  & configs & middewares
 const app = express();
 
-// Load environment variables:
-config();
-
-// Enable CORS:
+app.use(helmet());
 app.use(cors());
-const HOST = process.env?.HOST || '127.0.0.1'
-const PORT = process.env?.PORT || 8000
-
-// Database Connection:
-dbConnection();
-
-/* ------------------------------------------------------- */
-//* Middlewares:
-
-// Parse JSON bodies:
 app.use(express.json());
+app.set('query parser', 'extended');
+app.use(express.urlencoded({ extended: true }));
+app.use(logger());
+app.use(queryHandler);
+app.use('/api/v1', rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes in milliseconds
+  max: 100,
+  message: 'Too many requests, please try again later.'
+}));
+app.use(compression({
+  threshold: 1024,
+  level: 6,
+  filter: shouldCompress,
+}
+));
+
+const PORT = ENV.port;
+/* ------------------------------------- */
+//* Routes
+
+// HomePath:
+app.all('/', (req: Request, res: Response) => {
+
+  res.send({
+    error: false,
+    message: 'Welcome to BlogLy API',
+    documents: {
+      swagger: '/documents/swagger',
+      redoc: '/documents/redoc',
+      json: '/documents/json',
+    }
+  })
+});
+
+// API routes:
+app.use("/api/v2", api);
 
 // Static files:
 app.use('/uploads', express.static('uploads'));
 
-// Authentication:
-app.use(authentication);
 
-// Logger:
-// app.use(logger);
+app.use(notFound).use(errorHandler); // Error handling & 404 middlewares
+/* ------------------------------------- */
+//* Server and DB connection
 
-// Query Handler:
-app.use(queryHandler);
-/* ------------------------------------------------------- */
-//* Routes:
+async function startServer() {
+  try {
+    await connectDB();     // Connect MongoDB
 
-// HomePath:
-app.all('/', (req, res) => {
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
+    });
 
-    res.send({
-        error: false,
-        message: 'Welcome to BlogLy API',
-        documents: {
-            swagger: '/documents/swagger',
-            redoc: '/documents/redoc',
-            json: '/documents/json',
-        }
-    })
-});
+    process.on('SIGINT', async () => { // Implement graceful shutdown:
+      await disconnectDB();
+      process.exit(0);
+    });
+  } catch (error: any) {
+    console.error("❌ Failed to start server:", error.message);
+    process.exit(1); // Exit on failure
+  }
+};
 
-// API Routes:
-app.use('/api', routes);
-
-// Not Found:
-app.use('*', (req, res) => {
-    res.status(404).send({
-        error: true,
-        message: 'Route Not Found',
-    })
-})
-
-// Error Handler:
-app.use(errorHandler);
-
-
-app.listen(PORT, () => {
-    console.log(`Server running at: http://localhost:${PORT}`)
-})
+startServer();
