@@ -23,6 +23,7 @@ const envSchema = z.object({
     AWS_REGION: z.string().min(1),
     AWS_ACCESS_KEY_ID: z.string().min(1),
     AWS_SECRET_ACCESS_KEY: z.string().min(1),
+    AWS_BUCKET_NAME: z.string().min(1),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -47,4 +48,5 @@ export const ENV = {
     awsRegion: parsed.data.AWS_REGION,
     awsAccessKeyId: parsed.data.AWS_ACCESS_KEY_ID,
     awsSecretAccessKey: parsed.data.AWS_SECRET_ACCESS_KEY,
+    awsBucketName: parsed.data.AWS_BUCKET_NAME,
 };

@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { deleteUser, getUserByUsername, getUsers, updateProfileImg, updateUser } from "../controllers/user.contoller";
+import { deleteUser, getUserByUsername, getUsers, updateProfileImg, updateUser } from "../controllers/user.controller";
 import { isValidated } from "../middlewares/common";
-import { updateUserSchema } from "../utils/validationSchemas";
+import { updateUserSchema } from "../utils/validation.schemas";
 
 const router = Router();
 

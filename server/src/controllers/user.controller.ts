@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import User from "../models/user.model";
-import { IUser } from "../types/user"
+import User, { IUser } from "../models/user.model";
 import { CustomError } from "../utils/common";
 
 

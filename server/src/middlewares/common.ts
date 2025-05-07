@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
 import { Model, Document, RootFilterQuery, SortOrder } from "mongoose";
-import { ZodSchema } from "zod";
+import { errorEmailTemp } from "../utils/email.templates";
 import { CustomError, sendMail } from "../utils/common";
-import { errorEmailTemp } from "../utils/emailTemplates";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { IUserPayload } from "../models/user.model";
+import { ENV } from "../configs/env";
+import { ZodSchema } from "zod";
+import path from "node:path";
 import morgan from "morgan";
 import fs from "node:fs";
-import path from "node:path";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { IUserPayload } from "../types/user";
-import { ENV } from "../configs/env";
 
 
 // ===============================
@@ -56,9 +56,9 @@ export async function errorHandler(err: any, req: Request, res: Response, next: 
 
     // isTrusted error
     if (!(err instanceof CustomError && error.isOperational)) {
-        await sendMail({ to: 'alidrl26@gmail.com', subject: 'Error Occurred', tempFn: errorEmailTemp, data: error });
-
-        process.exit(1);
+        // await sendMail({ to: 'alidrl26@gmail.com', subject: 'Error Occurred', tempFn: errorEmailTemp, data: error });
+        // process.exit(1);
+        console.log('untrusted error: ', error);
     }
 
     console.log('Error Handler: ', error);
@@ -89,7 +89,7 @@ export const isValidated = (schema: ZodSchema, target: "body" | "query" = "body"
             return next(new CustomError(errors, 400, true));
         }
 
-        req[target] = parseResult.data;
+        // req[target] = data; //! 'Cannot set property query of #<IncomingMessage> which has only a getter'
         next();
     };
 };
@@ -177,17 +177,19 @@ declare module "express-serve-static-core" {
 }
 
 export const queryHandler: RequestHandler = (req, res, next) => {
+    
 
     // URL?filter[key1]=value1&filter[key2]=value2
     const filter = (req.query?.filter as Record<string, any>) || {};
 
     // URL?search[key1]=value1&search[key2]=value2
-    const search = (req.query?.search as Record<string, any>) || {};
-    for (const key in search as Record<string, any>) {
-        if (typeof search[key] === "string") {
-            search[key] = { $regex: search[key], $options: "i" };
-        }
-    };
+    // const search = (req.query?.search as Record<string, any>) || {};
+    // for (let key in search as Record<string, any>) {
+    //     if (typeof search[key] === "string") {
+    //         search[key] = { $regex: search[key], $options: "i" };
+    //     }
+    // };
+    const search: Record<string, any> = req.query?.search ? { title: new RegExp(req.query?.search as string, 'i') } : {};
 
     // URL?sort[key1]=asc&sort[key2]=desc
     const rawSort = req.query?.sort || {};

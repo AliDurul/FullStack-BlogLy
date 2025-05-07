@@ -4,7 +4,7 @@ import compression from 'compression';
 import { Request, Response } from 'express';
 import { getTransporter } from '../configs/nodemailer';
 import { ENV } from '../configs/env';
-import { IUser } from '../types/user';
+import { IUser } from '../models/user.model';
 
 // ===============================
 // 1. CUSTOM ERROR CLASS
@@ -78,7 +78,7 @@ export function setToken(user: IUser, isRefresh: boolean = false): TokenResult {
     return {
         success: true,
         access: jwt.sign(payload, ENV.jwtSecret, { expiresIn: "1h" }),
-        refresh: isRefresh ? null : jwt.sign({ id: user._id }, ENV.jwtRefreshSecret, { expiresIn: "1d" })
+        refresh: isRefresh ? null : jwt.sign({ _id: user._id }, ENV.jwtRefreshSecret, { expiresIn: "1d" })
     }
 };
 

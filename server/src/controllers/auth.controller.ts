@@ -1,11 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { ENV } from '../configs/env';
-import User from '../models/user.model';
-import { IUser, IUserPayload } from '../types/user';
+import User, { IUser } from '../models/user.model';
 import { CustomError, passwordEncrypt, sendMail, setToken } from '../utils/common';
-import { passResetReqTemp, passResetSuccessTemp, verificationEmailTemp, welcomeEmailTemp } from '../utils/emailTemplates';
+import { passResetReqTemp, passResetSuccessTemp, verificationEmailTemp, welcomeEmailTemp } from '../utils/email.templates';
 import crypto from 'node:crypto';
-import { TForgetPass, TLoginUser, TRegisterUser, TResetPass, TVerifyEmail } from '../utils/validationSchemas';
+import { TForgetPass, TLoginUser, TRegisterUser, TResetPass, TVerifyEmail } from '../utils/validation.schemas';
 import jwt from 'jsonwebtoken';
 
 export const generateUsername = async (email: string) => {
@@ -114,7 +113,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res.status(201).send(setToken(user));
 };
 
-export const refresh = async (req: Request, res: Response) => {
+export const refresh = async (req: Request, res: Response): Promise<void> => {
     /*
         #swagger.tags = ['Authentication']
         #swagger.summary = 'JWT: Refresh'
@@ -130,34 +129,21 @@ export const refresh = async (req: Request, res: Response) => {
         }
     */
 
-    const refreshToken = req.body?.refresh
+    const refreshToken: string | undefined = req.body?.refresh
 
-    if (!refreshToken) throw new CustomError('Please enter token.refresh', 401, true)
+    if (!refreshToken) throw new CustomError('Please enter token.refresh', 401, true);
 
-    const refreshKey = process.env.REFRESH_KEY;
+    const decoded = jwt.verify(refreshToken, ENV.jwtRefreshSecret) as { _id: string };
 
-    if (!refreshKey) throw new CustomError('Refresh key is not defined.', 422, true);
+    if (!decoded?._id) throw new CustomError('Invalid token: missing id.', 403, true);
 
-    jwt.verify(refreshToken, refreshKey, async function (err: any, userData: any) {
 
-        if (err) {
-            throw err
-        } else {
-            const { user_id } = userData as IUserPayload
+    const user: IUser | null = await User.findOne({ user_id: decoded._id }).lean();
 
-            if (!user_id) throw new CustomError('In token user_id  not found.', 404, true)
+    if (!user) throw new CustomError('User not found.', 404, true);
 
-            const user: IUser | null = await User.findOne({ user_id }).lean();
-
-            if (!user) throw new CustomError('User not found.', 404, true)
-
-            res.status(200).send(setToken(user, true))
-
-        }
-
-    })
-
-}
+    res.status(200).send(setToken(user, true))
+};
 
 export const verifyEmail = async (req: Request, res: Response): Promise<void> => {
 
@@ -165,7 +151,7 @@ export const verifyEmail = async (req: Request, res: Response): Promise<void> =>
 
     const user = await User.findOne<IUser>({ verificationToken, verificationTokenExpiresAt: { $gt: new Date() } });
 
-    if (!user) throw new CustomError('Invalid or expired verification token', 400);
+    if (!user) throw new CustomError('Invalid or expired verification token', 400, true);
 
     user.isVerified = true;
     user.verificationToken = undefined;
@@ -197,7 +183,7 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
 export const forgetPassword = async (req: Request, res: Response): Promise<void> => {
     const { email } = req.body as TForgetPass;
 
-    const user = await User.findOne<IUser>({ email });
+    const user = await User.findOne<IUser>({ "personal_info.email": email });
 
     if (!user) throw new CustomError('User not found', 404, true);
 
@@ -245,4 +231,41 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
         success: true,
         message: 'Password reset successfully'
     });
+};
+
+export const changePassword = async (req: Request, res: Response): Promise<void> => {
+    /*
+        #swagger.tags = ["Users"]
+        #swagger.summary = "Change Password"
+        #swagger.parameters['body'] = {
+            in: 'body',
+            required: true,
+            schema: {
+                "currentPassword": "1234",
+                "newPassword": "12345",
+            }
+        }
+    */
+
+    const { currentPassword, newPassword } = req.body
+    const userId = req.user._id
+
+    if ((!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/.test(currentPassword)) || (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/.test(newPassword))) throw new CustomError('Password must be between 6 to 20 characters and include at least one numeric digit, one uppercase and one lowercase letter.', 403, true)
+
+    const user = await User.findById(userId)
+
+    if (!user) throw new CustomError('User not found', 404, true)
+
+    if (user.OAuth) throw new CustomError('You are using OAuth, you can not change password', 403, true);
+
+    if (user.personal_info.password !== passwordEncrypt(currentPassword)) throw new CustomError('Current password is incorrect', 400, true)
+
+    user.personal_info.password = passwordEncrypt(newPassword)
+    await user.save()
+
+    res.status(202).send({
+        success: true,
+        message: 'Password changed successfully'
+    })
+
 };

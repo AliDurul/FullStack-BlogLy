@@ -48,7 +48,7 @@ export default async function TrendingBlogs({ search }: { search: string }) {
                   <MiniUserCard user={user} />
                 </AnimationWrapper>
               )
-            })) : (<NoDataFound message='No Any Trending Blog 😱' />)
+            })) : (<NoDataFound message='No any user found with this name ⛑️ ' />)
         }
       </>
     )
