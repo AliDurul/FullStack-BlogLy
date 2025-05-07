@@ -17,8 +17,9 @@ const envSchema = z.object({
     // nodemailer
     EMAIL_PASS: z.string().min(1),
     EMAIL_USER: z.string().email(),
-    // frontend
+    // apis
     FRONTEND_URL: z.string().url(), 
+    BACKEND_URL: z.string().url(), 
     // aws
     AWS_REGION: z.string().min(1),
     AWS_ACCESS_KEY_ID: z.string().min(1),
@@ -45,6 +46,7 @@ export const ENV = {
     emailPass: parsed.data.EMAIL_PASS,
     emailUser: parsed.data.EMAIL_USER,
     frontendUrl: parsed.data.FRONTEND_URL,
+    backendUrl: parsed.data.BACKEND_URL,
     awsRegion: parsed.data.AWS_REGION,
     awsAccessKeyId: parsed.data.AWS_ACCESS_KEY_ID,
     awsSecretAccessKey: parsed.data.AWS_SECRET_ACCESS_KEY,

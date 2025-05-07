@@ -46,7 +46,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
         if (user) return;
 
-        user = await User.create({ user_id: sub, OAuth: true, personal_info: { fullname, email, profile_img: picture, username: await generateUsername(email) } })
+        user = await User.create({ user_id: sub, OAuth: true, isVerified: true, personal_info: { fullname, email, profile_img: picture, username: await generateUsername(email) } });
 
     } else {
         if (!(fullname && email && password)) throw new CustomError('Please fill all fields.', 400, true)
@@ -60,8 +60,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         const username = await generateUsername(email)
 
         user = await User.create({ personal_info: { fullname, email, password: passwordEncrypt(password), username } })
-    }
-
+    };
 
     await sendMail({
         to: user.personal_info.email,
@@ -69,9 +68,11 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         tempFn: verificationEmailTemp,
         data: { verificationCode: user.verificationToken }
     });
-    // message: 'Please check your email to verify your account',
 
-    res.status(201).send(setToken(user));
+    res.status(201).send({
+        success: true,
+        message: 'User created successfully. Please check your email to verify your account'
+    });
     /*  */
 };
 
@@ -96,17 +97,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     if (!user) throw new CustomError('Invalid email', 401, true);
 
     if (user?.personal_info.password !== passwordEncrypt(password)) throw new CustomError('Wrong password.', 401, true);
-
-    user.verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
-    user.verificationTokenExpiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000);
-    await user.save();
-
-    await sendMail({
-        to: user.personal_info.email,
-        subject: 'Verify your email',
-        tempFn: verificationEmailTemp,
-        data: { verificationCode: user.verificationToken }
-    });
 
     if (!user.isVerified) throw new CustomError('Email not verified. Check your inbox to verify your email.', 403, true);
 
@@ -158,11 +148,11 @@ export const verifyEmail = async (req: Request, res: Response): Promise<void> =>
     user.verificationTokenExpiresAt = undefined;
     await user.save();
 
-    sendMail({
-        to: user.personal_info.email,
-        subject: 'Email verified successfully',
-        tempFn: welcomeEmailTemp
-    });
+    // sendMail({
+    //     to: user.personal_info.email,
+    //     subject: 'Email verified successfully',
+    //     tempFn: welcomeEmailTemp
+    // });
 
     res.status(200).send({
         success: true,
@@ -190,9 +180,7 @@ export const forgetPassword = async (req: Request, res: Response): Promise<void>
     if (!user.isVerified) throw new CustomError('User email is not verified. Please verify your email.', 403, true);
 
     user.resetPassToken = crypto.randomBytes(20).toString('hex');
-
     user.resetPassExpiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours later
-
     await user.save();
 
     await sendMail({

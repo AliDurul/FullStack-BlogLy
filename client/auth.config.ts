@@ -40,13 +40,13 @@ export const authenticateUser = async (url: string, body: object) => {
     if (!res.ok) {
         const errorBody = await res.json();
         throw new CustomError(errorBody.message);
-    }
+    };
 
     const user = await res.json();
 
     // console.log('line 46-->', user);
 
-    if (user.error) throw new CustomError(user.message || 'Custom Message: Authentication failed');
+    if (!user.success) throw new CustomError(user.message || 'Custom Message: Authentication failed');
 
     return user;
 };
@@ -65,15 +65,15 @@ export default {
 
                 const { email, password, fullname, callbackUrl } = credentials as TCredentials;
 
-                const url = callbackUrl.endsWith('sign-in')
-                    ? `${API_BASE_URL}/auth/login`
-                    : `${API_BASE_URL}/auth/register`;
+                // const url = callbackUrl.endsWith('sign-in')
+                //     ? `${API_BASE_URL}/auth/login`
+                //     : `${API_BASE_URL}/auth/register`;
 
-                const body = callbackUrl.endsWith('sign-in')
-                    ? { email, password }
-                    : { email, password, fullname };
+                // const body = callbackUrl.endsWith('sign-in')
+                //     ? { email, password }
+                //     : { email, password, fullname };
 
-                return await authenticateUser(url, body);
+                return await authenticateUser(`${API_BASE_URL}/auth/login`, { email, password });
 
             }
         })
@@ -146,6 +146,8 @@ export default {
             // First-time login, save the `access_token`, its expiry and the `refresh_token`
             if (user) {
 
+                console.log('user--->', user);
+
                 return {
                     ...token,
                     access: user?.access,
@@ -196,8 +198,7 @@ export default {
 
         },
 
-        // @ts-ignore
-        async session({ session, token, trigger }) {
+        async session({ session, token }) {
 
             // if (token.error === "RefreshTokenError") {
             //     console.log("Token refresh failed. Logging out user...");

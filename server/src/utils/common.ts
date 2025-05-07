@@ -65,14 +65,15 @@ interface TokenResult {
 }
 export function setToken(user: IUser, isRefresh: boolean = false): TokenResult {
 
-    const { user_id, _id, personal_info: { profile_img, username, fullname } } = user;
+    const { user_id, _id, isVerified, personal_info: { profile_img, username, fullname } } = user;
 
     const payload = {
         _id,
         user_id,
         profile_img,
         username,
-        fullname
+        fullname,
+        isVerified
     };
 
     return {

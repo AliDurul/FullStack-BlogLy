@@ -56,7 +56,6 @@ export const changePasswordSchema = z.object({
     .refine((val) => /[a-z]/.test(val), "New password must include at least one lowercase letter")
     .refine((val) => /\d/.test(val), "New password must include at least one number")
 });
-
 export type TChangePassword = z.infer<typeof changePasswordSchema>;
 
 
@@ -72,5 +71,16 @@ export const userProfileSchema = z.object({
     website: z.string().url("Invalid Website URL").or(z.literal(""))
   })
 });
-
 export type TUserProfile = z.infer<typeof userProfileSchema>;
+
+
+export const emailverificationSchema = z.object({
+  verificationCode: z.string()
+    .length(6, "Verification code must be exactly 6 digits")
+    .refine((val) => /^\d{6}$/.test(val), "Verification code must contain only digits")
+});
+export type TVerificationCode = z.infer<typeof emailverificationSchema>;
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().email("Invalid email address")
+});

@@ -8,6 +8,7 @@ export interface userInfo {
     username: string,
     _id: string,
     fullname: string,
+    isVerified: boolean,
     iat: number,
     exp: number
 };

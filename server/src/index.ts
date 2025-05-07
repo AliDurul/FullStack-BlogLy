@@ -50,11 +50,12 @@ app.all('/', (req: Request, res: Response) => {
   })
 });
 
+// Static files:
+app.use('/uploads', express.static('../src/uploads'));
+
 // API routes:
 app.use("/api/v2", api);
 
-// Static files:
-app.use('/uploads', express.static('uploads'));
 
 
 app.use(notFound).use(errorHandler); // Error handling & 404 middlewares

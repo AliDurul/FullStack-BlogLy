@@ -6,6 +6,7 @@ import { authCredential } from '@/lib/actions/authActions';
 import toast from 'react-hot-toast';
 import { TInitialAuthState } from '@/types/index';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const initialState: TInitialAuthState = {
   success: false,
@@ -15,14 +16,18 @@ const initialState: TInitialAuthState = {
 export default function AuthForm({ slug }: { slug: string }) {
 
   const [state, action, isPending] = useActionState(authCredential, initialState);
+  const router = useRouter();
 
   useEffect(() => {
+    if (!state?.message) return;
 
-    if (state?.message !== '') {
-        toast[state?.success ? 'success' : 'error'](state?.message);
+    toast[state.success ? 'success' : 'error'](state.message, { duration: 4000, position: "top-right" });
+
+    if (state.success) {
+      const timer = setTimeout(() => router.push('/'), 2000);
+      return () => clearTimeout(timer);
     }
-    
-}, [state])
+  }, [state, router]);
 
 
 
@@ -64,6 +69,9 @@ export default function AuthForm({ slug }: { slug: string }) {
         value={state?.inputs?.password as string}
       />
 
+      <div className='mt-6 text-right'>
+        <Link href="/auth/forget-password" className='text-dark-grey font-semibold underline'>Forget passord</Link>
+      </div>
 
       <button type='submit' disabled={isPending} className='btn-dark center mt-14'>
 
