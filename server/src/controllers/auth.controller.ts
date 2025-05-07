@@ -64,7 +64,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     await sendMail({
         to: user.personal_info.email,
-        subject: 'Verify your email',
+        subject: 'Blogly - Verify your email',
         tempFn: verificationEmailTemp,
         data: { verificationCode: user.verificationToken }
     });
@@ -135,6 +135,16 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
     res.status(200).send(setToken(user, true))
 };
 
+export const logout = async (req: Request, res: Response): Promise<void> => {
+    /*
+        #swagger.tags = ["Authentication"]
+        #swagger.summary = "Token: Logout"
+        #swagger.description = 'Delete token-key.'
+    */
+
+    res.status(200).send({ success: true, message: 'Logged out successfully' });
+};
+
 export const verifyEmail = async (req: Request, res: Response): Promise<void> => {
 
     const { verificationToken } = req.body as TVerifyEmail;
@@ -148,26 +158,17 @@ export const verifyEmail = async (req: Request, res: Response): Promise<void> =>
     user.verificationTokenExpiresAt = undefined;
     await user.save();
 
-    // sendMail({
-    //     to: user.personal_info.email,
-    //     subject: 'Email verified successfully',
-    //     tempFn: welcomeEmailTemp
-    // });
+    sendMail({
+        to: user.personal_info.email,
+        subject: 'Blogly - Email verified successfully',
+        tempFn: welcomeEmailTemp,
+        data: { name: user.personal_info.fullname }
+    });
 
     res.status(200).send({
         success: true,
         message: 'Email verified successfully'
     });
-};
-
-export const logout = async (req: Request, res: Response): Promise<void> => {
-    /*
-        #swagger.tags = ["Authentication"]
-        #swagger.summary = "Token: Logout"
-        #swagger.description = 'Delete token-key.'
-    */
-
-    res.status(200).send({ success: true, message: 'Logged out successfully' });
 };
 
 export const forgetPassword = async (req: Request, res: Response): Promise<void> => {
@@ -179,15 +180,17 @@ export const forgetPassword = async (req: Request, res: Response): Promise<void>
 
     if (!user.isVerified) throw new CustomError('User email is not verified. Please verify your email.', 403, true);
 
+    if (user.OAuth) throw new CustomError('You are using OAuth, you can not reset password', 403, true);
+
     user.resetPassToken = crypto.randomBytes(20).toString('hex');
     user.resetPassExpiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours later
     await user.save();
 
     await sendMail({
         to: user.personal_info.email,
-        subject: 'Reset your password',
+        subject: 'Blogly - Reset your password',
         tempFn: passResetReqTemp,
-        data: { resetURL: ENV.frontendUrl + '/reset-password/' + user.resetPassToken }
+        data: { resetURL: ENV.frontendUrl + '/auth/reset-password/?resetPassToken=' + user.resetPassToken }
     });
 
     res.status(200).send({
@@ -200,18 +203,20 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
     const { resetPassToken } = req.params;
     const { password } = req.body as TResetPass;
 
+    if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/.test(password)) throw new CustomError('Password must be between 6 to 20 characters and include at least one numeric digit, one uppercase and one lowercase letter.', 400, true);
+
     const user = await User.findOne<IUser>({ resetPassToken, resetPassExpiresAt: { $gt: new Date() } });
 
     if (!user) throw new CustomError('Invalid or expired reset token', 400);
 
-    user.personal_info.password = password;
+    user.personal_info.password = passwordEncrypt(password);
     user.resetPassToken = undefined;
     user.resetPassExpiresAt = undefined;
     await user.save();
 
     await sendMail({
         to: user.personal_info.email,
-        subject: 'Password reset successfully',
+        subject: 'Blogly - Password reset successfully',
         tempFn: passResetSuccessTemp
     });
 

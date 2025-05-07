@@ -1,7 +1,7 @@
 'use server';
 
 import { signIn } from "@/auth";
-import { changePasswordSchema, credentialsSchema, emailverificationSchema, forgotPasswordSchema } from "../zod";
+import { changePasswordSchema, credentialsSchema, emailverificationSchema, forgotPasswordSchema, resetPasswordSchema } from "../zod";
 import { revalidatePath } from "next/cache";
 import { DEFAULT_LOGIN_REDIRECT } from "../routes";
 import { AuthError, CredentialsSignin } from "next-auth";
@@ -127,8 +127,7 @@ export const verifyEmail = async (verificationCode: string) => {
     }
 };
 
-export const resetPassword = async (_: unknown, payload: FormData) => {
-    console.log(payload);
+export const forgetPassword = async (_: unknown, payload: FormData) => {
     const { email } = Object.fromEntries(payload.entries());
 
     const result = forgotPasswordSchema.safeParse({ email });
@@ -140,6 +139,40 @@ export const resetPassword = async (_: unknown, payload: FormData) => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(result.data),
+            cache: 'no-store'
+        });
+
+        const data = await res.json();
+
+        if (!res.ok && !data.success) return { success: data.success, message: data.message, }
+
+        return data;
+    }
+    catch (error) {
+        return {
+            success: false,
+            message: (error as Error).message || 'Something went wrong.',
+        }
+    }
+};
+
+export const resetPassword = async (_: unknown, payload: FormData) => {
+    const { password, resetPassToken } = Object.fromEntries(payload.entries());
+
+    const result = resetPasswordSchema.safeParse({ password, resetPassToken });
+
+    if (!result.success) return {
+        success: false,
+        message: 'Please fix errors in the form.',
+        errors: result.error.flatten().fieldErrors,
+        inputs: { password }
+    }
+
+    try {
+        const res = await fetch(API_BASE_URL + '/auth/reset-password/' + resetPassToken, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password }),
             cache: 'no-store'
         });
 

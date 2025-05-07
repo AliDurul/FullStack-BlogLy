@@ -69,8 +69,8 @@ export default function AuthForm({ slug }: { slug: string }) {
         value={state?.inputs?.password as string}
       />
 
-      <div className='mt-6 text-right'>
-        <Link href="/auth/forget-password" className='text-dark-grey font-semibold underline'>Forget passord</Link>
+      <div className='mt-4 text-right'>
+        <Link href="/auth/forget-password" className='text-dark-grey font-semibold text-base underline tracking-wide'>Forget password</Link>
       </div>
 
       <button type='submit' disabled={isPending} className='btn-dark center mt-14'>

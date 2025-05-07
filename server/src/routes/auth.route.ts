@@ -5,7 +5,7 @@ import { Router } from 'express';
 
 const router = Router();
 
-// URL: /api/v1/auth
+// URL: /api/v2/auth
 
 router.post('/login', isValidated(loginUserSchema), login);
 router.post('/register', isValidated(registerUserSchema), register);
