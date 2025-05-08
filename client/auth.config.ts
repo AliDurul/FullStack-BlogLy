@@ -37,7 +37,6 @@ const authenticateUser = async (url: string, body: object) => {
 
     if (!res.ok) {
         const errorBody = await res.json();
-        console.log('object', errorBody);
         throw new CustomError(errorBody.message);
     };
 
