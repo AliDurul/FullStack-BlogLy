@@ -1,1 +1,0 @@
-{"version":3,"file":"awsConnection.js","sourceRoot":"","sources":["../../src/configs/awsConnection.ts"],"names":[],"mappings":";;AAAA,kDAA8C;AAE9C,wBAAwB;AACxB,MAAM,QAAQ,GAAG,IAAI,oBAAQ,CAAC;IAC1B,MAAM,EAAE,OAAO,CAAC,GAAG,CAAC,UAAU;IAC9B,WAAW,EAAE;QACT,WAAW,EAAE,OAAO,CAAC,GAAG,CAAC,iBAAkB;QAC3C,eAAe,EAAE,OAAO,CAAC,GAAG,CAAC,qBAAsB;KACtD;CACJ,CAAC,CAAC;AAEH,kBAAe,QAAQ,CAAC"}
