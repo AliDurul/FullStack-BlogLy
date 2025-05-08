@@ -28,28 +28,25 @@ class SignInError extends Error {
 };
 
 const authenticateUser = async (url: string, body: object) => {
-    try {
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
-            cache: 'no-store'
-        });
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        cache: 'no-store'
+    });
 
-        if (!res.ok) {
-            const errorBody = await res.json();
-            throw new CustomError(errorBody.message);
-        };
+    if (!res.ok) {
+        const errorBody = await res.json();
+        console.log('object', errorBody);
+        throw new CustomError(errorBody.message);
+    };
 
-        const user = await res.json();
+    const user = await res.json();
 
-        if (!user.success) throw new CustomError(user.message || 'Custom Message: Authentication failed');
+    if (!user.success) throw new CustomError(user.message || 'Custom Message: Authentication failed');
 
-        return user;
-    } catch (err) {
-        console.error('Error in authenticateUser:', err);
-        return null
-    }
+    return user;
+
 
 };
 

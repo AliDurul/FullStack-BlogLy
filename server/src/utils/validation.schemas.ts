@@ -3,8 +3,24 @@ import { z } from 'zod';
 export const registerUserSchema = z.object({
     fullname: z.string().min(1, 'Fullname is required').max(50, 'Fullname must be less than 50 characters'),
     email: z.string().email('Invalid email address').max(100, 'Email must be less than 100 characters'),
-    password: z.string().min(8, 'Password must be at least 8 characters long').max(16, 'Password must be less than 16 characters'),
-}).strict();
+    password: z.string().min(8, 'Password must be at least 8 characters long').max(16, 'Password must be less than 16 characters').optional(),
+    sub: z.string().optional(),
+    picture: z.string().url('Picture must be a valid URL').optional(),
+}).refine(data => {
+    if (data.sub) {
+        if (!data.picture) {
+            return false;
+        }
+    } else {
+        if (!data.password) {
+            return false;
+        }
+    }
+    return true;
+}, {
+    message: 'Password is required if sub is not provided, and picture is required if sub is provided.',
+    path: ['sub'],
+});
 export type TRegisterUser = z.infer<typeof registerUserSchema>;
 
 
@@ -91,7 +107,6 @@ export const getBlogQueriesSchema = z.object({
     skip: z.string().optional(),
 }).strict();
 export type TGetBlogQueries = z.infer<typeof getBlogQueriesSchema>;
-
 
 
 

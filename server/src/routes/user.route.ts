@@ -9,7 +9,7 @@ const router = Router();
 
 router.route("/")
     .get(getUsers)
-    .put(isValidated(updateUserSchema), updateUser);
+    .put(updateUser);
 
 router.route("/:username").get(getUserByUsername).delete(deleteUser);
 

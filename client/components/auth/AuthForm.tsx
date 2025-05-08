@@ -11,7 +11,7 @@ import Link from 'next/link';
 const initialState: TInitialAuthState = {
   success: false,
   message: '',
-}
+};
 
 export default function AuthForm({ slug }: { slug: string }) {
 
@@ -21,7 +21,7 @@ export default function AuthForm({ slug }: { slug: string }) {
   useEffect(() => {
     if (!state?.message) return;
 
-    toast[state.success ? 'success' : 'error'](state.message, { duration: 4000, position: "top-right" });
+    toast[state.success ? 'success' : 'error'](state.message);
 
     if (state.success) {
       const timer = setTimeout(() => router.push('/'), 2000);
@@ -48,7 +48,6 @@ export default function AuthForm({ slug }: { slug: string }) {
           value={state?.inputs?.fullname as string}
         />
       }
-
 
       <InputBox
         name="email"

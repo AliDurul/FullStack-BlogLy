@@ -46,14 +46,17 @@ export const authCredential = async (initialState: TInitialAuthState, payload: F
             if (!res.ok && !data.success) return { success: data.success, message: data.message, }
 
             return data;
-        }
+        } else {
 
-        // login
-        await signIn('credentials', {
-            email: result.data.email,
-            password: result.data.password,
-            fullname: result.data.fullname,
-        });
+            // login
+            await signIn('credentials', {
+                email: result.data.email,
+                password: result.data.password,
+                fullname: result.data.fullname,
+            });
+        };
+
+
 
         return {
             success: true,

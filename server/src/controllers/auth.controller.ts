@@ -94,9 +94,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     const user = await User.findOne({ 'personal_info.email': email });
 
-    if (!user) throw new CustomError('Invalid email', 401, true);
+    if (!user) throw new CustomError('User not found with this email.', 401, true);
 
-    if (user?.personal_info.password !== passwordEncrypt(password)) throw new CustomError('Wrong password.', 401, true);
+    if (user?.personal_info.password !== passwordEncrypt(password)) throw new CustomError('The password is wrong. You forget password ?', 401, true);
 
     if (!user.isVerified) throw new CustomError('Email not verified. Check your inbox to verify your email.', 403, true);
 

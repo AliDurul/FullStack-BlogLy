@@ -9,12 +9,54 @@ import AboutUser from '@/components/profile/AboutUser'
 import InPageNavigation from '@/components/auth/InPageNavigation'
 import Blogs from '@/components/root/Blogs'
 import BlogsSkeleton from '@/components/root/BlogsSkeleton'
+import type { Metadata } from 'next'
 
+type Props = {
+  params: Promise<{ slug: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const user = await fetchUser(slug);
+
+  if ('message' in user) {
+    return {
+      title: 'User Not Found',
+      description: 'The user profile you are looking for does not exist.',
+      robots: 'noindex, nofollow',
+    };
+  }
+
+  const { result: { personal_info: { fullname, username, profile_img }, account_info: { total_posts, total_reads } } } = user;
+
+  return {
+    title: `${fullname} (@${username}) - BlogLy`,
+    description: `${fullname} has published ${total_posts} blogs with a total of ${total_reads} reads. Explore their profile on BlogLy.`,
+    openGraph: {
+      title: `${fullname} (@${username}) - BlogLy`,
+      description: `${fullname} has published ${total_posts} blogs with a total of ${total_reads} reads. Explore their profile on BlogLy.`,
+      url: `https://blogly.vercel.app/user/${slug}`,
+      images: [
+        {
+          url: profile_img,
+          width: 800,
+          height: 800,
+          alt: `${fullname}'s Profile Picture`,
+        },
+      ],
+      type: 'profile',
+      siteName: 'BlogLy',
+    },
+    robots: 'index, follow',
+  };
+};
 
 interface IUserProfilePageParams {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | undefined }>
-
 }
 
 export default async function UserProfilePage({ params, searchParams }: IUserProfilePageParams) {
@@ -22,7 +64,7 @@ export default async function UserProfilePage({ params, searchParams }: IUserPro
   const { slug } = await params;
   const queries = await searchParams;
   const session = await getSession()
-  
+
   const category = queries.category || '';
   const search = queries.search || '';
   const pageParam = (queries.pageParam || 1) as number;
