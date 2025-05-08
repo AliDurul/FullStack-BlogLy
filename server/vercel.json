@@ -12,5 +12,7 @@
             "src": "/(.*)",
             "dest": "dist/index.js"
         }
-    ]
+    ],
+    "buildCommand": "yarn build",
+    "outputDirectory": "dist"
 }
