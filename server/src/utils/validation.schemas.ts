@@ -52,14 +52,13 @@ export type TUpdateUser = z.infer<typeof resetPassSchema>;
 
 
 export const createBlogSchema = z.object({
-    author: z.string().nonempty('Author is required.'),
     draft: z.boolean().optional(),
     title: z.string().nonempty('Title is required.').optional(),
     banner: z.string().nonempty('Banner is required.').optional(),
     des: z.string()
         .max(200, 'Description should not exceed 200 characters.')
         .optional(),
-    content: z.string()
+    content: z.array(z.any())
         .nonempty('Content is required.')
         .optional(),
     tags: z.array(z.string())

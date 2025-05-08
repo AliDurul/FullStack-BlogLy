@@ -11,7 +11,7 @@ interface ILikeCommentBtnProps {
 
 const LikeBtn = ({ blog, session }: ILikeCommentBtnProps) => {
 
-    const userHasLiked = blog.activity.likes.includes(session ? session?.user._id : '');
+    const userHasLiked = blog.activity.likes.includes(session ? session?.user?._id : '');
 
     const [isLiked, setIsLiked] = useState(!!userHasLiked);
 

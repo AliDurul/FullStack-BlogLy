@@ -188,4 +188,5 @@ export const resetPassword = async (_: unknown, payload: FormData) => {
             message: (error as Error).message || 'Something went wrong.',
         }
     }
-}
+};
+

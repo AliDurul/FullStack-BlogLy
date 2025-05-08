@@ -26,7 +26,7 @@ export const getBlogs = async (req: Request, res: Response) => {
         filter.author = author;
         if (draft === 'true') filter.draft = true;
     }
-
+    // console.log('filter--->', filter);
     const result = await Blog.find(filter)
         .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
         .sort({ publishedAt: -1 })
@@ -147,7 +147,7 @@ export const toggleLike = async (req: Request, res: Response) => {
     const blog: (IBlog & { author: Author }) | null = await Blog.findById(blogId);
     if (!blog) throw new CustomError("Blog not found", 404, true);
 
-    if (blog.author._id.toString() === userId.toString()) throw new CustomError("You cannot like your own blog", 400, true);
+    if (blog.author.toString() === userId.toString()) throw new CustomError("You cannot like your own blog", 400, true);
 
     const likeIndex = blog.activity.likes.indexOf(userId);
     likeIndex === -1 ? blog.activity.likes.push(userId) : blog.activity.likes.splice(likeIndex, 1);

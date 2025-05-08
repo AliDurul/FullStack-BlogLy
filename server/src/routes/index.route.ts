@@ -4,6 +4,7 @@ import authRoutes from "./auth.route";
 import blogRoutes from "./blog.route";
 import commentRoutes from "./comment.route";
 import notificationRoutes from "./notification.route";
+import uploadRoutes from "./aws.upload.route";
 
 const router = Router();
 
@@ -20,6 +21,9 @@ router.use("/blogs", blogRoutes);
 router.use("/comments", commentRoutes);
 
 // notificationRoutes
-router.use("/comments", notificationRoutes);
+router.use("/notifications", notificationRoutes);
+
+// uploadRoutes
+router.use('/upload-url', uploadRoutes);
 
 export default router;

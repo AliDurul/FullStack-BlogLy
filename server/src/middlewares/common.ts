@@ -58,7 +58,7 @@ export async function errorHandler(err: any, req: Request, res: Response, next: 
     if (!(err instanceof CustomError && error.isOperational)) {
         // await sendMail({ to: 'alidrl26@gmail.com', subject: 'Error Occurred', tempFn: errorEmailTemp, data: error });
         // process.exit(1);
-        console.log('untrusted error: ', error);
+        // console.log('untrusted error: ', error);
     }
 
     console.log('Error Handler: ', error);
@@ -134,7 +134,7 @@ export const authenticate: RequestHandler = async (req, res, next) => {
 
         jwt.verify(tokenParts[1], ENV.jwtSecret, (err: jwt.VerifyErrors | null, userData: JwtPayload & IUserPayload | undefined) => {
             if (err) {
-                return next(new CustomError("Invalid or expired token", 401, true));
+                return next(new CustomError("Invalid or expired token, Plesase login again.", 401, true));
             }
             req.user = userData;
         });

@@ -27,29 +27,64 @@ class SignInError extends Error {
     }
 };
 
-export const authenticateUser = async (url: string, body: object) => {
+const authenticateUser = async (url: string, body: object) => {
+    try {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+            cache: 'no-store'
+        });
 
-    const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-        cache: 'no-store'
-    });
-    // console.log('line 36-->', res);
+        if (!res.ok) {
+            const errorBody = await res.json();
+            throw new CustomError(errorBody.message);
+        };
 
-    if (!res.ok) {
-        const errorBody = await res.json();
-        throw new CustomError(errorBody.message);
-    };
+        const user = await res.json();
 
-    const user = await res.json();
+        if (!user.success) throw new CustomError(user.message || 'Custom Message: Authentication failed');
 
-    // console.log('line 46-->', user);
+        return user;
+    } catch (err) {
+        console.error('Error in authenticateUser:', err);
+        return null
+    }
 
-    if (!user.success) throw new CustomError(user.message || 'Custom Message: Authentication failed');
-
-    return user;
 };
+
+const refreshAccessToken = async (token: JWT) => {
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh: token.refresh })
+        })
+
+        const tokensOrError = await res.json()
+
+        if (!res.ok) throw tokensOrError
+
+        const newTokens = tokensOrError as {
+            access: string
+            refresh: string | null
+            success: boolean
+        }
+
+        return {
+            ...token,
+            access: newTokens.access,
+            userInfo: jwtDecode<userInfo>(newTokens.access),
+            refresh: newTokens.refresh ? newTokens.refresh : token.refresh,
+        }
+
+    } catch (error: unknown) {
+        console.error("Error: refreshing access token ", (error as Error).message)
+        return { ...token, error: "RefreshTokenError" };
+    }
+
+}
 
 export default {
     trustHost: true,
@@ -58,20 +93,11 @@ export default {
         Google,
         CredentialsProvider({
             name: 'Credentials',
-
             authorize: async (credentials) => {
 
                 if (!credentials) return null;
 
-                const { email, password, fullname, callbackUrl } = credentials as TCredentials;
-
-                // const url = callbackUrl.endsWith('sign-in')
-                //     ? `${API_BASE_URL}/auth/login`
-                //     : `${API_BASE_URL}/auth/register`;
-
-                // const body = callbackUrl.endsWith('sign-in')
-                //     ? { email, password }
-                //     : { email, password, fullname };
+                const { email, password } = credentials as TCredentials;
 
                 return await authenticateUser(`${API_BASE_URL}/auth/login`, { email, password });
 
@@ -79,7 +105,6 @@ export default {
         })
     ],
     callbacks: {
-
         async signIn({ user, account, profile }) {
             if (!user) return false
 
@@ -143,11 +168,7 @@ export default {
                 console.log('update working');
             };
 
-            // First-time login, save the `access_token`, its expiry and the `refresh_token`
             if (user) {
-
-                console.log('user--->', user);
-
                 return {
                     ...token,
                     access: user?.access,
@@ -156,63 +177,33 @@ export default {
                 }
 
             } else if (Date.now() < token.userInfo.exp * 1000) {
-                // Subsequent logins, but the `access token` is still valid
                 return token
 
             } else {
-                // Subsequent logins, but the `access_token` has expired, try to refresh it
                 if (!token.refresh) throw new TypeError("Missing refresh_token");
 
-                try {
-                    console.log("Refreshing token...");
-
-                    const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ refresh: token.refresh })
-                    })
-
-                    const tokensOrError = await res.json()
-
-                    if (!res.ok) throw tokensOrError
-
-                    const newTokens = tokensOrError as {
-                        access: string
-                        refresh: string | null
-                        error?: boolean
-                    }
-
-                    return {
-                        ...token,
-                        access: newTokens.access,
-                        userInfo: jwtDecode<userInfo>(newTokens.access),
-                        refresh: newTokens.refresh ? newTokens.refresh : token.refresh,
-                    }
-
-                } catch (error) {
-                    console.error("Error refreshing access token:", error)
-                    return { ...token, error: "RefreshTokenError" as const };
-                }
+                return await refreshAccessToken(token)
             };
 
 
         },
 
-        async session({ session, token }) {
+        // @ts-ignore
+        async session({ session, token, user }) {
 
             // if (token.error === "RefreshTokenError") {
             //     console.log("Token refresh failed. Logging out user...");
-            //     return null; // Clear the session
-            // }
-            if (token.access) {
-                const { access, refresh, userInfo, error } = token as JWT
-                session.user = userInfo as any
-                session.access = access
-                session.refresh = refresh
-                session.error = error
-            }
+            //     return { ...session, error: 'RefreshTokenError' };
+            // };
 
-            return session
+            if (token.access) {
+                const { access, refresh, userInfo, error } = token as JWT;
+                session.user = userInfo as any;
+                session.access = access;
+                session.refresh = refresh;
+                session.error = error;
+            }
+            return session as Session;
         }
     }
 } satisfies NextAuthConfig;

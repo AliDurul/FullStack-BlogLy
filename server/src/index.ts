@@ -1,6 +1,6 @@
 import express, { Response, Request } from "express";
 import { ENV } from "./configs/env";
-import { errorHandler, logger, notFound, queryHandler } from "./middlewares/common";
+import { authenticate, errorHandler, logger, notFound, queryHandler } from "./middlewares/common";
 import { connectDB, disconnectDB } from "./configs/db";
 import { rateLimit } from 'express-rate-limit'
 import api from './routes/index.route'
@@ -20,6 +20,7 @@ app.set('query parser', 'extended');
 app.use(express.urlencoded({ extended: true }));
 app.use(logger());
 app.use(queryHandler);
+app.use(authenticate);
 app.use('/api/v1', rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes in milliseconds
   max: 100,

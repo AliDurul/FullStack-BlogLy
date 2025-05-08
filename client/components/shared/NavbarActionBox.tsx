@@ -110,14 +110,14 @@ export default function NavbarActionBox({ session }: { session: TSession }) {
                             <div className='relative' onBlur={() => setTimeout(() => { setUserNavPanel(false) }, 200)} tabIndex={0}>
                                 <button className='size-11 mt-1' onClick={() => setUserNavPanel(prev => !prev)}>
                                     <Image
-                                        src={session.user.profile_img}
+                                        src={session?.user?.profile_img}
                                         alt="profile"
                                         className='rounded-full w-full h-full object-cover'
                                         width={40} height={40} />
                                 </button>
 
                                 {
-                                    userNavPanel && <UserNavigationPanel username={session.user.username} />
+                                    userNavPanel && <UserNavigationPanel username={session?.user?.username} />
                                 }
 
                             </div>
