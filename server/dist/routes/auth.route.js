@@ -5,7 +5,7 @@ const auth_controller_1 = require("../controllers/auth.controller");
 const common_1 = require("../middlewares/common");
 const express_1 = require("express");
 const router = (0, express_1.Router)();
-// URL: /api/v1/auth
+// URL: /api/v2/auth
 router.post('/login', (0, common_1.isValidated)(validation_schemas_1.loginUserSchema), auth_controller_1.login);
 router.post('/register', (0, common_1.isValidated)(validation_schemas_1.registerUserSchema), auth_controller_1.register);
 router.all('/logout', auth_controller_1.logout);

@@ -1,12 +1,29 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userSchema = exports.exampleSchema = exports.createBlogSchema = exports.updateUserSchema = exports.resetPassSchema = exports.forgetPassSchema = exports.verifyEmailSchema = exports.loginUserSchema = exports.registerUserSchema = void 0;
+exports.userSchema = exports.exampleSchema = exports.getBlogQueriesSchema = exports.createBlogSchema = exports.updateUserSchema = exports.resetPassSchema = exports.forgetPassSchema = exports.verifyEmailSchema = exports.loginUserSchema = exports.registerUserSchema = void 0;
 const zod_1 = require("zod");
 exports.registerUserSchema = zod_1.z.object({
     fullname: zod_1.z.string().min(1, 'Fullname is required').max(50, 'Fullname must be less than 50 characters'),
     email: zod_1.z.string().email('Invalid email address').max(100, 'Email must be less than 100 characters'),
-    password: zod_1.z.string().min(8, 'Password must be at least 8 characters long').max(16, 'Password must be less than 16 characters'),
-}).strict();
+    password: zod_1.z.string().min(8, 'Password must be at least 8 characters long').max(16, 'Password must be less than 16 characters').optional(),
+    sub: zod_1.z.string().optional(),
+    picture: zod_1.z.string().url('Picture must be a valid URL').optional(),
+}).refine(data => {
+    if (data.sub) {
+        if (!data.picture) {
+            return false;
+        }
+    }
+    else {
+        if (!data.password) {
+            return false;
+        }
+    }
+    return true;
+}, {
+    message: 'Password is required if sub is not provided, and picture is required if sub is provided.',
+    path: ['sub'],
+});
 exports.loginUserSchema = zod_1.z.object({
     email: zod_1.z.string().email('Invalid email address').max(100, 'Email must be less than 100 characters'),
     password: zod_1.z.string().min(8, 'Password must be at least 8 characters long').max(16, 'Password must be less than 16 characters'),
@@ -36,14 +53,13 @@ exports.updateUserSchema = zod_1.z.object({
     }),
 }).strict();
 exports.createBlogSchema = zod_1.z.object({
-    author: zod_1.z.string().nonempty('Author is required.'),
     draft: zod_1.z.boolean().optional(),
     title: zod_1.z.string().nonempty('Title is required.').optional(),
     banner: zod_1.z.string().nonempty('Banner is required.').optional(),
     des: zod_1.z.string()
         .max(200, 'Description should not exceed 200 characters.')
         .optional(),
-    content: zod_1.z.string()
+    content: zod_1.z.array(zod_1.z.any())
         .nonempty('Content is required.')
         .optional(),
     tags: zod_1.z.array(zod_1.z.string())
@@ -68,6 +84,17 @@ exports.createBlogSchema = zod_1.z.object({
     message: 'Validation failed for non-draft blog.',
     path: ['draft'],
 });
+exports.getBlogQueriesSchema = zod_1.z.object({
+    search: zod_1.z.string().optional(),
+    category: zod_1.z.string().optional(),
+    author: zod_1.z.string().optional(),
+    excludedId: zod_1.z.string().optional(),
+    draft: zod_1.z.enum(['true', 'false']).optional(),
+    page: zod_1.z.string().optional(),
+    limit: zod_1.z.string().optional(),
+    skip: zod_1.z.string().optional(),
+}).strict();
+/* ------------- */
 exports.exampleSchema = zod_1.z.object({
     user: zod_1.z.custom(),
     login: zod_1.z.custom(),

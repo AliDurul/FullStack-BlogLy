@@ -70,22 +70,6 @@ const updateProfileImg = async (req, res) => {
 };
 exports.updateProfileImg = updateProfileImg;
 const updateUser = async (req, res) => {
-    /*
-        #swagger.tags = ["Users"]
-        #swagger.summary = "Update User Profile"
-        #swagger.parameters['body'] = {
-            in: 'body',
-            required: true,
-            schema: {
-                 schema: {
-                  "username": "test",
-                  "password": "1234",
-                  "email": "test@site.com"
-                  "firstName": "test",
-                  "lastName": "test",
-            }
-        }
-    */
     const { username, bio, social_links } = req.body;
     const userId = req.user._id;
     if (!username)

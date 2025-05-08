@@ -20,7 +20,7 @@ const getBlogs = async (req, res) => {
     const { skip, limit } = getPagination(req);
     const filter = { draft: false };
     if (category)
-        filter.tags = { $in: [category] };
+        filter.tags = { $in: [String(category).toLowerCase()] };
     if (excludedId)
         filter.blog_id = { $ne: excludedId };
     if (search)
@@ -30,12 +30,16 @@ const getBlogs = async (req, res) => {
         if (draft === 'true')
             filter.draft = true;
     }
+    // console.log('filter--->', filter);
     const result = await blog_model_1.default.find(filter)
         .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
         .sort({ publishedAt: -1 })
         .select('blog_id title des publishedAt banner tags activity -_id')
         .skip(skip)
         .limit(limit);
+    if (!result.length) {
+        throw new common_1.CustomError('No blogs found matching the criteria.', 404, true);
+    }
     const details = await res.getModelListDetails(blog_model_1.default, filter);
     res.status(200).send({
         success: true,
@@ -123,7 +127,7 @@ const toggleLike = async (req, res) => {
     const blog = await blog_model_1.default.findById(blogId);
     if (!blog)
         throw new common_1.CustomError("Blog not found", 404, true);
-    if (blog.author._id.toString() === userId.toString())
+    if (blog.author.toString() === userId.toString())
         throw new common_1.CustomError("You cannot like your own blog", 400, true);
     const likeIndex = blog.activity.likes.indexOf(userId);
     likeIndex === -1 ? blog.activity.likes.push(userId) : blog.activity.likes.splice(likeIndex, 1);

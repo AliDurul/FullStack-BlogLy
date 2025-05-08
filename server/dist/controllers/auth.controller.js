@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changePassword = exports.resetPassword = exports.forgetPassword = exports.logout = exports.verifyEmail = exports.refresh = exports.login = exports.register = exports.generateUsername = void 0;
+exports.changePassword = exports.resetPassword = exports.forgetPassword = exports.verifyEmail = exports.logout = exports.refresh = exports.login = exports.register = exports.generateUsername = void 0;
 const env_1 = require("../configs/env");
 const user_model_1 = __importDefault(require("../models/user.model"));
 const common_1 = require("../utils/common");
@@ -43,7 +43,7 @@ const register = async (req, res) => {
         user = await user_model_1.default.findOne({ user_id: sub });
         if (user)
             return;
-        user = await user_model_1.default.create({ user_id: sub, OAuth: true, personal_info: { fullname, email, profile_img: picture, username: await (0, exports.generateUsername)(email) } });
+        user = await user_model_1.default.create({ user_id: sub, OAuth: true, isVerified: true, personal_info: { fullname, email, profile_img: picture, username: await (0, exports.generateUsername)(email) } });
     }
     else {
         if (!(fullname && email && password))
@@ -56,14 +56,17 @@ const register = async (req, res) => {
         const username = await (0, exports.generateUsername)(email);
         user = await user_model_1.default.create({ personal_info: { fullname, email, password: (0, common_1.passwordEncrypt)(password), username } });
     }
+    ;
     await (0, common_1.sendMail)({
         to: user.personal_info.email,
-        subject: 'Verify your email',
+        subject: 'Blogly - Verify your email',
         tempFn: email_templates_1.verificationEmailTemp,
         data: { verificationCode: user.verificationToken }
     });
-    // message: 'Please check your email to verify your account',
-    res.status(201).send((0, common_1.setToken)(user));
+    res.status(201).send({
+        success: true,
+        message: 'User created successfully. Please check your email to verify your account'
+    });
     /*  */
 };
 exports.register = register;
@@ -84,18 +87,9 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     const user = await user_model_1.default.findOne({ 'personal_info.email': email });
     if (!user)
-        throw new common_1.CustomError('Invalid email', 401, true);
+        throw new common_1.CustomError('User not found with this email.', 401, true);
     if (user?.personal_info.password !== (0, common_1.passwordEncrypt)(password))
-        throw new common_1.CustomError('Wrong password.', 401, true);
-    user.verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
-    user.verificationTokenExpiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000);
-    await user.save();
-    await (0, common_1.sendMail)({
-        to: user.personal_info.email,
-        subject: 'Verify your email',
-        tempFn: email_templates_1.verificationEmailTemp,
-        data: { verificationCode: user.verificationToken }
-    });
+        throw new common_1.CustomError('The password is wrong. You forget password ?', 401, true);
     if (!user.isVerified)
         throw new common_1.CustomError('Email not verified. Check your inbox to verify your email.', 403, true);
     res.status(201).send((0, common_1.setToken)(user));
@@ -128,6 +122,15 @@ const refresh = async (req, res) => {
     res.status(200).send((0, common_1.setToken)(user, true));
 };
 exports.refresh = refresh;
+const logout = async (req, res) => {
+    /*
+        #swagger.tags = ["Authentication"]
+        #swagger.summary = "Token: Logout"
+        #swagger.description = 'Delete token-key.'
+    */
+    res.status(200).send({ success: true, message: 'Logged out successfully' });
+};
+exports.logout = logout;
 const verifyEmail = async (req, res) => {
     const { verificationToken } = req.body;
     const user = await user_model_1.default.findOne({ verificationToken, verificationTokenExpiresAt: { $gt: new Date() } });
@@ -139,8 +142,9 @@ const verifyEmail = async (req, res) => {
     await user.save();
     (0, common_1.sendMail)({
         to: user.personal_info.email,
-        subject: 'Email verified successfully',
-        tempFn: email_templates_1.welcomeEmailTemp
+        subject: 'Blogly - Email verified successfully',
+        tempFn: email_templates_1.welcomeEmailTemp,
+        data: { name: user.personal_info.fullname }
     });
     res.status(200).send({
         success: true,
@@ -148,15 +152,6 @@ const verifyEmail = async (req, res) => {
     });
 };
 exports.verifyEmail = verifyEmail;
-const logout = async (req, res) => {
-    /*
-        #swagger.tags = ["Authentication"]
-        #swagger.summary = "Token: Logout"
-        #swagger.description = 'Delete token-key.'
-    */
-    res.status(200).send({ success: true, message: 'Logged out successfully' });
-};
-exports.logout = logout;
 const forgetPassword = async (req, res) => {
     const { email } = req.body;
     const user = await user_model_1.default.findOne({ "personal_info.email": email });
@@ -164,14 +159,16 @@ const forgetPassword = async (req, res) => {
         throw new common_1.CustomError('User not found', 404, true);
     if (!user.isVerified)
         throw new common_1.CustomError('User email is not verified. Please verify your email.', 403, true);
+    if (user.OAuth)
+        throw new common_1.CustomError('You are using OAuth, you can not reset password', 403, true);
     user.resetPassToken = node_crypto_1.default.randomBytes(20).toString('hex');
     user.resetPassExpiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours later
     await user.save();
     await (0, common_1.sendMail)({
         to: user.personal_info.email,
-        subject: 'Reset your password',
+        subject: 'Blogly - Reset your password',
         tempFn: email_templates_1.passResetReqTemp,
-        data: { resetURL: env_1.ENV.frontendUrl + '/reset-password/' + user.resetPassToken }
+        data: { resetURL: env_1.ENV.frontendUrl + '/auth/reset-password/?resetPassToken=' + user.resetPassToken }
     });
     res.status(200).send({
         success: true,
@@ -182,16 +179,18 @@ exports.forgetPassword = forgetPassword;
 const resetPassword = async (req, res) => {
     const { resetPassToken } = req.params;
     const { password } = req.body;
+    if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/.test(password))
+        throw new common_1.CustomError('Password must be between 6 to 20 characters and include at least one numeric digit, one uppercase and one lowercase letter.', 400, true);
     const user = await user_model_1.default.findOne({ resetPassToken, resetPassExpiresAt: { $gt: new Date() } });
     if (!user)
         throw new common_1.CustomError('Invalid or expired reset token', 400);
-    user.personal_info.password = password;
+    user.personal_info.password = (0, common_1.passwordEncrypt)(password);
     user.resetPassToken = undefined;
     user.resetPassExpiresAt = undefined;
     await user.save();
     await (0, common_1.sendMail)({
         to: user.personal_info.email,
-        subject: 'Password reset successfully',
+        subject: 'Blogly - Password reset successfully',
         tempFn: email_templates_1.passResetSuccessTemp
     });
     res.status(200).send({

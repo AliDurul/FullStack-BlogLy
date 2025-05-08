@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.queryHandler = exports.authenticate = exports.isValidated = exports.notFound = void 0;
 exports.errorHandler = errorHandler;
 exports.logger = logger;
-const email_templates_1 = require("../utils/email.templates");
 const common_1 = require("../utils/common");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const env_1 = require("../configs/env");
@@ -53,8 +52,9 @@ async function errorHandler(err, req, res, next) {
     }
     // isTrusted error
     if (!(err instanceof common_1.CustomError && error.isOperational)) {
-        await (0, common_1.sendMail)({ to: 'alidrl26@gmail.com', subject: 'Error Occurred', tempFn: email_templates_1.errorEmailTemp, data: error });
-        process.exit(1);
+        // await sendMail({ to: 'alidrl26@gmail.com', subject: 'Error Occurred', tempFn: errorEmailTemp, data: error });
+        // process.exit(1);
+        // console.log('untrusted error: ', error);
     }
     console.log('Error Handler: ', error);
     res.status(error.statusCode).send({
@@ -79,7 +79,7 @@ const isValidated = (schema, target = "body") => {
                 .join(", ");
             return next(new common_1.CustomError(errors, 400, true));
         }
-        req[target] = parseResult.data;
+        // req[target] = data; //! 'Cannot set property query of #<IncomingMessage> which has only a getter'
         next();
     };
 };
@@ -107,7 +107,7 @@ const authenticate = async (req, res, next) => {
     if (tokenParts[0] === "Bearer" && tokenParts[1]) {
         jsonwebtoken_1.default.verify(tokenParts[1], env_1.ENV.jwtSecret, (err, userData) => {
             if (err) {
-                return next(new common_1.CustomError("Invalid or expired token", 401, true));
+                return next(new common_1.CustomError("Invalid or expired token, Plesase login again.", 401, true));
             }
             req.user = userData;
         });
@@ -119,13 +119,13 @@ const queryHandler = (req, res, next) => {
     // URL?filter[key1]=value1&filter[key2]=value2
     const filter = req.query?.filter || {};
     // URL?search[key1]=value1&search[key2]=value2
-    const search = req.query?.search || {};
-    for (const key in search) {
-        if (typeof search[key] === "string") {
-            search[key] = { $regex: search[key], $options: "i" };
-        }
-    }
-    ;
+    // const search = (req.query?.search as Record<string, any>) || {};
+    // for (let key in search as Record<string, any>) {
+    //     if (typeof search[key] === "string") {
+    //         search[key] = { $regex: search[key], $options: "i" };
+    //     }
+    // };
+    const search = req.query?.search ? { title: new RegExp(req.query?.search, 'i') } : {};
     // URL?sort[key1]=asc&sort[key2]=desc
     const rawSort = req.query?.sort || {};
     const sort = {};

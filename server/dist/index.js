@@ -23,6 +23,7 @@ app.set('query parser', 'extended');
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, common_1.logger)());
 app.use(common_1.queryHandler);
+app.use(common_1.authenticate);
 app.use('/api/v1', (0, express_rate_limit_1.rateLimit)({
     windowMs: 15 * 60 * 1000, // 15 minutes in milliseconds
     max: 100,
@@ -48,10 +49,10 @@ app.all('/', (req, res) => {
         }
     });
 });
+// Static files:
+app.use('/uploads', express_1.default.static('../src/uploads'));
 // API routes:
 app.use("/api/v2", index_route_1.default);
-// Static files:
-app.use('/uploads', express_1.default.static('uploads'));
 app.use(common_1.notFound).use(common_1.errorHandler); // Error handling & 404 middlewares
 /* ------------------------------------- */
 //* Server and DB connection

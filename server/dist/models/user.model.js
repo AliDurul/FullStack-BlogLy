@@ -37,7 +37,6 @@ const mongoose_1 = __importStar(require("mongoose"));
 const uuid_1 = require("uuid");
 let profile_imgs_name_list = ["Garfield", "Tinkerbell", "Annie", "Loki", "Cleo", "Angel", "Bob", "Mia", "Coco", "Gracie", "Bear", "Bella", "Abby", "Harley", "Cali", "Leo", "Luna", "Jack", "Felix", "Kiki"];
 let profile_imgs_collections_list = ["notionists-neutral", "adventurer-neutral", "fun-emoji"];
-;
 const userSchema = new mongoose_1.Schema({
     user_id: {
         type: String,
@@ -148,4 +147,5 @@ const userSchema = new mongoose_1.Schema({
 });
 const User = mongoose_1.default.model('User', userSchema);
 exports.default = User;
+;
 //# sourceMappingURL=user.model.js.map

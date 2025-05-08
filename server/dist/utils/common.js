@@ -50,18 +50,19 @@ const generateCacheKey = (baseKey, query) => {
 };
 exports.generateCacheKey = generateCacheKey;
 function setToken(user, isRefresh = false) {
-    const { user_id, _id, personal_info: { profile_img, username, fullname } } = user;
+    const { user_id, _id, isVerified, personal_info: { profile_img, username, fullname } } = user;
     const payload = {
         _id,
         user_id,
         profile_img,
         username,
-        fullname
+        fullname,
+        isVerified
     };
     return {
         success: true,
-        access: jsonwebtoken_1.default.sign(payload, env_1.ENV.jwtSecret, { expiresIn: "1h" }),
-        refresh: isRefresh ? null : jsonwebtoken_1.default.sign({ _id: user._id }, env_1.ENV.jwtRefreshSecret, { expiresIn: "1d" })
+        access: jsonwebtoken_1.default.sign(payload, env_1.ENV.jwtSecret, { expiresIn: env_1.ENV.jwtExpiresIn }),
+        refresh: isRefresh ? null : jsonwebtoken_1.default.sign({ _id: user._id }, env_1.ENV.jwtRefreshSecret, { expiresIn: env_1.ENV.jwtRefreshExpiresIn })
     };
 }
 ;
