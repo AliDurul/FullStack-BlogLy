@@ -87,7 +87,7 @@ export default async function Home({ searchParams }: HomePageParams) {
             ) : (
               <div className="flex flex-col gap-10">
                 <div>
-                  <h1 className="font-medium text-xl mb-8">Topics you may interested</h1>
+                  <h1 className="font-medium text-xl mb-8">Topics you might be interested in</h1>
 
                   <div className="flex gap-3 flex-wrap">
                     <CategoryBtns />
