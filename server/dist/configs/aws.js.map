@@ -1,1 +1,0 @@
-{"version":3,"file":"aws.js","sourceRoot":"","sources":["../../src/configs/aws.ts"],"names":[],"mappings":";;AAAA,kDAA8C;AAC9C,+BAA0B;AAE1B,wBAAwB;AACxB,MAAM,QAAQ,GAAG,IAAI,oBAAQ,CAAC;IAC1B,MAAM,EAAE,SAAG,CAAC,SAAS;IACrB,WAAW,EAAE;QACT,WAAW,EAAE,SAAG,CAAC,cAAe;QAChC,eAAe,EAAE,SAAG,CAAC,kBAAmB;KAC3C;CACJ,CAAC,CAAC;AAEH,kBAAe,QAAQ,CAAC"}

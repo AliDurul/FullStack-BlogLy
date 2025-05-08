@@ -18,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 app.set('query parser', 'extended');
 app.use(express.urlencoded({ extended: true }));
-app.use(logger());
+// app.use(logger());
 app.use(queryHandler);
 app.use(authenticate);
 app.use('/api/v1', rateLimit({
