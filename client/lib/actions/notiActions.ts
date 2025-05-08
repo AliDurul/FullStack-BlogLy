@@ -65,7 +65,7 @@ export const fetchNotis: TfetchNotiFn = async ({ type, pageParam, deletedDocCoun
 
     const headers = await authConfig();
 
-    console.log('noti--', url);
+    console.log('line 68 noti--', url);
 
     try {
         const res = await fetch(url, {

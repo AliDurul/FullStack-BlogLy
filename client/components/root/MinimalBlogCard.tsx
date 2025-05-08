@@ -17,7 +17,7 @@ export default function MinimalBlogCard({ blog, index }: { blog: ITrendingBlog, 
                     <Image src={profile_img} alt={fullname} width={40} height={40} className='rounded-full size-7' />
                         <p className='line-clamp-1'>@{username}</p>
 
-                        <p className="min-w-fit ml-auto"> 📅{formatDate(publishedAt)} </p>
+                        {/* <p className="min-w-fit ml-auto"> 📅{formatDate(publishedAt)} </p> */}
                 </div>
                 <h1 className='blog-title'>{title}</h1>
             </div>

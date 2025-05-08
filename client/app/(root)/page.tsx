@@ -9,19 +9,39 @@ import Blogs from "@/components/root/Blogs";
 import getSession from "@/lib/utils";
 import { signIn } from "@/auth";
 import BlogsSkeleton from "@/components/root/BlogsSkeleton";
+import type { Metadata, ResolvingMetadata } from 'next'
+
+type Props = {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export async function generateMetadata({ params, searchParams }: Props, parent: ResolvingMetadata): Promise<Metadata> {
+  // const slug = (await params).slug
+  const search = (await searchParams).search || ''
+  const category = (await searchParams).category || ''
+
+  // // fetch post information
+  // const post = await fetch(`https://api.vercel.app/blog/${slug}`).then((res) =>
+  //   res.json()
+  // )
+
+  return {
+    title: search ? `Search Results for "${search}"` : category ? `Blogs in ${category}` : 'BlogLy | Modern Blogging Website',
+    description: search ? `Search Results for "${search}"` : category ? `Blogs in ${category}` : 'A modern blogging website built with MERN stack.',
+  }
+}
 
 
 
-type SearchParams = Promise<{ [key: string]: string | undefined }>
+type HomePageParams = { searchParams: Promise<{ [key: string]: string | undefined }> }
 
+export default async function Home({ searchParams }: HomePageParams) {
 
-export default async function Home(props: { searchParams: SearchParams }) {
-
-  const session = await getSession();
-  const searchParams = await props.searchParams
-  const category = searchParams.category || ''
-  const search = searchParams.search || ''
-  const pageParam = (searchParams.pageParam || 1) as number
+  // const session = await getSession();
+  const category = (await searchParams).category || ''
+  const search = (await searchParams).search || ''
+  const pageParam = ((await searchParams).pageParam || 1) as number
 
   const defaultRoutes = [category === '' ? 'Home' : category, 'trending blogs']
   const defaultHidden = ['trending blogs']
@@ -53,7 +73,7 @@ export default async function Home(props: { searchParams: SearchParams }) {
         </div>
 
         {/*  filters and trending blogs*/}
-        <div className="min-w-[40%] lg:min-w-[400px] max-w-min border-l-2 border-grey pl-8 pt-3 max-md:hidden">
+        <div className="min-w-[40%] lg:min-w-[400px] max-w-min border-l-2 border-grey pl-8 pt-3 max-md:hidden sticky top-28 self-start ">
           {
             search ? (
               <>
@@ -67,7 +87,7 @@ export default async function Home(props: { searchParams: SearchParams }) {
             ) : (
               <div className="flex flex-col gap-10">
                 <div>
-                  <h1 className="font-medium text-xl mb-8">Stories form all interests</h1>
+                  <h1 className="font-medium text-xl mb-8">Topics you might be interested in</h1>
 
                   <div className="flex gap-3 flex-wrap">
                     <CategoryBtns />

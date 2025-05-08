@@ -67,7 +67,7 @@ export default function EditorNav() {
 
     useEffect(() => {
         if (state?.success) {
-            toast.success(state.message);
+            toast.success(state?.message || 'Operation successful');
             setTimeout(() => {
                 router.push('/blog-management/?draft=true');
             }, 500);

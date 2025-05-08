@@ -21,7 +21,7 @@ export default function ErrorPage() {
             <Link
                 href="/auth/sign-in"
                 // onClick={() => reset()}
-                className="px-6 py-3 bg-rose-800 text-white rounded hover:bg-red-700 transition-all"
+                className="px-6 py-3 bg-rose-800 text-slate-50 rounded hover:bg-red-700 transition-all"
             >
                 Try Again
             </Link>

@@ -5,9 +5,54 @@ import AnimationWrapper from '@/components/shared/AnimationWrapper';
 import Loader from '@/components/shared/Loader';
 import { fetchBlog } from '@/lib/actions/blogActions';
 import { formatDate, getFullDay } from '@/lib/utils';
+import { Metadata, ResolvingMetadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { Suspense } from 'react'
+
+
+type Props = {
+    params: Promise<{ blogId: string }>
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export async function generateMetadata({ params, searchParams }: Props, parent: ResolvingMetadata): Promise<Metadata> {
+    const id = (await params).blogId
+
+    const blog = await fetchBlog(id)
+
+    if ('message' in blog) {
+        return {
+            title: 'Blog Not Found',
+            description: 'The blog you are looking for does not exist.',
+            robots: 'noindex, nofollow',
+        };
+    };
+
+    return {
+        title: blog.result.title,
+        description: blog.result.des,
+        keywords: blog.result.tags.join(', '),
+        openGraph: {
+            title: blog.result.title,
+            description: blog.result.des,
+            url: `https://blogly.vercel.app/blog/${blog.result.blog_id}`,
+            images: [
+                {
+                    url: blog.result.banner,
+                    width: 800,
+                    height: 600,
+                },
+            ],
+            type: 'article',
+            siteName: 'BlogLy',
+        },
+        
+        robots: 'index, follow',
+        viewport: 'width=device-width, initial-scale=1',
+        themeColor: '#000000',
+    };
+};
 
 export default async function DetailBlogPage({ params }: { params: Promise<{ blogId: string }> }) {
     const { blogId } = await params;

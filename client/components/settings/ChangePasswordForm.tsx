@@ -18,9 +18,11 @@ export default function ChangePasswordForm() {
 
 
     return (
-        <form action={action}>
-            <h1 className='max-md:hidden'>Change Password</h1>
-            <div className='py-10 w-full md:max-w-[400px]'>
+        <form action={action} className='flex flex-col items-center justify-center w-[80%] max-w-[400px] mx-auto h-full'>
+            <h1 className='text-3xl font-gelasio capitalize text-center mt-12'>
+                Change Your Password
+            </h1>
+            <div className='py-10 flex flex-col gap-5 w-full '>
                 <InputBox
                     name='currentPassword'
                     type='password'
@@ -40,7 +42,7 @@ export default function ChangePasswordForm() {
                     value={state?.inputs?.newPassword as string}
                 // className='profile-edit-input'
                 />
-                <button className='btn-dark px-10' type='submit' disabled={isPending}>
+                <button className='btn-dark px-4' type='submit' disabled={isPending}>
                     {
                         isPending ? 'Updating ...' : 'Change Password'
                     }
