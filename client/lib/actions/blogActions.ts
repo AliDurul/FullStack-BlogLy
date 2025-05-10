@@ -258,8 +258,6 @@ export const likeBLog: TlikeBlogFn = async (_, blogId) => {
 
         const data = await res.json();
 
-        console.log(data);
-
         if (!res.ok && !data.success) {
             return {
                 success: data.success,

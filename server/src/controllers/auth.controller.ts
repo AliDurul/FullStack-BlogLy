@@ -16,64 +16,49 @@ export const generateUsername = async (email: string) => {
 }
 
 export const register = async (req: Request, res: Response): Promise<void> => {
-    /*
-        #swagger.tags = ["Users"]
-        #swagger.summary = "Create User"
-        #swagger.description = `
-            Password Format Type: It must has min.1 lowercase, min.1 uppercase, min.1 number and min.1 specialChars.
-        `
-        #swagger.parameters['body'] = {
-            in: 'body',
-            required: true,
-            schema: {
-                "username": "test",
-                "password": "1234",
-                "email": "test@site.com",
-                "firstName": "test",
-                "lastName": "test",
-            }
-        }
-    */
 
     const { email, fullname, password } = req.body as TRegisterUser;
 
     let user: IUser | null = null;
 
     if (req.body.sub) {
-        const { sub, fullname, email, picture } = req.body;
+        const { sub, fullname, email, picture, github_link, bio } = req.body;
 
         user = await User.findOne({ user_id: sub });
 
-        if (user) return;
-
-        user = await User.create({ user_id: sub, OAuth: true, isVerified: true, personal_info: { fullname, email, profile_img: picture, username: await generateUsername(email) } });
+        if (!user) {
+            user = await User.create({ user_id: sub, OAuth: true, isVerified: true, personal_info: { bio, fullname, email, profile_img: picture, username: await generateUsername(email) }, social_links: { github: github_link } });
+        };
 
     } else {
-        if (!(fullname && email && password)) throw new CustomError('Please fill all fields.', 400, true)
-
-        if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/.test(password)) throw new CustomError('Password must be between 6 to 20 characters and include at least one numeric digit, one uppercase and one lowercase letter.', 400, true);
+        // if (!(fullname && email && password)) throw new CustomError('Please fill all fields.', 400, true)
+        // if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/.test(password)) throw new CustomError('Password must be between 6 to 20 characters and include at least one numeric digit, one uppercase and one lowercase letter.', 400, true);
 
         const exists = await User.exists({ email });
 
         if (exists) throw new CustomError('User already exists with this email', 409);
 
-        const username = await generateUsername(email)
+        const username = await generateUsername(email);
 
-        user = await User.create({ personal_info: { fullname, email, password: passwordEncrypt(password), username } })
+        user = await User.create({ personal_info: { fullname, email, password: passwordEncrypt(password), username } });
     };
 
-    await sendMail({
-        to: user.personal_info.email,
-        subject: 'Blogly - Verify your email',
-        tempFn: verificationEmailTemp,
-        data: { verificationCode: user.verificationToken }
-    });
 
-    res.status(201).send({
+    if (!user.OAuth) {
+        await sendMail({
+            to: user.personal_info.email,
+            subject: 'Blogly - Verify your email',
+            tempFn: verificationEmailTemp,
+            data: { verificationCode: user.verificationToken }
+        });
+    };
+
+    const response = user.OAuth ? setToken(user) : {
         success: true,
         message: 'User created successfully. Please check your email to verify your account'
-    });
-    /*  */
+    };
+
+    res.status(201).send(response);
 };
 
 export const login = async (req: Request, res: Response): Promise<void> => {

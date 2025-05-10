@@ -15,8 +15,10 @@ export default async function Blogs({ author, category, search, pageParam = 1 }:
 
     const blogs = await fetchBlogs({ category, search, pageParam, author });
 
+    const queryMessage = search ? ` Search Results for "${search}"` : category ? ` Blogs in ${category}` : ' ';
+
     if ('message' in blogs) {
-        return <NoDataFound message={blogs.message + '⛑️'} />
+        return <NoDataFound message={blogs.message + queryMessage +'⛑️'} />
     }
 
 

@@ -49,8 +49,6 @@ export async function generateMetadata({ params, searchParams }: Props, parent: 
         },
         
         robots: 'index, follow',
-        viewport: 'width=device-width, initial-scale=1',
-        themeColor: '#000000',
     };
 };
 
