@@ -55,7 +55,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     const response = user.OAuth ? setToken(user) : {
         success: true,
-        message: 'User created successfully. Please check your email to verify your account'
+        message: 'User created successfully. Please check your email to verify your account in 2 hours time.',
     };
 
     res.status(201).send(response);
