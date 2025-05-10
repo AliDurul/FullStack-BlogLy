@@ -21,18 +21,11 @@ export async function generateMetadata({ params, searchParams }: Props, parent: 
   const search = (await searchParams).search || ''
   const category = (await searchParams).category || ''
 
-  // // fetch post information
-  // const post = await fetch(`https://api.vercel.app/blog/${slug}`).then((res) =>
-  //   res.json()
-  // )
-
   return {
     title: search ? `Search Results for "${search}"` : category ? `Blogs in ${category}` : 'BlogLy | Modern Blogging Website',
     description: search ? `Search Results for "${search}"` : category ? `Blogs in ${category}` : 'A modern blogging website built with MERN stack.',
   }
 }
-
-
 
 type HomePageParams = { searchParams: Promise<{ [key: string]: string | undefined }> }
 

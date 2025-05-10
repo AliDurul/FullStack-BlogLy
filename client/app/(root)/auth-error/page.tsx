@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import errorImg from '@/public/assets/images/error.png';
 import Link from 'next/link';
+import { Metadata } from 'next';
 
 
 export default function ErrorPage() {

@@ -3,9 +3,19 @@ import { z } from 'zod';
 export const registerUserSchema = z.object({
     fullname: z.string().min(1, 'Fullname is required').max(50, 'Fullname must be less than 50 characters'),
     email: z.string().email('Invalid email address').max(100, 'Email must be less than 100 characters'),
-    password: z.string().min(8, 'Password must be at least 8 characters long').max(16, 'Password must be less than 16 characters').optional(),
+    password: z.string().optional().refine(password => {
+        if (password && !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/.test(password)) {
+            return false;
+        }
+        return true;
+    }, {
+        message: 'Password must be between 6 to 20 characters and include at least one numeric digit, one uppercase and one lowercase letter.',
+        path: ['password'],
+    }),
     sub: z.string().optional(),
     picture: z.string().url('Picture must be a valid URL').optional(),
+    github_link: z.string().url('Github link must be a valid URL').optional(),
+    bio: z.string().max(200, 'Bio should not be more than 200').optional(),
 }).refine(data => {
     if (data.sub) {
         if (!data.picture) {
