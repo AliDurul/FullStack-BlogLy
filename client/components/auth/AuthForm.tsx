@@ -21,7 +21,7 @@ export default function AuthForm({ slug }: { slug: string }) {
   useEffect(() => {
     if (!state?.message) return;
 
-    toast[state.success ? 'success' : 'error'](state.message, { duration: 2000 });
+    toast[state.success ? 'success' : 'error'](state.message, { duration: 3000 });
 
     if (state.success) {
       const timer = setTimeout(() => router.push('/'), 2000);
