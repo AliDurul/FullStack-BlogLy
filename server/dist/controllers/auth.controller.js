@@ -49,7 +49,7 @@ const register = async (req, res) => {
     ;
     const response = user.OAuth ? (0, common_1.setToken)(user) : {
         success: true,
-        message: 'User created successfully. Please check your email to verify your account'
+        message: 'User created successfully. Please check your email to verify your account in 2 hours time.',
     };
     res.status(201).send(response);
 };

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { verifyEmail } from '@/lib/actions/authActions';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
 
 const VerifyEmail = () => {
     const searchParams = useSearchParams();
@@ -47,10 +48,10 @@ const VerifyEmail = () => {
         };
     }, [verificationCode, router]);
 
-    const resendVerificationCode = () => {
-        toast.success("Verification code sent to your email!", { position: "top-right" });
-        // TODO: Trigger actual resend logic if available
-    };
+    // const resendVerificationCode = () => {
+    //     toast.success("Verification code sent to your email!", { position: "top-right" });
+    //     // TODO: Trigger actual resend logic if available
+    // };
 
     if (status === "loading") {
         return (
@@ -66,9 +67,9 @@ const VerifyEmail = () => {
             <div className="text-center">
                 <h4 className="text-xl font-semibold text-primary mb-4">Verification Failed</h4>
                 <p className="text-red-500 mb-4">{errorMessage}</p>
-                <button onClick={resendVerificationCode} className='btn-dark center mt-14'>
-                    Resend Verification Code
-                </button>
+                <Link href='/auth/sign-up' className='btn-dark center mt-14'>
+                    Sign up with correct email
+                </Link>
             </div>
         );
     }

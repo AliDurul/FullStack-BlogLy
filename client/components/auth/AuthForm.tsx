@@ -21,7 +21,7 @@ export default function AuthForm({ slug }: { slug: string }) {
   useEffect(() => {
     if (!state?.message) return;
 
-    toast[state.success ? 'success' : 'error'](state.message);
+    toast[state.success ? 'success' : 'error'](state.message, { duration: 2000 });
 
     if (state.success) {
       const timer = setTimeout(() => router.push('/'), 2000);
@@ -68,9 +68,12 @@ export default function AuthForm({ slug }: { slug: string }) {
         value={state?.inputs?.password as string}
       />
 
-      <div className='mt-4 text-right'>
-        <Link href="/auth/forget-password" className='text-dark-grey font-semibold text-base underline tracking-wide'>Forget password</Link>
-      </div>
+      {
+        slug == 'sign-in' &&
+        <div className='flex justify-between mt-6'>
+          <Link href="/auth/forget-password" className='text-dark-grey text-xl underline'>Forget password?</Link>
+        </div>
+      }
 
       <button type='submit' disabled={isPending} className='btn-dark center mt-14'>
 
