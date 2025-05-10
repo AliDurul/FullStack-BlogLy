@@ -5,6 +5,10 @@ import errorImg from '@/public/assets/images/error.png';
 import Link from 'next/link';
 import { Metadata } from 'next';
 
+export const metadata: Metadata = {
+    title: 'Authentication Error - BlogLy',
+    description: 'An error occurred during authentication. Please try again or contact support if the issue persists.',
+};
 
 export default function ErrorPage() {
     const searchParams = useSearchParams();
