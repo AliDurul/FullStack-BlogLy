@@ -30,12 +30,12 @@ export default function EditorNav() {
         if (textEditor?.isReady) {
             textEditor.save().then((data: any) => {
                 if (data.blocks?.length) {
+                    console.log('data', data.blocks);
                     setBlog({ ...blog, content: data.blocks })
                     router.push('/editor/publish')
                 } else {
                     return toast.error('Please write something. Content is empty.')
                 }
-
             })
                 .catch((err: any) => {
                     console.log(err)
@@ -83,7 +83,7 @@ export default function EditorNav() {
     return (
         <nav className='navbar'>
             <Link href='/' className='flex-none w-10 ' >
-                <Image className='w-full' src={theme == 'light' ? darkLogo : lightLogo } width={40} height={44} alt='logo' />
+                <Image className='w-full' src={theme == 'light' ? darkLogo : lightLogo} width={40} height={44} alt='logo' />
             </Link>
             <p className='max-md:hidden text-black line-clamp-1 w-full'>
                 {title ? title : 'New Blog'}
