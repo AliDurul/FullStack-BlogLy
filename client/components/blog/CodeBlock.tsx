@@ -20,14 +20,20 @@ const CodeBlock = ({ code }: { code: string }) => {
         <div className="relative group">
             <button
                 onClick={handleCopy}
-                className="absolute top-2 right-2 bg-neutral-800 text-white px-2 py-1 rounded text-xs opacity-80 hover:opacity-100 z-10"
+                className="absolute top-2 right-10 bg-neutral-800 text-[#ffffff] px-2 py-1 rounded text-xs opacity-80 hover:opacity-100 z-10"
                 type="button"
             >
                 {copied ? 'Copied!' : 'Copy'}
             </button>
-            <SyntaxHighlighter language="javascript" style={vscDarkPlus} customStyle={{ borderRadius: 8, fontSize: 16 }}>
-                {code}
-            </SyntaxHighlighter>
+            <div className="overflow-auto max-h-[600px] max-w-full rounded-lg">
+                <SyntaxHighlighter
+                    language="javascript"
+                    style={vscDarkPlus}
+                    customStyle={{ borderRadius: 8, fontSize: 16, margin: 0 }}
+                >
+                    {code}
+                </SyntaxHighlighter>
+            </div>
         </div>
     );
 };

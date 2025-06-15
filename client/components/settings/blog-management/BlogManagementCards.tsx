@@ -1,3 +1,4 @@
+'use client';
 import Loader from '@/components/shared/Loader'
 import { deleteBlog } from '@/lib/actions/blogActions'
 import { revalidateTagFn } from '@/lib/actions/revalidateActions'
@@ -27,9 +28,9 @@ const BlogStats = ({ stats }: { stats: IActivity }) => {
     )
 };
 
-interface IBlogActionProps { blog: ISingleBlog, refetch: () => void, action: (id: string) => void, state: any, isPending: boolean }
+interface IBlogActionProps { blog: ISingleBlog, action: (id: string) => void, state: any, isPending: boolean }
 
-const BlogActions = ({ blog, refetch, action, state, isPending }: IBlogActionProps) => {
+const BlogActions = ({ blog, action, state, isPending }: IBlogActionProps) => {
 
     const handleDelete = () => {
         startTransition(() => {
@@ -37,11 +38,11 @@ const BlogActions = ({ blog, refetch, action, state, isPending }: IBlogActionPro
         });
     };
 
-    useEffect(() => {
-        if (state?.success) {
-            refetch()
-        }
-    }, [state]);
+    // useEffect(() => {
+    //     if (state?.success) {
+    //         refetch()
+    //     }
+    // }, [state]);
 
     return (
         <>
@@ -51,7 +52,7 @@ const BlogActions = ({ blog, refetch, action, state, isPending }: IBlogActionPro
     )
 };
 
-export function PublishedBlogCard({ blog, refetch }: { refetch: () => void, blog: ISingleBlog }) {
+export function PublishedBlogCard({ blog }: { blog: ISingleBlog }) {
 
     const [showStat, setShowStat] = useState(false)
     const [state, action, isPending] = useActionState(deleteBlog, null)
@@ -73,7 +74,7 @@ export function PublishedBlogCard({ blog, refetch }: { refetch: () => void, blog
                                 <p className='line-clamp-1'>Published on {formatDate(blog.publishedAt)}</p>
                             </div>
                             <div className='flex gap-6 mt-3'>
-                                <BlogActions blog={blog} refetch={refetch} action={action} state={state} isPending={isPending} />
+                                <BlogActions blog={blog} action={action} state={state} isPending={isPending} />
                                 <button className='lg:hidden pr-4 p-2 underline' onClick={() => setShowStat(prev => !prev)}>Stats</button>
                             </div>
 
@@ -94,7 +95,7 @@ export function PublishedBlogCard({ blog, refetch }: { refetch: () => void, blog
 }
 
 
-export function DraftBlogsCard({ blog, index, refetch }: { refetch: () => void, blog: ISingleBlog, index: number }) {
+export function DraftBlogsCard({ blog, index }: { blog: ISingleBlog, index: number }) {
 
     const [state, action, isPending] = useActionState(deleteBlog, null)
 
@@ -112,7 +113,7 @@ export function DraftBlogsCard({ blog, index, refetch }: { refetch: () => void, 
                             <h1 className='blog-title mb-3'> {blog?.title} </h1>
                             <p className='line-clamp-2 font-gelasio'>{blog?.des?.length ? blog?.des : 'No Description'}</p>
                             <div className='flex gap-6 mt-3'>
-                                <BlogActions blog={blog} refetch={refetch} action={action} state={state} isPending={isPending} />
+                                <BlogActions blog={blog} action={action} state={state} isPending={isPending} />
                             </div>
                         </div>
                     </>
