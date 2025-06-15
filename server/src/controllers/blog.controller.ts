@@ -21,7 +21,7 @@ export const getBlogs = async (req: Request, res: Response) => {
 
     if (category) filter.tags = { $in: [String(category).toLowerCase()] };
     if (excludedId) filter.blog_id = { $ne: excludedId };
-    if (search) filter.title = new RegExp(String(search), 'i'); 
+    if (search) filter.title = new RegExp(String(search), 'i');
     if (author) {
         filter.author = author;
         if (draft === 'true') filter.draft = true;
@@ -129,11 +129,53 @@ export const deleteBlog = async (req: Request, res: Response) => {
 
 export const trendingBlog = async (req: Request, res: Response) => {
 
-    const blogs: IBlog[] | null = await Blog.find({ draft: false })
-        .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
-        .sort({ "activity.total_read": -1, "activity.total_likes": -1, publishedAt: -1 })
-        .select('blog_id title publishedAt -_id')
-        .limit(5);
+    // const blogs: IBlog[] | null = await Blog.find({ draft: false })
+    //     .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
+    //     .sort({ "activity.total_reads": -1, publishedAt: -1 })
+    //     .select('blog_id title publishedAt -_id')
+    //     .limit(5);
+
+    const blogs: IBlog[] | null = await Blog.aggregate([
+        { $match: { draft: false } },
+        {
+            $addFields: {
+                likesCount: { $size: "$activity.likes" }
+            }
+        },
+        {
+            $sort: {
+                "activity.total_reads": -1,
+                likesCount: -1,
+                publishedAt: -1
+            }
+        },
+        {
+            $limit: 5
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "author",
+                foreignField: "_id",
+                as: "author"
+            }
+        },
+        {
+            $unwind: "$author"
+        },
+        {
+            $project: {
+                blog_id: 1,
+                title: 1,
+                publishedAt: 1,
+                "author.personal_info.profile_img": 1,
+                "author.personal_info.username": 1,
+                "author.personal_info.fullname": 1,
+                _id: 0,
+                activity: 1
+            }
+        }
+    ]);
 
     if (!blogs.length) throw new CustomError('Trending Blogs not found.', 404, true);
 

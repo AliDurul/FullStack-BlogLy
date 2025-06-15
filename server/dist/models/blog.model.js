@@ -46,14 +46,6 @@ const blogSchema = new mongoose_1.Schema({
                 ref: "Comment",
             },
         ],
-        total_likes: {
-            type: Number,
-            default: 0
-        },
-        total_comments: {
-            type: Number,
-            default: 0
-        },
         total_reads: {
             type: Number,
             default: 0

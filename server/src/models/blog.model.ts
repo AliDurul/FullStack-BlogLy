@@ -16,8 +16,6 @@ export interface IBlog extends Document {
 
 export interface Activity {
     likes: string[];
-    total_likes: number;
-    total_comments: number;
     total_reads: number;
     total_parent_comments: number;
 }
@@ -80,15 +78,6 @@ const blogSchema = new Schema<IBlog>({
                 ref: "Comment",
             },
         ],
-        total_likes: {
-            type: Number,
-            default: 0
-        },
-
-        total_comments: {
-            type: Number,
-            default: 0
-        },
         total_reads: {
             type: Number,
             default: 0

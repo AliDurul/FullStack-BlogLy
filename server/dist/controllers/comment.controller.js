@@ -41,7 +41,6 @@ const deleteCommentsRecursive = async (commentId) => {
     const blog = await blog_model_1.default.findByIdAndUpdate(comment.blog_id, {
         $pull: { 'activity.comments': commentId },
         $inc: {
-            'activity.total_comments': -1,
             'activity.total_parent_comments': comment.parent ? 0 : -1,
         },
     });
@@ -102,7 +101,6 @@ const createComment = async (req, res) => {
     await blog_model_1.default.findByIdAndUpdate(blogId, {
         $push: { 'activity.comments': newComment._id },
         $inc: {
-            'activity.total_comments': 1,
             'activity.total_parent_comments': replying_to ? 0 : 1,
         },
     });

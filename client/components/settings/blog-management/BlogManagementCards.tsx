@@ -17,7 +17,7 @@ const BlogStats = ({ stats }: { stats: IActivity }) => {
                 <p className='max-lg:text-dark-grey capitalize'>likes</p>
             </div>
             <div className='flex flex-col items-center w-full h-full justify-center p-4 px-6 border-grey border-l'>
-                <h1 className='text-xl lg:text-2xl mb-2'>{stats?.total_comments?.toLocaleString()}</h1>
+                <h1 className='text-xl lg:text-2xl mb-2'>{stats?.comments.length || 0}</h1>
                 <p className='max-lg:text-dark-grey capitalize'>comments</p>
             </div>
             <div className='flex flex-col items-center w-full h-full justify-center p-4 px-6 border-grey border-l'>

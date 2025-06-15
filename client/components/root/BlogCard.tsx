@@ -7,7 +7,7 @@ import React from 'react'
 export default function BlogCard({ blog, author }: { blog: ISingleBlog, author: IPersonalInfo }) {
 
 
-    const { publishedAt, tags, title, des, banner, activity: { likes }, blog_id: id } = blog
+    const { publishedAt, tags, title, des, banner, activity: { likes, total_reads, comments }, blog_id: id } = blog
     const { fullname, profile_img, username } = author
 
     return (
@@ -25,6 +25,10 @@ export default function BlogCard({ blog, author }: { blog: ISingleBlog, author: 
                     <span className='ml-3 flex items-center gap-2 text-dark-grey cursor-pointer'>
                         <i className='fi fi-rr-heart text-xl' />
                         {likes?.length}
+                    </span>
+                    <span className='ml-3 flex items-center gap-2 text-dark-grey cursor-pointer'>
+                        <i className='fi fi-rr-eye text-xl' />
+                        {total_reads || 0}
                     </span>
                 </div>
             </div >

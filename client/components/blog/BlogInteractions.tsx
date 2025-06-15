@@ -14,7 +14,7 @@ export default async function BlogInteractions({ blog }: IBlogInteractionProps) 
 
     const session = await getSession()
 
-    const { title, tags, blog_id, activity, activity: { total_likes, total_comments, likes }, author: { personal_info: { fullname, username: author_username, profile_img } } } = blog
+    const { title, tags, blog_id, author: { personal_info: { username: author_username } } } = blog
 
 
     return (
@@ -26,6 +26,10 @@ export default async function BlogInteractions({ blog }: IBlogInteractionProps) 
                 <div className='flex gap-3 items-center'>
                     <LikeBtn blog={blog} session={session} />
                     <CommentBtn blog={blog} session={session} />
+                    <span className='ml-3 flex items-center justify-center gap-2 text-dark-grey '>
+                        <i className='fi fi-rr-eye text-xl' />
+                        {blog.activity.total_reads || 0}
+                    </span>
                 </div>
 
                 <div className='flex gap-6 items-center'>
