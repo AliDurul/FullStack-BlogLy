@@ -30,7 +30,9 @@ export default function EditorNav() {
         if (textEditor?.isReady) {
             textEditor.save().then((data: any) => {
                 if (data.blocks?.length) {
-                    console.log('data', data.blocks);
+                    if (process.env.NODE_ENV === 'development') {
+                        console.log('data', data.blocks);
+                    }
                     setBlog({ ...blog, content: data.blocks })
                     router.push('/editor/publish')
                 } else {
