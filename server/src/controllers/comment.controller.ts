@@ -47,7 +47,6 @@ const deleteCommentsRecursive = async (commentId: Schema.Types.ObjectId | string
         {
             $pull: { 'activity.comments': commentId },
             $inc: {
-                'activity.total_comments': -1,
                 'activity.total_parent_comments': comment.parent ? 0 : -1,
             },
         }
@@ -123,7 +122,6 @@ export const createComment = async (req: Request, res: Response) => {
     await Blog.findByIdAndUpdate(blogId, {
         $push: { 'activity.comments': newComment._id },
         $inc: {
-            'activity.total_comments': 1,
             'activity.total_parent_comments': replying_to ? 0 : 1,
         },
     });

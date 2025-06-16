@@ -17,7 +17,7 @@ export default function CommentBtn({ blog, session }: { blog: ISingleBlog, sessi
                 <i className={`fi fi-rr-comment-dots `} />
             </button>
 
-            <p className='text-xl text-dark-grey'>{blog.activity.total_comments}</p>
+            <p className='text-xl text-dark-grey'>{blog.activity.comments.length || 0}</p>
 
             {
 

@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.queryHandler = exports.authenticate = exports.isValidated = exports.notFound = void 0;
 exports.errorHandler = errorHandler;
 exports.logger = logger;
+const email_templates_1 = require("../utils/email.templates");
 const common_1 = require("../utils/common");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const env_1 = require("../configs/env");
@@ -52,11 +53,11 @@ async function errorHandler(err, req, res, next) {
     }
     // isTrusted error
     if (!(err instanceof common_1.CustomError && error.isOperational)) {
-        // await sendMail({ to: 'alidrl26@gmail.com', subject: 'Error Occurred', tempFn: errorEmailTemp, data: error });
+        await (0, common_1.sendMail)({ to: 'alidrl26@gmail.com', subject: 'Error Occurred', tempFn: email_templates_1.errorEmailTemp, data: error });
         // process.exit(1);
         // console.log('untrusted error: ', error);
     }
-    console.log('Error Handler: ', error);
+    // console.log('Error Handler: ', error);
     res.status(error.statusCode).send({
         success: false,
         message: error.message,

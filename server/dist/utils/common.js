@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendMail = exports.generateCacheKey = exports.CustomError = void 0;
+exports.sendMail = exports.CustomError = void 0;
 exports.passwordEncrypt = passwordEncrypt;
 exports.setToken = setToken;
 exports.shouldCompress = shouldCompress;
@@ -38,17 +38,6 @@ function passwordEncrypt(pass) {
     const encType = 'sha512';
     return (0, node_crypto_1.pbkdf2Sync)(pass, keyCode, loopCount, charCount, encType).toString('hex');
 }
-// ===============================
-// 3. GENERATE CACHE KEY
-// ===============================
-const generateCacheKey = (baseKey, query) => {
-    const queryParts = Object.keys(query || {})
-        .sort()
-        .map(key => `${key}=${JSON.stringify(query[key])}`)
-        .join('&');
-    return `${baseKey}?${queryParts}`;
-};
-exports.generateCacheKey = generateCacheKey;
 function setToken(user, isRefresh = false) {
     const { user_id, _id, isVerified, personal_info: { profile_img, username, fullname } } = user;
     const payload = {

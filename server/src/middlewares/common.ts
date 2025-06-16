@@ -56,12 +56,12 @@ export async function errorHandler(err: any, req: Request, res: Response, next: 
 
     // isTrusted error
     if (!(err instanceof CustomError && error.isOperational)) {
-        // await sendMail({ to: 'alidrl26@gmail.com', subject: 'Error Occurred', tempFn: errorEmailTemp, data: error });
+        await sendMail({ to: 'alidrl26@gmail.com', subject: 'Error Occurred', tempFn: errorEmailTemp, data: error });
         // process.exit(1);
         // console.log('untrusted error: ', error);
     }
 
-    console.log('Error Handler: ', error);
+    // console.log('Error Handler: ', error);
 
     res.status(error.statusCode).send({
         success: false,

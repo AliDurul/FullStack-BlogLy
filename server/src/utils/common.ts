@@ -40,14 +40,7 @@ export function passwordEncrypt(pass: string): string {
 // ===============================
 // 3. GENERATE CACHE KEY
 // ===============================
-export const generateCacheKey = (baseKey: string, query: Record<string, unknown>): string => {
-    const queryParts = Object.keys(query || {})
-        .sort()
-        .map(key => `${key}=${JSON.stringify(query[key])}`)
-        .join('&');
 
-    return `${baseKey}?${queryParts}`;
-};
 
 
 // ===============================

@@ -111,11 +111,52 @@ const deleteBlog = async (req, res) => {
 };
 exports.deleteBlog = deleteBlog;
 const trendingBlog = async (req, res) => {
-    const blogs = await blog_model_1.default.find({ draft: false })
-        .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
-        .sort({ "activity.total_read": -1, "activity.total_likes": -1, publishedAt: -1 })
-        .select('blog_id title publishedAt -_id')
-        .limit(5);
+    // const blogs: IBlog[] | null = await Blog.find({ draft: false })
+    //     .populate('author', 'personal_info.profile_img personal_info.username personal_info.fullname -_id')
+    //     .sort({ "activity.total_reads": -1, publishedAt: -1 })
+    //     .select('blog_id title publishedAt -_id')
+    //     .limit(5);
+    const blogs = await blog_model_1.default.aggregate([
+        { $match: { draft: false } },
+        {
+            $addFields: {
+                likesCount: { $size: "$activity.likes" }
+            }
+        },
+        {
+            $sort: {
+                "activity.total_reads": -1,
+                likesCount: -1,
+                publishedAt: -1
+            }
+        },
+        {
+            $limit: 5
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "author",
+                foreignField: "_id",
+                as: "author"
+            }
+        },
+        {
+            $unwind: "$author"
+        },
+        {
+            $project: {
+                blog_id: 1,
+                title: 1,
+                publishedAt: 1,
+                "author.personal_info.profile_img": 1,
+                "author.personal_info.username": 1,
+                "author.personal_info.fullname": 1,
+                _id: 0,
+                activity: 1
+            }
+        }
+    ]);
     if (!blogs.length)
         throw new common_1.CustomError('Trending Blogs not found.', 404, true);
     res.status(200).send({ success: true, result: blogs });

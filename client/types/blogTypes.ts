@@ -7,8 +7,7 @@ export interface IPersonalInfo {
 
 export interface IActivity {
     likes: string[];
-    total_likes: number;
-    total_comments: number;
+    comments: string[];
     total_reads: number;
     total_parent_comments: number;
 }

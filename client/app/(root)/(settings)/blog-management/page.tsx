@@ -1,8 +1,9 @@
 import BlogManagementFeed from '@/components/settings/blog-management/BlogManagementFeed'
-import React from 'react'
+import React, { Suspense } from 'react'
 import getSession from "@/lib/utils";
 import Search from '@/components/shared/Search';
 import type { Metadata } from 'next';
+import Loader from '@/components/shared/Loader';
 
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -39,8 +40,13 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function BlogManagementPage() {
-  const session = await getSession();
+type HomePageParams = { searchParams: Promise<{ [key: string]: string | undefined }> }
+
+export default async function BlogManagementPage({ searchParams }: HomePageParams) {
+
+  const search = (await searchParams).search || ''
+  const pageParam = ((await searchParams).pageParam || 1) as number
+  const draft = (await searchParams).draft || 'false';
 
   return (
     <div>
@@ -49,7 +55,9 @@ export default async function BlogManagementPage() {
         <Search placeHolder='Search Blogs' />
         <i className='fi fi-rr-search absolute right-[10%] md:pointer-events-none md:left-5 top-1/2 -translate-y-1/2 text-xl text-dark-grey' />
       </div>
-      <BlogManagementFeed author={session?.user._id} />
+      <Suspense fallback={<Loader />}>
+        <BlogManagementFeed searchParams={{ search, pageParam, draft }} />
+      </Suspense>
     </div>
   )
 }
