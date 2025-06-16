@@ -16,7 +16,7 @@ export default async function BlogManagementFeed({ searchParams }: PageProps) {
     const author = session?.user._id;
 
     const search = searchParams.search || ''
-    const pageParam = parseInt(searchParams.pageParam || '1', 10);
+    const pageParam = (searchParams.pageParam || 1) as number
     const draft = searchParams.draft || 'false';
 
     const blogs = await fetchBlogs({ pageParam, author, draft, search });
