@@ -1,0 +1,61 @@
+# Node.js dependencies
+node_modules/
+
+# Build outputs
+client/.next/
+server/dist/
+build/
+out/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Version control
+.git/
+.gitignore
+.svn/
+.hg/
+
+# Environment and secrets
+.env*
+*.env
+client/.env.local
+server/.env
+*.pem
+*.key
+*.crt
+
+# Temporary and local files
+tmp/
+temp/
+*.tmp
+.local/
+local/
+
+# Test and debug artifacts
+test/
+tests/
+*.log
+debug/
+
+# Documentation and configs
+docs/
+*.md
+README*
+
+# Docker files
+Dockerfile*
+docker-compose*
+
+# Project-specific
+client/public/assets/icons/
+client/public/assets/images/
+
+# Miscellaneous
+*.mjs
+
+# Exclude lock files (do NOT ignore them)
+# (intentionally left out)

@@ -1,70 +1,42 @@
-<div id="user-content-toc" align="center">
-    <ul align="left">
-        <summary>
-            <h1 style="display: inline-block; font-size: 2.5em; color: #2c3e50;">📝 FullStack BlogLy Web Application 📝
-            </h1>
-        </summary>
-    </ul>
-</div>
-<table style="width:100%; border-collapse: collapse; text-align: left;">
-    <thead>
-        <tr>
-            <th style="padding: 10px; background-color: #3498db; color: white;">🚀 What's Used in this App?</th>
-            <th style="padding: 10px; background-color: #3498db; color: white;">🛠️ How to Run?</th>
-            <th style="padding: 10px; background-color: #3498db; color: white;">👤 Author</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td style="padding: 10px; background-color: #ecf0f1;">
-                <ul>
-                    <li>Next.js</li>
-                    <li>React</li>
-                    <li>TypeScript</li>
-                    <li>Express</li>
-                    <li>Node.js</li>
-                    <li>MongoDB</li>
-                    <li>NextAuth</li>
-                    <li>Redis Cache</li>
-                </ul>
-            </td>
-            <td style="padding: 10px; background-color: #ecf0f1;">
-                <h4>After cloning the project:</h4>
-                <ol>
-                    <li>Split terminal and Run <code>cd server</code> and <code>cd client</code></li>
-                    <li>Run <code>npm install</code> to install all dependencies.</li>
-                    <li>Configure your <code>.env</code> file with the required environment variables.</li>
-                    <li>Run <code>npm run dev</code> to start the development server.</li>
-                    <li>Access the app on <code>http://localhost:3000</code></li>
-                </ol>
-            </td>
-            <td style="padding: 10px; background-color: #ecf0f1;">
-                <ul>
-                    <li><a href="https://github.com/AliDurul" target="_blank">Check out my other projects</a></li>
-                    <li><a href="https://www.linkedin.com/in/ali-durul/" target="_blank">Visit me on LinkedIn</a></li>
-                </ul>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="3" style="padding: 10px; background-color: #ecf0f1;">
-                <h2>🌟 What is this project about?</h2>
-                <p>The FullStack BlogLy Web Application is a modern, full-stack blog platform designed for seamless content creation, user management, and robust authentication. Built using the latest technologies, it provides a scalable and responsive user experience.</p>
-                <h2>⚙️ Features</h2>
-                <ul>
-                    <li>📰 <strong>Modern Blog Platform:</strong> Create, edit, and manage blog posts with ease.</li>
-                    <li>👥 <strong>User Authentication:</strong> Secure login and registration with NextAuth and JWT.</li>
-                    <li>📊 <strong>Scalable Backend:</strong> Express and MongoDB for data storage and API management.</li>
-                    <li>⚡ <strong>Performance Optimization:</strong> Redis caching for faster response times.</li>
-                    <li>🌐 <strong>Responsive Frontend:</strong> Built with Next.js, React, and TypeScript for a smooth UX.</li>
-                </ul>
-               <h2>📎 Project Resources</h2>
-                <ul>
-                    <li>🌐 <a href="https://bloglyy.vercel.app/" target="_blank">Live Demo</a></li>
-                </ul>
-                <h2>💬 Feedback and Collaboration</h2>
-                <p>I highly value your feedback and suggestions! If you have any questions, comments, or ideas for improvement, feel free to reach out. I am always open to collaborating on new and exciting projects.</p>
-                <p>Thank you for visiting my project. I hope you enjoy exploring it, and I look forward to connecting with you!</p>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<h2>🐳 Running BlogLy with Docker</h2>
+<p>For a seamless and production-ready setup, BlogLy provides Docker support for both the client (Next.js) and server (Express API) applications, along with MongoDB and Redis services. This allows you to run the entire stack with minimal configuration.</p>
+
+<h3>📦 Project-Specific Docker Requirements</h3>
+<ul>
+  <li><strong>Node.js Version:</strong> <code>22.14.0</code> (used in both client and server Dockerfiles)</li>
+  <li><strong>Yarn Version (server):</strong> <code>4.6.0</code></li>
+  <li><strong>MongoDB</strong> and <strong>Redis</strong> are included as services in <code>docker-compose.yml</code></li>
+</ul>
+
+<h3>🔑 Required Environment Variables</h3>
+<ul>
+  <li><code>client/.env.local</code> – for frontend configuration (see <code>client/.env.local</code> for required variables)</li>
+  <li><code>server/.env</code> – for backend configuration (see <code>server/.env</code> for required variables)</li>
+</ul>
+<p>Make sure to provide these files before building the containers. Example templates are available in the respective directories.</p>
+
+<h3>⚙️ How to Build and Run with Docker Compose</h3>
+<ol>
+  <li>Ensure <code>client/.env.local</code> and <code>server/.env</code> are configured.</li>
+  <li>From the project root, run:<br>
+    <pre><code>docker compose up --build</code></pre>
+  </li>
+  <li>Access the app at <code>http://localhost:3000</code> (client) and <code>http://localhost:3001</code> (API server).</li>
+</ol>
+
+<h3>🔌 Exposed Ports</h3>
+<ul>
+  <li><strong>Client (Next.js):</strong> <code>3000</code></li>
+  <li><strong>Server (Express API):</strong> <code>3001</code></li>
+  <li><strong>MongoDB:</strong> <code>27017</code></li>
+  <li><strong>Redis:</strong> <code>6379</code></li>
+</ul>
+
+<h3>🛠️ Special Configuration</h3>
+<ul>
+  <li>Persistent MongoDB data is stored in the <code>mongo-data</code> Docker volume.</li>
+  <li>All services are connected via the <code>blogly-net</code> Docker network for secure internal communication.</li>
+  <li>Healthchecks are configured for MongoDB and Redis to ensure service readiness.</li>
+</ul>
+
+<p>For advanced configuration, review the <code>docker-compose.yml</code> and Dockerfiles in <code>client</code> and <code>server</code> directories.</p>
